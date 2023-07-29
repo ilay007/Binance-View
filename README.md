@@ -9,12 +9,15 @@ This projcet helps you:
 4) - to check your trading robot on historical data for some coin
 
      Start or how to start
-For using this project you will need to have binance credential data: ApiKey, SecretKey.
-Create keys.txt and write there ApiKey;SecretKey.
+For using this project you need to have Binance credential data: ApiKey, SecretKey.
+Create keys.txt and write there: ApiKey;SecretKey.
 Find in BinanceIncomeViewer file Settings.settings and find there settings with name PathToFileWithKeys and write there path to file keys.txt.
-![TradingInfo](https://github.com/ilay007/BinanceTrading/assets/44927371/882ba2b7-3681-425a-ac05-df0a6ac4c0cf)
 
-![BotViewerDemoTrading](https://github.com/ilay007/BinanceTrading/assets/44927371/72f93a16-1d1c-4861-aa65-fbacfc76def0)
+![TradingInfo](https://github.com/ilay007/Binance-View/assets/44927371/9fd7a273-2787-46c4-839e-67ebdaf08cda)
 
 
-![BotViewerRealTrading](https://github.com/ilay007/BinanceTrading/assets/44927371/f5e05e32-8c6f-4a6b-97ed-c13e929167cf)
+![BotViewerDemoTrading](https://github.com/ilay007/Binance-View/assets/44927371/4c9badb2-adc1-48d8-a544-9c4cd33b94c0)
+
+
+
+![BotViewerRealTrading](https://github.com/ilay007/Binance-View/assets/44927371/f4c65b0e-20d8-4b82-abf9-33ec7da691cc)
