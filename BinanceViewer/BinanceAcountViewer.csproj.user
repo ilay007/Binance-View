@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Compile Update="BinanceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="BotViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="TradingInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="StartFrom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

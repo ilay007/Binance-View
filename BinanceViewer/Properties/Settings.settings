@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BinanceAcountViewer.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="TestData" Type="System.String" Scope="User">
+      <Value Profile="(Default)">H:\Git\BinanceApi\binance-connector-dotnet\dataTest</Value>
+    </Setting>
+    <Setting Name="DataBase" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\GitHub\binance\binance-downloader\binance_downloader\downloaded</Value>
+    </Setting>
+    <Setting Name="SelectedCurrency" Type="System.String" Scope="User">
+      <Value Profile="(Default)">LTC</Value>
+    </Setting>
+    <Setting Name="Fee" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.001</Value>
+    </Setting>
+    <Setting Name="PathToFileWithKeys" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\GitHub\MyGit\keys.txt</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
