@@ -1,17 +1,8 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using AcountViewer;
 using Binance.Spot.Models;
-using Binance.Spot;
 using CoinCore;
-using Newtonsoft.Json;
 
 namespace BinanceAcountViewer
 {
@@ -46,13 +37,8 @@ namespace BinanceAcountViewer
 
         public async Task<List<CoinInfo>> GetWalletInfo()
         {
-            //return new Task<List>;
             return null;
-
         }
-
-
-
 
         public async Task<double> GetCurrentAveragePrice(string coinPair)
         {
@@ -62,7 +48,6 @@ namespace BinanceAcountViewer
         public async Task<List<KLine>> GetKlineCandlestickData(string coinPair, Interval interval)
         {
             return null;
-
         }
 
 

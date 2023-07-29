@@ -31,7 +31,7 @@ namespace CoinCore
                 hight.Add(ema[i]);
                 low.Add(ema[i]);
             }
-            var a = 2;// 2d / (1 + N);
+            var a = 2;
             for (int i = N; i < data.Count; i++)
             {
                 var v2 = sum - Math.Pow(data[i - N] - ema[i - N], 2);
@@ -48,10 +48,6 @@ namespace CoinCore
             result.Add(low);
             result.Add(listSum);
             return result;
-
-
         }
-
-
     }
 }

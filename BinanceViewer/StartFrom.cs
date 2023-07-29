@@ -1,7 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Windows.Forms;
 using BinanceAcountViewer;
@@ -19,10 +15,6 @@ namespace AcountViewer
            
         }
 
-        private void InitKeys()
-        {
-           
-        }
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             var credentials=Credentials.GetCredentials();
@@ -37,8 +29,6 @@ namespace AcountViewer
             var user1Form = new BotViewer(credentials[1].Key, credentials[1].Value);
             user1Form.IsMdiContainer = true;
             user1Form.Show();
-        }
-
-       
+        }       
     }
 }

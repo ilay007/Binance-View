@@ -43,8 +43,6 @@ namespace CoinCore
             BalanceUSDT = 0;
 
         }
-
-
         public double GetProfit()
         {
             return BalanceUSDT - StartBalanceUSDT;

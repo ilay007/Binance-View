@@ -30,7 +30,6 @@ namespace CoinCore
             Hight=Math.Max(point,Hight);
         }
 
-        //OpenTime,Open,High,Low,Close,Volume,CloseTime,qav,numTrades,tbbav,tbqav,ignore
         public KLine(List<string> data)
         {
             if (data.Count < 7) return;
@@ -66,7 +65,6 @@ namespace CoinCore
             return false;
         }
 
-
         public KLine(List<KLine> lines)
         {
             OpenTime = lines[0].OpenTime;
@@ -77,8 +75,5 @@ namespace CoinCore
             Close = lines.Last().Close;
 
         }
-
-
-
     }
 }

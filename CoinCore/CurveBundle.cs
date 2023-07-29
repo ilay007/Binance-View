@@ -7,7 +7,6 @@ namespace CoinCore
         public Ema SlowEma;
         public List<KLine> KLines;
         public List<double> DifEma;
-
         public String Pair;
         public String Interval;
         public static int NumLastCodes = 4;
@@ -49,16 +48,10 @@ namespace CoinCore
         {
             return GetRange(num - NumLastCodes, NumLastCodes);
         }
-
-
         public CurveBundle GetLastData()
         {
             return GetRange(KLines.Count - 2, 1);
         }
-
-
-
-
         public void DelliteLastPoint()
         {
             KLines.RemoveAt(KLines.Count - 1);
@@ -67,8 +60,6 @@ namespace CoinCore
             SlowEma.DellLastPoint();
             DifEma.RemoveAt(DifEma.Count - 1);
         }
-
-
         public void AddPoint(KLine point)
         {
             KLines.Add(point);

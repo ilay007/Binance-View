@@ -1,4 +1,3 @@
-
 namespace CoinCore
 {
     public interface IStrategist

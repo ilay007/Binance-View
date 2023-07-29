@@ -1,6 +1,5 @@
 namespace CoinCore
-{
-    
+{  
     public class StoryItem
     {
         public long Id { get; set; }

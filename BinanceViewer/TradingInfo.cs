@@ -16,7 +16,7 @@ namespace AcountViewer
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
             InitializeComponent();
-            Service = new BinanceServ(apiKey, apiSecret,10);
+            Service = new BinanceService(apiKey, apiSecret,10);
         }
 
         private void SynkWalletInfoWithList()
@@ -126,7 +126,7 @@ namespace AcountViewer
             apiKey = credentials[1].Key;
             apiSecret = credentials[1].Key;
             var user1Form = new BotViewer(credentials[1].Key, credentials[1].Value);
-            Service = new BinanceServ(apiKey, apiSecret, 10);
+            Service = new BinanceService(apiKey, apiSecret, 10);
             var result = await InitWalletsAsync();
             if (result) SynkWalletInfoWithList();
         }

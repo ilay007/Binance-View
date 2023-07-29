@@ -10,8 +10,6 @@ namespace CoinCore
         private int N;
         private int a = 2;
 
-        public int getN() { return N; }
-
         public Boll()
         {
 
@@ -29,10 +27,10 @@ namespace CoinCore
         }
 
 
-        public Boll GetRange(int start,int len)
+        public Boll GetRange(int start, int len)
         {
             var nBoll = new Boll();
-            nBoll.Ema = this.Ema.GetRange(start,len);
+            nBoll.Ema = this.Ema.GetRange(start, len);
             nBoll.CurveHight = this.CurveHight.GetRange(start, len);
             nBoll.CurveLow = this.CurveLow.GetRange(start, len);
             nBoll.CrudeData = this.CrudeData.GetRange(start, len);
@@ -64,11 +62,5 @@ namespace CoinCore
             CrudeData.RemoveAt(CrudeData.Count - 1);
             sum.RemoveAt(sum.Count - 1);
         }
-
-    
-
-
-
-
     }
 }

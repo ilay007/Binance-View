@@ -151,7 +151,7 @@ namespace BinanceAcountViewer
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            Service = new BinanceServ(apiKey, apiSecret, MaxCounterTimer);
+            Service = new BinanceService(apiKey, apiSecret, MaxCounterTimer);
             label3.Text = "Real time mode";
             var res = false;
             foreach (var pair in LastKLines)
@@ -377,7 +377,7 @@ namespace BinanceAcountViewer
             catch (HttpRequestException ex)
             {
                 Console.WriteLine(ex.ToString());
-                Service = new BinanceServ(apiKey, apiSecret, MaxCounterTimer);
+                Service = new BinanceService(apiKey, apiSecret, MaxCounterTimer);
                 // SynckWithWallets();
             }
 

@@ -1,25 +1,17 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Binance.Spot;
 using Binance.Spot.Models;
 using BinanceAcountViewer;
 using Newtonsoft.Json;
 using CoinCore;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
-using Castle.Core;
 
 namespace AcountViewer
 {
-    public class BinanceServ:IService
+    public class BinanceService:IService
     {
         private SpotAccountTrade spotAccountTrade;
         private HttpClient httpClient;
@@ -29,7 +21,7 @@ namespace AcountViewer
         private Wallet wallet;
         private Market Market;
 
-        public BinanceServ(string apiKey, string apiSecret,int maxCounter)
+        public BinanceService(string apiKey, string apiSecret,int maxCounter)
         {
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;

@@ -1,34 +1,22 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Binance.Spot.Models;
-using BinanceTradingDrawer;
 using CoinCore;
-using Newtonsoft.Json;
 
 namespace AcountViewer
 {
     public class CoinsStore
     {
         public Dictionary<string, Dictionary<string, CurveBundle>> LinesHistory = new Dictionary<string, Dictionary<string, CurveBundle>>();
-        public Dictionary<string,Dictionary<string,IStrategist>> Strategists=new Dictionary<string, Dictionary<string, IStrategist>>();
-        
+        public Dictionary<string, Dictionary<string, IStrategist>> Strategists = new Dictionary<string, Dictionary<string, IStrategist>>();
 
         public int BollN { get; set; }
         public int FastN { get; set; }
         public int SlowN { get; set; }
 
-
         public int Boll { get; set; }
-
-
 
         public CoinsStore(int bollN, int fastN, int slowN)
         {
@@ -41,18 +29,18 @@ namespace AcountViewer
         {
             if (!this.LinesHistory.ContainsKey(interval))
             {
-                this.LinesHistory.Add(interval, new Dictionary<string, CurveBundle>());              
+                this.LinesHistory.Add(interval, new Dictionary<string, CurveBundle>());
             }
         }
 
 
-        public void DelliteLastPoint(string interval,string pair)
+        public void DelliteLastPoint(string interval, string pair)
         {
             LinesHistory[interval][pair].DelliteLastPoint();
             Strategists[interval][pair].DelliteLastPoint();
         }
 
-        public void AddStrategist(string interval,string pair,IStrategist strategist) 
+        public void AddStrategist(string interval, string pair, IStrategist strategist)
         {
             if (!Strategists.ContainsKey(interval)) this.Strategists.Add(interval, new Dictionary<string, IStrategist>());
             if (!Strategists[interval].ContainsKey(pair)) this.Strategists[interval].Add(pair, strategist);
@@ -65,8 +53,8 @@ namespace AcountViewer
             if (!Strategists[interval].ContainsKey(pair)) return Prediction.NOTHING;
             return Strategists[interval][pair].MakePrediction();
         }
-            
-        
+
+
 
         public void RemoveLastPoint(string interval, string currentPair)
         {
@@ -78,8 +66,8 @@ namespace AcountViewer
             if (!this.LinesHistory.ContainsKey(interval)) return;
             if (!this.LinesHistory[interval].ContainsKey(currentPair)) return;
             LinesHistory[interval][currentPair].AddPoint(kline);
-            var lastData=LinesHistory[interval][currentPair].GetLastData();
-            Strategists[interval][currentPair].AddData(lastData,kline);
+            var lastData = LinesHistory[interval][currentPair].GetLastData();
+            Strategists[interval][currentPair].AddData(lastData, kline);
         }
 
 
@@ -105,11 +93,11 @@ namespace AcountViewer
             return true;
         }
 
-        public void AddKnowledges(string pair,int start,bool isBuy)
+        public void AddKnowledges(string pair, int start, bool isBuy)
         {
-            var crude=LinesHistory[Interval.FIFTEEN_MINUTE][pair].GetLastKnowledgesSinceNum(start);
-            Strategists[Interval.FIFTEEN_MINUTE][pair].AddKnowledgeSince(crude,start, true);
-           
+            var crude = LinesHistory[Interval.FIFTEEN_MINUTE][pair].GetLastKnowledgesSinceNum(start);
+            Strategists[Interval.FIFTEEN_MINUTE][pair].AddKnowledgeSince(crude, start, true);
+
         }
 
         public void SaveKnowledges(string path)
@@ -119,7 +107,7 @@ namespace AcountViewer
                 foreach (var strategist in interval.Value)
                 {
                     var serialized = strategist.Value.GetKnowledge();
-                    var pathToFile =interval.Key+ path + "";
+                    var pathToFile = interval.Key + path + "";
                     using (StreamWriter writer = new StreamWriter(pathToFile))
                     {
                         writer.WriteLine(serialized);
@@ -134,21 +122,20 @@ namespace AcountViewer
             //TODO
             try
             {
-                foreach(var intervalStrat in Strategists)
+                foreach (var intervalStrat in Strategists)
                 {
-                    foreach(var strategist in intervalStrat.Value)
+                    foreach (var strategist in intervalStrat.Value)
                     {
                         strategist.Value.LoadKnowledge();
                     }
-                }              
+                }
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 throw ex;
             }
-          
         }
-
-    }
+    }       
+    
 }
 
