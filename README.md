@@ -1,5 +1,5 @@
 # BinanceTrading
-To connect to Binance I used the projct https://github.com/binance/binance-connector-dotnet.git.
+To connect to Binance I used the project https://github.com/binance/binance-connector-dotnet.git.
 The project is in developing mode.
 
 This projcet helps you: 
@@ -8,9 +8,10 @@ This projcet helps you:
 3) - esasy to write your own robot for trading on the Binance
 4) - to check your trading robot on historical data for some coin
 
-     Start or how to start
+       Start
+     
 For using this project you need to have Binance credential data: ApiKey, SecretKey.
-Create keys.txt and write there: ApiKey;SecretKey.
+Create keys.txt file and write there: ApiKey;SecretKey.
 Find in BinanceIncomeViewer file Settings.settings and find there settings with name PathToFileWithKeys and write there path to file keys.txt.
 
 ![TradingInfo](https://github.com/ilay007/Binance-View/assets/44927371/9fd7a273-2787-46c4-839e-67ebdaf08cda)
