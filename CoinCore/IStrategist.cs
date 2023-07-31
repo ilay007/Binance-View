@@ -2,38 +2,22 @@ namespace CoinCore
 {
     public interface IStrategist
     {
-        public string GetKnowledge()
-        {
+        public string GetKnowledge();
 
-            return null;
-        }
-        public void AddData(CurveBundle curveBundle,KLine point)
-        {
+        public void AddData(CurveBundle curveBundle, KLine point);
 
-        }
 
-        public string GetLastKnowledges()
-        {
-            return null;
-        }
+        public string GetLastKnowledges();
 
-        public Prediction MakePrediction()
-        {
-            return Prediction.NOTHING;
-        }
+        public Prediction MakePrediction();
 
-        public void AddKnowledgeSince(CurveBundle bundle,int num, bool isBuy)
-        {
 
-        }
+        public void AddKnowledgeSince(CurveBundle bundle, int num, bool isBuy);
 
-        public void LoadKnowledge()
-        {
+        public void LoadKnowledge();
 
-        }
-
-        public void DelliteLastPoint()
-        {
-        }
+        public void DeleteLastPoint();
+        
+        
     }
 }

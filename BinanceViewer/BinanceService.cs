@@ -15,7 +15,6 @@ namespace AcountViewer
     {
         private SpotAccountTrade spotAccountTrade;
         private HttpClient httpClient;
-        private string opponentCurrency = "USDT";
         private string apiKey = "";
         private string apiSecret = "";
         private Wallet wallet;
@@ -38,7 +37,6 @@ namespace AcountViewer
                httpClient,
                apiKey: this.apiKey,
                apiSecret: this.apiSecret);
-           // var res = await Market.OrderBook(symbol, 1);
         }
 
         public async Task<List<Order>> GetCurrentOpenedOrders(string pair)
@@ -71,11 +69,15 @@ namespace AcountViewer
 
         public async void NewOrder(string symbol, Side side, decimal newPrice, decimal quantity)
         {
-
-            var usec = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            //var res= await spotAccountTrade.TestNewOrder(symbol:symbol,side: Side.SELL,type: OrderType.MARKET,quantity: (decimal)0.001);
-            var res = await spotAccountTrade.NewOrder(symbol: symbol, side: side, type: OrderType.LIMIT, timeInForce: TimeInForce.GTC, quantity: quantity, quoteOrderQty: null, price: newPrice, recvWindow: 40000);
-            //TestNewOrder(string symbol, Side side, OrderType type, TimeInForce ? timeInForce = null, decimal ? quantity = null, decimal ? quoteOrderQty = null, decimal ? price = null, string newClientOrderId = null, int ? strategyId = null, int ? strategyType = null, decimal ? stopPrice = null, decimal ? trailingDelta = null, decimal ? icebergQty = null, NewOrderResponseType ? newOrderRespType = null, long ? recvWindow = null)
+            try
+            {
+                await spotAccountTrade.NewOrder(symbol: symbol, side: side, type: OrderType.LIMIT, timeInForce: TimeInForce.GTC, quantity: quantity, quoteOrderQty: null, price: newPrice, recvWindow: 40000);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+         
         }
            
         

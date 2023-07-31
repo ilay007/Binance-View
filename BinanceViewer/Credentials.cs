@@ -16,7 +16,6 @@ namespace BinanceAcountViewer
             return keys;
         }
 
-
         public static void InitCredentials(string path)
         {
             keys = new List<KeyValuePair<string, string>>();

@@ -37,7 +37,7 @@ namespace AcountViewer
         public void DelliteLastPoint(string interval, string pair)
         {
             LinesHistory[interval][pair].DelliteLastPoint();
-            Strategists[interval][pair].DelliteLastPoint();
+            Strategists[interval][pair].DeleteLastPoint();
         }
 
         public void AddStrategist(string interval, string pair, IStrategist strategist)

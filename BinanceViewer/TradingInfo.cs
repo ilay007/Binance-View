@@ -41,7 +41,8 @@ namespace AcountViewer
                 var item = history[i];
                 if (item.Type.Contains("MARKET"))
                 {
-                    item.Price = item.MidlePrice;
+                    item.Price = item.MidlePrice;//it is bad to buy in Market
+                    continue;
                 }
 
                 if (item.Side == "BUY")

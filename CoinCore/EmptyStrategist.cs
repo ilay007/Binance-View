@@ -23,7 +23,7 @@ namespace CoinCore
             return Prediction.NOTHING;
         }
 
-        public void DelliteLastPoint()
+        public void DeleteLastPoint()
         {
         }
         public void AddKnowledgeSince(CurveBundle bundle,int num, bool isBuy)
