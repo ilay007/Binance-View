@@ -7,7 +7,7 @@ namespace CoinCore
         public void AddData(CurveBundle curveBundle, KLine point);
 
 
-        public string GetLastKnowledges();
+        
 
         public Prediction MakePrediction();
 
@@ -15,6 +15,7 @@ namespace CoinCore
         public void AddKnowledgeSince(CurveBundle bundle, int num, bool isBuy);
 
         public void LoadKnowledge();
+        public string GetLastKnowledges();
 
         public void DeleteLastPoint();
         

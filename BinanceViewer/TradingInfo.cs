@@ -125,8 +125,8 @@ namespace AcountViewer
         {
             var credentials = Credentials.GetCredentials();
             apiKey = credentials[1].Key;
-            apiSecret = credentials[1].Key;
-            var user1Form = new BotViewer(credentials[1].Key, credentials[1].Value);
+            apiSecret = credentials[1].Value;
+            var user1Form = new TradingInfo(credentials[1].Key, credentials[1].Value);
             Service = new BinanceService(apiKey, apiSecret, 10);
             var result = await InitWalletsAsync();
             if (result) SynkWalletInfoWithList();
