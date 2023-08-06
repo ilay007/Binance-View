@@ -8,6 +8,7 @@ namespace CoinCore
         public Double Hight;
         public Double Low;
         public Double Close;
+        public Double Volume;
     
         public KLine()
         {
@@ -40,6 +41,7 @@ namespace CoinCore
                 Hight = Convert.ToDouble(data[2].Replace(".", ","));
                 Low = Convert.ToDouble(data[3].Replace(".", ","));
                 Close = Convert.ToDouble(data[4].Replace(".", ","));
+                Volume= Convert.ToDouble(data[5].Replace(".", ","));
                 CloseTime = ConvertToDate(data[6]);               
             }
             catch (Exception ex)

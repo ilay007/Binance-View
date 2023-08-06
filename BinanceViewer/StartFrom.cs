@@ -29,6 +29,13 @@ namespace AcountViewer
             var user1Form = new BotViewer(credentials[1].Key, credentials[1].Value);
             user1Form.IsMdiContainer = true;
             user1Form.Show();
-        }       
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            var statisticForm = new PriceStatistic();
+            statisticForm.IsMdiContainer = true;
+            statisticForm.Show();
+        }
     }
 }
