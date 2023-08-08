@@ -18,6 +18,7 @@ using CoinCore;
 using System.IO;
 using System.Diagnostics;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace BinanceAcountViewer
 {
@@ -159,6 +160,7 @@ namespace BinanceAcountViewer
                 res = await UpdateKLines(pair.Key);
             }
             SynckWithWallets();
+            LoadListTradesCoins();
             if (!res) return;
             ReDraw();
             StartTimer(2000);
@@ -303,6 +305,25 @@ namespace BinanceAcountViewer
         }
 
         private int countTimer = 6;
+
+
+        private void LoadListTradesCoins()
+        {
+            var file= Properties.Settings.Default.PathToTradingStateReal;
+            var lines = File.ReadAllLines(Properties.Settings.Default.PathToTradingStateReal);
+            ListTradesCoins=JsonConvert.DeserializeObject <List<TradeCoinInfo>> (lines[0]);
+        }
+
+        private void SaveListTradesCoins()
+        {
+            var listTradesCoins = JsonConvert.SerializeObject(ListTradesCoins);
+            var path = Properties.Settings.Default.PathToTradingStateReal;
+            using (StreamWriter writer = new StreamWriter(path))
+            {
+                writer.WriteLine(listTradesCoins);
+                writer.Close();
+            }
+        }
         
         private async void timer1_Tick(object sender, EventArgs e)
         {
@@ -357,6 +378,7 @@ namespace BinanceAcountViewer
                         coin.BalanceUSDT = 0;
                         LogInfo("buy price=" + priceToBuy + " balanceUSDT=" + coin.BalanceUSDT);
                         SynckWithWallets();
+                        SaveListTradesCoins();
                     }
                     else if (prediction.Value == Prediction.SELL && coin.Balance * priceToSell > 20)
                     {
@@ -370,6 +392,7 @@ namespace BinanceAcountViewer
                         coin.Balance = 0;
                         LogInfo("sell price=" + priceToSell + " balanceUSDT=" + coin.BalanceUSDT);
                         SynckWithWallets();
+                        SaveListTradesCoins();
                     }
 
                 }

@@ -17,5 +17,11 @@
     <Setting Name="PathToFileWithKeys" Type="System.String" Scope="User">
       <Value Profile="(Default)">D:\GitHub\MyGit\keys.txt</Value>
     </Setting>
+    <Setting Name="PathToTradingStateReal" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\GitHub\MyGit\tradingStateReal.txt</Value>
+    </Setting>
+    <Setting Name="PathToTradingStateTrain" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\GitHub\MyGit\tradingStateTrain.txt</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

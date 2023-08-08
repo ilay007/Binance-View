@@ -17,7 +17,7 @@ namespace CoinCore
         public void LoadKnowledge();
         public string GetLastKnowledges();
 
-        public void DeleteLastPoint();
+        public void DeleteLastPoint();      
         
         
     }

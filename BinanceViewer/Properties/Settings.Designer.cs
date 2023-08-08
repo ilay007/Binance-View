@@ -82,5 +82,29 @@ namespace BinanceAcountViewer.Properties {
                 this["PathToFileWithKeys"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\GitHub\\MyGit\\tradingStateReal.txt")]
+        public string PathToTradingStateReal {
+            get {
+                return ((string)(this["PathToTradingStateReal"]));
+            }
+            set {
+                this["PathToTradingStateReal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\GitHub\\MyGit\\tradingStateTrain.txt")]
+        public string PathToTradingStateTrain {
+            get {
+                return ((string)(this["PathToTradingStateTrain"]));
+            }
+            set {
+                this["PathToTradingStateTrain"] = value;
+            }
+        }
     }
 }
