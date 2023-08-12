@@ -18,11 +18,21 @@ namespace AcountViewer
 
         public int Boll { get; set; }
 
+        private List<Interval> Intervals = new List<Interval>();
+
         public CoinsStore(int bollN, int fastN, int slowN)
         {
             BollN = bollN;
             FastN = fastN;
             SlowN = slowN;
+            Intervals.Add(Interval.FIFTEEN_MINUTE);
+            Intervals.Add(Interval.ONE_HOUR);
+            Intervals.Add(Interval.FOUR_HOUR);
+            foreach(var interval in Intervals)
+            {
+                Strategists.Add(interval, new Dictionary<string, IStrategist>());
+            }
+
         }
 
         private void AddTimeInterval(string interval)
@@ -34,40 +44,55 @@ namespace AcountViewer
         }
 
 
-        public void DelliteLastPoint(string interval, string pair)
+        public void DelleteLastPoint(string pair)
         {
-            LinesHistory[interval][pair].DelliteLastPoint();
-            Strategists[interval][pair].DeleteLastPoint();
+            foreach(var interval in Intervals)
+            {
+                LinesHistory[interval][pair].DelliteLastPoint();
+                Strategists[interval][pair].DeleteLastPoint();
+            }
         }
 
         public void AddStrategist(string interval, string pair, IStrategist strategist)
         {
-            if (!Strategists.ContainsKey(interval)) this.Strategists.Add(interval, new Dictionary<string, IStrategist>());
             if (!Strategists[interval].ContainsKey(pair)) this.Strategists[interval].Add(pair, strategist);
         }
 
 
-        public Prediction MakePrediction(string interval, string pair)
+        public Prediction MakePrediction(string pair)
         {
-            if (!Strategists.ContainsKey(interval)) return Prediction.NOTHING;
-            if (!Strategists[interval].ContainsKey(pair)) return Prediction.NOTHING;
-            return Strategists[interval][pair].MakePrediction();
+            foreach(var interval in Intervals) 
+            {
+                if (!Strategists.ContainsKey(interval)) return Prediction.NOTHING;
+                if (!Strategists[interval].ContainsKey(pair)) return Prediction.NOTHING;            
+            }
+            var pred15 = Strategists["15m"][pair].MakePrediction();
+            var predOne = Strategists["1h"][pair].MakePrediction();
+            if(pred15 == Prediction.BUY&&predOne==Prediction.BUY)return Prediction.BUY;
+            if(pred15 == Prediction.SELL&&predOne==Prediction.SELL)return Prediction.SELL;
+            return Prediction.NOTHING;
         }
 
 
 
-        public void RemoveLastPoint(string interval, string currentPair)
+        public void RemoveLastPoint(string currentPair)
         {
-            this.LinesHistory[interval][currentPair].DelliteLastPoint();
+            foreach(var interval in Intervals)
+            {
+                this.LinesHistory[interval][currentPair].DelliteLastPoint();
+            }     
         }
 
-        public void AddPoint(string interval, string currentPair, KLine kline)
+        public void AddPoint(string currentPair, KLine kline)
         {
-            if (!this.LinesHistory.ContainsKey(interval)) return;
-            if (!this.LinesHistory[interval].ContainsKey(currentPair)) return;
-            LinesHistory[interval][currentPair].AddPoint(kline);
-            var lastData = LinesHistory[interval][currentPair].GetLastData();
-            Strategists[interval][currentPair].AddData(lastData, kline);
+            foreach(var interval in Intervals)
+            {
+                if (!this.LinesHistory.ContainsKey(interval)) return;
+                if (!this.LinesHistory[interval].ContainsKey(currentPair)) return;
+                LinesHistory[interval][currentPair].AddPoint(kline);
+                var lastData = LinesHistory[interval][currentPair].GetLastData();                
+                Strategists[interval][currentPair].AddData(lastData, kline);
+            }           
         }
 
 
@@ -126,7 +151,7 @@ namespace AcountViewer
                 {
                     foreach (var strategist in intervalStrat.Value)
                     {
-                        strategist.Value.LoadKnowledge();
+                        strategist.Value.LoadKnowledge(pathToKnowledge);
                     }
                 }
             }

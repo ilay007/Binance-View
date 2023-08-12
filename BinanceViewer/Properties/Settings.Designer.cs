@@ -106,5 +106,17 @@ namespace BinanceAcountViewer.Properties {
                 this["PathToTradingStateTrain"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\GitHub\\MyGit\\Knowledges\\15mKnowledges.txt")]
+        public string PathToKnowledges {
+            get {
+                return ((string)(this["PathToKnowledges"]));
+            }
+            set {
+                this["PathToKnowledges"] = value;
+            }
+        }
     }
 }

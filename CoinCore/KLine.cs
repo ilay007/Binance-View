@@ -50,6 +50,11 @@ namespace CoinCore
             }
 
         }
+        
+        public string GetOpenDate()
+        {
+           return OpenTime.ToString();
+        }
 
         private DateTime ConvertToDate(string date)
         {

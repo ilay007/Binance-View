@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Strateges\Strateges.csproj" />
     <ProjectReference Include="..\CoinCore\CoinCore.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Spot\Spot.csproj" />

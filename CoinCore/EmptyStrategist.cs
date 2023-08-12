@@ -13,6 +13,10 @@ namespace CoinCore
 
         }
 
+        public void SetTimeLemit(int num)
+        {
+
+        }
         public string GetLastKnowledges()
         {
             return null;
@@ -31,7 +35,7 @@ namespace CoinCore
 
         }
 
-        public void LoadKnowledge()
+        public void LoadKnowledge(string path)
         {
 
         }
