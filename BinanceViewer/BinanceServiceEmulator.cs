@@ -84,6 +84,7 @@ namespace BinanceAcountViewer
             if (count >= MaxCounterTimer)
             {
                 count = 0;
+                CountTime++;
             }
             var curKLine = Data[symbol][Interval.FIFTEEN_MINUTE][CountTime + MaxLenInterval + 1];
             double price = 0d;
@@ -138,9 +139,7 @@ namespace BinanceAcountViewer
         public async Task<List<KLine>> GetKlineCandlestickData(string coinPair, Interval interval)
         {
             if (!Data.ContainsKey(coinPair)) return null;
-            var s = interval.ToString();
-            count = 0;
-
+            var s = interval.ToString();           
             int del = 1;
             switch (s)
             {
@@ -150,8 +149,7 @@ namespace BinanceAcountViewer
                 case "4h":
                     del = 16;
                     break;
-                case "15m":
-                    CountTime++;
+                case "15m":                   
                     del = 1;
                     break;
                 case "1d":

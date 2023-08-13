@@ -68,31 +68,29 @@ namespace AcountViewer
             }
             var pred15 = Strategists["15m"][pair].MakePrediction();
             var predOne = Strategists["1h"][pair].MakePrediction();
-            if(pred15 == Prediction.BUY&&predOne==Prediction.BUY)return Prediction.BUY;
+             if(pred15 == Prediction.BUY&&predOne==Prediction.BUY)return Prediction.BUY;
             if(pred15 == Prediction.SELL&&predOne==Prediction.SELL)return Prediction.SELL;
+            //if(pred15 == Prediction.BUY)return Prediction.BUY;
+           // if(pred15 == Prediction.SELL)return Prediction.SELL;
             return Prediction.NOTHING;
         }
 
 
 
-        public void RemoveLastPoint(string currentPair)
+        public void RemoveLastPoint(string interval, string currentPair)
         {
-            foreach(var interval in Intervals)
-            {
-                this.LinesHistory[interval][currentPair].DelliteLastPoint();
-            }     
+            this.LinesHistory[interval][currentPair].DelliteLastPoint();
         }
+               
+        
 
-        public void AddPoint(string currentPair, KLine kline)
+        public void AddPoint(string interval, string currentPair, KLine kline)
         {
-            foreach(var interval in Intervals)
-            {
-                if (!this.LinesHistory.ContainsKey(interval)) return;
-                if (!this.LinesHistory[interval].ContainsKey(currentPair)) return;
-                LinesHistory[interval][currentPair].AddPoint(kline);
-                var lastData = LinesHistory[interval][currentPair].GetLastData();                
-                Strategists[interval][currentPair].AddData(lastData, kline);
-            }           
+            if (!this.LinesHistory.ContainsKey(interval)) return;
+            if (!this.LinesHistory[interval].ContainsKey(currentPair)) return;
+            LinesHistory[interval][currentPair].AddPoint(kline);
+            var lastData = LinesHistory[interval][currentPair].GetLastData();
+            Strategists[interval][currentPair].AddData(lastData, kline);
         }
 
 
