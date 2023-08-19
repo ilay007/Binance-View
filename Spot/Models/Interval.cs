@@ -1,3 +1,6 @@
+using System.Linq;
+using System;
+
 namespace Binance.Spot.Models
 {
     public struct Interval
@@ -5,6 +8,20 @@ namespace Binance.Spot.Models
         private Interval(string value)
         {
             this.Value = value;
+        }
+
+        public int GetNum()
+        {
+            var num = this.Value.Split(new char[] { 'm','h','d'},System.StringSplitOptions.RemoveEmptyEntries).ToList();
+            if(this.Value.Contains("m"))
+            {
+                return Int32.Parse(num[0]);
+            }
+            else if(this.Value.Contains("h")) 
+            { 
+                return Int32.Parse(num[0])*60;
+            }
+            return Int32.Parse(num[0]) * 60*60;
         }
 
         public static Interval ONE_MINUTE { get => new Interval("1m"); }

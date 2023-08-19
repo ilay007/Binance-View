@@ -27,7 +27,7 @@ namespace BinanceAcountViewer
     public partial class BotViewer : BinanceForm
     {
 
-        CoinsStore CoinsStore = new CoinsStore(18, 9, 24);
+        CoinsStore CoinsStore;
         private List<Interval> Intervals = new List<Interval>();
         private string PathToKnowledge;
         string opponentCurrency = "USDT";
@@ -38,12 +38,16 @@ namespace BinanceAcountViewer
         private Dictionary<string,Dictionary<string,KLine[]>> LastKLines = new Dictionary<string, Dictionary<string, KLine[]>>();
         private bool CanselDrawing=false;
         private bool RealMode = false;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private string TradingCoinPath = "";
 
         public BotViewer(string apiKey, string apiSecret) : base(apiKey, apiSecret)
         {
+            log.Info("приложение запущено");
             InitializeComponent();
             textBox1.Text = WindowSize.ToString();
             textBox2.Text = selectedCurrency;
+            Intervals.Add(Interval.ONE_MINUTE);
             Intervals.Add(Interval.FIFTEEN_MINUTE);
             Intervals.Add(Interval.ONE_HOUR);
             Intervals.Add(Interval.FOUR_HOUR);
@@ -51,8 +55,9 @@ namespace BinanceAcountViewer
             this.apiSecret = apiSecret;
             ListTradesCoins = new List<TradeCoinInfo>();
             ListTradesCoins.Add(new TradeCoinInfo(selectedCurrency, 0, 40d));          
-            //ListTradesCoins.Add(new TradeCoinInfo("FIRO", 0, 40d));          
-            foreach(var interval in Intervals)
+            //ListTradesCoins.Add(new TradeCoinInfo("FIRO", 0, 40d));
+            CoinsStore = new CoinsStore(Intervals,18, 9, 24);
+            foreach (var interval in Intervals)
             {
                 LastKLines.Add(interval, new Dictionary<string, KLine[]>());
                 foreach (var coin in ListTradesCoins)
@@ -62,6 +67,7 @@ namespace BinanceAcountViewer
             }           
             InitStrategists();
             PathToKnowledge = Properties.Settings.Default.PathToKnowledges;
+            TradingCoinPath= Properties.Settings.Default.PathToTradingStateReal;
         }
 
         private void InitStrategists()
@@ -133,7 +139,7 @@ namespace BinanceAcountViewer
 
         private async Task<bool> SynckWithWallets()
         {
-            var ok = await InitWalletsAsync();
+            var ok = await InitWalletsAsync();            
             if (ok) SynkWalletInfoWithList();
             LogInfo("Start wallets synck");
             if (walletInfo == null && !ok) return false;
@@ -158,7 +164,7 @@ namespace BinanceAcountViewer
                     }
                     LogInfo("Sync " + coin.Name);
                 }
-            }
+            }            
             return true;
 
         }
@@ -166,7 +172,7 @@ namespace BinanceAcountViewer
         private async void button1_Click(object sender, EventArgs e)
         {
             Service = new BinanceService(apiKey, apiSecret, MaxCounterTimer);
-           
+            TradingCoinPath= Properties.Settings.Default.PathToTradingStateReal; 
             label3.Text = "Real time mode";
             RealMode = true;
             var res = false;
@@ -178,8 +184,9 @@ namespace BinanceAcountViewer
                     res = await UpdateKLines(interval,curPair);
                 }
             }
-            SynckWithWallets();
             LoadListTradesCoins();
+            await SynckWithWallets();
+            SaveListTradesCoins();
             if (!res) return;
             ReDraw();
             StartTimer(5000);
@@ -189,9 +196,10 @@ namespace BinanceAcountViewer
         {
             if (Service == null) return false;
             var point = pictureBox1.PointToClient(Cursor.Position);
+            DrawKLines(pictureBox7, null, Interval.ONE_MINUTE);
             DrawKLines(pictureBox1, pictureBox2, Interval.FIFTEEN_MINUTE);
+          
             if (pictureBox1.Image == null) return false;
-            var width1 = pictureBox1.Width;
             var width3 = pictureBox3.Width;
             var width5 = pictureBox5.Width;
             Graphics g = Graphics.FromImage((Image)pictureBox1.Image);
@@ -253,14 +261,11 @@ namespace BinanceAcountViewer
         public async Task<bool> UpdateKLines(Interval interval, string currentPair)
         {
             if (Service == null) return false;
-
-            if (just15min && interval != Interval.FIFTEEN_MINUTE) return false;
+            //if (just15min && interval != Interval.FIFTEEN_MINUTE) return false;
             var data = await Service.GetKlineCandlestickData(currentPair, interval);
-            LastKLines[interval][currentPair][0] = data.Last();
-            data.RemoveAt(data.Count - 1);
-            var lastData = data.Last();
+            LastKLines[interval][currentPair][0] = new KLine(data.Last().OpenTime,data.Last().Close);            
             CoinsStore.TryAddData(data, interval.ToString(), currentPair);
-
+            //data.RemoveAt(data.Count - 1);            
             return true;
         }
 
@@ -284,6 +289,8 @@ namespace BinanceAcountViewer
             Drawer.DrawGrapth(curImage, data.Boll.CurveHight.GetRange(start, numPoints), Color.Violet, max, min);
             Drawer.DrawGrapth(curImage, data.Boll.Ema.EmaPoints.GetRange(start, numPoints), Color.Brown, max, min);
             Drawer.DrawGrapth(curImage, data.Boll.CurveLow.GetRange(start, numPoints), Color.Orange, max, min);
+            picture1.Image = curImage;
+            if (picture2 == null) return;
             var image2 = new Bitmap(picture2.Width, picture2.Height);
             Graphics g2 = Graphics.FromImage(image2);
             g2.Clear(Color.White);
@@ -292,8 +299,7 @@ namespace BinanceAcountViewer
             Drawer.DrawAsHistogram(image2, data.DifEma.GetRange(start, numPoints));
             Drawer.DrawGrapth(image2, curRange12, Color.Violet, curRange12.Max(), curRange12.Min());
             Drawer.DrawGrapth(image2, curRange26, Color.Pink, curRange12.Max(), curRange12.Min());
-            Drawer.SignImage(curImage, currentPair + "/" + interval.ToString());
-            picture1.Image = curImage;
+            Drawer.SignImage(curImage, currentPair + "/" + interval.ToString());           
             picture2.Image = image2;
         }
 
@@ -324,17 +330,29 @@ namespace BinanceAcountViewer
 
 
         private void LoadListTradesCoins()
-        {
-            var file= Properties.Settings.Default.PathToTradingStateReal;
-            var lines = File.ReadAllLines(Properties.Settings.Default.PathToTradingStateReal);
+        {            
+            var lines = File.ReadAllLines(TradingCoinPath);
             ListTradesCoins=JsonConvert.DeserializeObject <List<TradeCoinInfo>> (lines[0]);
         }
 
+
+
+        private void SaveWalletInfo()
+        {
+            var walletInf = JsonConvert.SerializeObject(walletInfo);
+            using (StreamWriter writer = new StreamWriter(Properties.Settings.Default.PathToWalletFile))
+            {
+                writer.WriteLine(walletInf);
+                writer.Close();
+            }
+
+        }
+
+
         private void SaveListTradesCoins()
         {
-            var listTradesCoins = JsonConvert.SerializeObject(ListTradesCoins);
-            var path = Properties.Settings.Default.PathToTradingStateReal;
-            using (StreamWriter writer = new StreamWriter(path))
+            var listTradesCoins = JsonConvert.SerializeObject(ListTradesCoins);            
+            using (StreamWriter writer = new StreamWriter(TradingCoinPath))
             {
                 writer.WriteLine(listTradesCoins);
                 writer.Close();
@@ -358,17 +376,20 @@ namespace BinanceAcountViewer
                     foreach (var interval in Intervals)
                     {
                          DateTime currentDateTime = DateTime.Now;
-                        
-                        if (!RealMode||currentDateTime.Minute%15==0)
+
+
+                       
+
+                        //CoinsStore.LinesHistory[interval][curPair].KLines.Last().Insert(cap.Bids[0][0]);
+
+                        if (!RealMode || (currentDateTime.Minute % (interval.GetNum())) == 0)
                         {
                             var res1 = await UpdateKLines(interval, curPair);
                             if (!res1) return;
                         }
-                       
+
                         LastKLines[interval][curPair][0].Insert(cap.Bids[0][0]);
                         CoinsStore.AddPoint(interval, curPair, LastKLines[interval][curPair][0]);
-                       
-                       
 
                         var openOrders = await Service.GetCurrentOpenedOrders(curPair);
                         if (openOrders.Count > 0)
@@ -376,6 +397,7 @@ namespace BinanceAcountViewer
                             //var isCanceled = Service.CancelOpenedOrders(curPair);
                             continue;
                         }
+                        if (interval != Interval.ONE_MINUTE) continue;
                         var prediction = CoinsStore.MakePrediction(curPair);
                         // if (prediction != Prediction.NOTHING) LogInfo(prediction.ToString() + "price is " + cap.Bids[0][0].ToString());
                         if ((prediction.Value == Prediction.BUY && coin.BalanceUSDT > 20))
@@ -389,8 +411,9 @@ namespace BinanceAcountViewer
                             coin.LastPriceCoin = priceToBuy;
                             coin.BalanceUSDT = 0;
                             LogInfo("buy price=" + priceToBuy + " balanceUSDT=" + coin.BalanceUSDT);
-                            SynckWithWallets();
+                            await SynckWithWallets();
                             SaveListTradesCoins();
+                            SynkWalletInfoWithList();
                             Console.WriteLine(LastKLines[interval][curPair][0].GetOpenDate());
                         }
                         else if ((prediction.Value == Prediction.SELL && coin.Balance * priceToSell > 20))
@@ -406,6 +429,7 @@ namespace BinanceAcountViewer
                             LogInfo("sell price=" + priceToSell + " balanceUSDT=" + coin.BalanceUSDT);
                             SynckWithWallets();
                             SaveListTradesCoins();
+                            SynkWalletInfoWithList();
                             Console.WriteLine(LastKLines[interval][curPair][0].GetOpenDate());
                         }
 
@@ -418,7 +442,7 @@ namespace BinanceAcountViewer
 
                     foreach(var interval in Intervals)
                     {
-                        if (cap != null) CoinsStore.RemoveLastPoint(interval, curPair);
+                      if (cap != null) CoinsStore.RemoveLastPoint(interval, curPair);
                     }
                                       
 
@@ -534,11 +558,12 @@ namespace BinanceAcountViewer
         }
 
 
-        private void button6_Click(object sender, EventArgs e)
+        private async void button6_Click(object sender, EventArgs e)
         {
             label3.Text = "Test mode";
             selectedCurrency = textBox2.Text.ToString();
             Service = new BinanceServiceEmulator();
+            TradingCoinPath = Properties.Settings.Default.PathToTradingStateTrain;
             SynckWithWallets();
             var files = Directory.GetFiles(Properties.Settings.Default.DataBase);
             var dic = new Dictionary<string, List<KLine>>();
@@ -558,10 +583,13 @@ namespace BinanceAcountViewer
                         kLines.Add(kLine);
                     }
                     dic[pair].AddRange(kLines);
-                    break;
+                    //break;
                 }
             }
             Service.InitService(dic, MaxCounterTimer, just15min);
+            LoadListTradesCoins();
+            await SynckWithWallets();
+            SaveListTradesCoins();
             StartTimer(100);
             foreach(var interval in Intervals)
             {

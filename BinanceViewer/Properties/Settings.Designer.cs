@@ -37,7 +37,7 @@ namespace BinanceAcountViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\GitHub\\binance\\binance-downloader\\binance_downloader\\downloaded")]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\GitHub\\binance\\binance-downloader\\binance_downloader\\downloaded\\LTC")]
         public string DataBase {
             get {
                 return ((string)(this["DataBase"]));
@@ -116,6 +116,18 @@ namespace BinanceAcountViewer.Properties {
             }
             set {
                 this["PathToKnowledges"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\GitHub\\MyGit\\walletInfo.txt")]
+        public string PathToWalletFile {
+            get {
+                return ((string)(this["PathToWalletFile"]));
+            }
+            set {
+                this["PathToWalletFile"] = value;
             }
         }
     }

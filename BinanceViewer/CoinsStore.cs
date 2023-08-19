@@ -20,14 +20,12 @@ namespace AcountViewer
 
         private List<Interval> Intervals = new List<Interval>();
 
-        public CoinsStore(int bollN, int fastN, int slowN)
+        public CoinsStore(List<Interval> intervals,int bollN, int fastN, int slowN)
         {
             BollN = bollN;
             FastN = fastN;
             SlowN = slowN;
-            Intervals.Add(Interval.FIFTEEN_MINUTE);
-            Intervals.Add(Interval.ONE_HOUR);
-            Intervals.Add(Interval.FOUR_HOUR);
+            Intervals.AddRange(intervals);            
             foreach(var interval in Intervals)
             {
                 Strategists.Add(interval, new Dictionary<string, IStrategist>());

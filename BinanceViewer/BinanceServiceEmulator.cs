@@ -13,7 +13,7 @@ namespace BinanceAcountViewer
     {
         private Dictionary<string, Dictionary<string, List<KLine>>> Data;
         private int CountTime = 0;
-        private int MaxLenInterval = 500;
+        private int MaxLenInterval = 60;
         private List<CoinInfo> WalletInfo;
         private int MaxCounterTimer;
         private int count = 0;
@@ -22,19 +22,27 @@ namespace BinanceAcountViewer
         public void InitService(Dictionary<string, List<KLine>> data, int maxCounterTimer, bool just15min)
         {
             Data = new Dictionary<string, Dictionary<string, List<KLine>>>();
-            var start = 500 * 16;
+            int num = 60;
+            var start = 60 * 16*15;
             if (just15min) start = 0;
             foreach (var pair in data)
             {
-                var count = pair.Value.Count - (start - start / 16);
-                var count4 = pair.Value.Count - (start - start / 4);
-                var count16 = pair.Value.Count - (start - start);
+                            
                 Data.Add(pair.Key, new Dictionary<string, List<KLine>>());
-                Data[pair.Key].Add(Interval.FIFTEEN_MINUTE, pair.Value.GetRange(start - start / 16, count).ToList());
+                var startm = start - num;// start / (16 * 15);
+                var start15Min = start - num * 15;
+                var startOneHour = start - 4 * num * 15;
+                var startFourHour = start - 16 * num * 15;
+                var countMin = pair.Value.Count - startm;
+                var count = pair.Value.Count - start15Min;
+                var count4 = pair.Value.Count - startOneHour;
+                var count16 = pair.Value.Count - startFourHour;
+                Data[pair.Key].Add(Interval.ONE_MINUTE, pair.Value.GetRange(startm, countMin).ToList());
+                Data[pair.Key].Add(Interval.FIFTEEN_MINUTE,GetIntervalFromKLines(15, pair.Value.GetRange(start15Min, count).ToList()));
                 if (!just15min)
                 {
-                    Data[pair.Key].Add(Interval.ONE_HOUR, GetIntervalFromKLines(4, pair.Value.GetRange(start - start / 4, count4).ToList()));
-                    Data[pair.Key].Add(Interval.FOUR_HOUR, GetIntervalFromKLines(16, pair.Value.GetRange(0, count16).ToList()));
+                    Data[pair.Key].Add(Interval.ONE_HOUR, GetIntervalFromKLines(4*15, pair.Value.GetRange(startOneHour, count4).ToList()));
+                    Data[pair.Key].Add(Interval.FOUR_HOUR, GetIntervalFromKLines(16*15, pair.Value.GetRange(0, count16).ToList()));
                 }
             }
             MaxCounterTimer = maxCounterTimer;
@@ -86,7 +94,7 @@ namespace BinanceAcountViewer
                 count = 0;
                 CountTime++;
             }
-            var curKLine = Data[symbol][Interval.FIFTEEN_MINUTE][CountTime + MaxLenInterval + 1];
+            var curKLine = Data[symbol][Interval.ONE_MINUTE][CountTime + MaxLenInterval + 1];
             double price = 0d;
             switch (count)
             {
@@ -116,7 +124,7 @@ namespace BinanceAcountViewer
             {
                 if (WalletInfo == null)
                 {
-                    var lines = File.ReadAllLines("wallet.txt").ToList();
+                    var lines = File.ReadAllLines(Properties.Settings.Default.PathToWalletFile).ToList();
                     WalletInfo = JsonConvert.DeserializeObject<List<CoinInfo>>(lines[0]);
                 }
             }
@@ -143,17 +151,20 @@ namespace BinanceAcountViewer
             int del = 1;
             switch (s)
             {
-                case "1h":
-                    del = 4;
-                    break;
-                case "4h":
-                    del = 16;
-                    break;
-                case "15m":                   
+                case "1m":
                     del = 1;
                     break;
+                case "1h":
+                    del = 4*15;
+                    break;
+                case "4h":
+                    del = 16*15;
+                    break;
+                case "15m":                   
+                    del = 1*15;
+                    break;
                 case "1d":
-                    del = 96;
+                    del = 96*15;
                     break;
             }
             try
