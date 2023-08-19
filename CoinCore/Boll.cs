@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace CoinCore
 {
     public class Boll
@@ -39,6 +41,19 @@ namespace CoinCore
             return nBoll;
         }
 
+        public void ChangeLastPoint(double point)
+        {
+            Ema.ChangeLastPoint(point);
+            CrudeData[CrudeData.Count-1]=(point);
+            var k = CrudeData.Count;
+            var v2 = sum[sum.Count-2] - Math.Pow(CrudeData[k - N] - Ema.EmaPoints[k - N], 2);
+            v2 += Math.Pow(CrudeData.Last() - Ema.EmaPoints.Last(), 2);
+            sum[sum.Count-1]=(v2);
+            var q = Math.Sqrt(sum.Last() / N);
+            CurveHight[CurveHight.Count-1]=(Ema.EmaPoints.Last() + a * q);
+            CurveLow[CurveLow.Count-1]=(Ema.EmaPoints.Last() - a * q);
+        }
+
         public void AddCrudePoint(double point)
         {
             Ema.AddCrudePoint(point);
@@ -50,7 +65,6 @@ namespace CoinCore
             var q = Math.Sqrt(sum.Last() / N);
             CurveHight.Add(Ema.EmaPoints.Last() + a * q);
             CurveLow.Add(Ema.EmaPoints.Last() - a * q);
-
         }
 
         public void DeliteLastPoint()

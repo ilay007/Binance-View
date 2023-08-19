@@ -9,7 +9,7 @@ namespace CoinCore
 
         public void SetTimeLemit(int num);
 
-        public Prediction MakePrediction();
+        public Prediction MakePrediction(double point);
 
 
         public void AddKnowledgeSince(CurveBundle bundle, int num, bool isBuy);

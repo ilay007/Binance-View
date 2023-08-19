@@ -1,3 +1,5 @@
+using System.Drawing;
+
 namespace CoinCore
 {
     public class Ema
@@ -36,6 +38,14 @@ namespace CoinCore
             if(EmaPoints.Count == 0) return;
             CrudePoints.RemoveAt(CrudePoints.Count - 1);
             EmaPoints.RemoveAt(EmaPoints.Count - 1);
+        }
+
+        public void ChangeLastPoint(double point)
+        {
+            CrudePoints[CrudePoints.Count-1]=point;
+            var a = 2d / (1 + N);
+            var pre = EmaPoints[CrudePoints.Count-2];
+            EmaPoints.Add(CrudePoints.Last() * a + (1 - a) * pre);
         }
 
         public void AddCrudePoint(double point)

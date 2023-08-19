@@ -22,8 +22,8 @@ namespace BinanceAcountViewer
         public void InitService(Dictionary<string, List<KLine>> data, int maxCounterTimer, bool just15min)
         {
             Data = new Dictionary<string, Dictionary<string, List<KLine>>>();
-            int num = 60;
-            var start = 60 * 16*15;
+            int num = MaxLenInterval;
+            var start = num * 16*15;
             if (just15min) start = 0;
             foreach (var pair in data)
             {
@@ -102,14 +102,24 @@ namespace BinanceAcountViewer
                     price = curKLine.Open;
                     break;
                 case 1:
+                    price =curKLine.Open+0.5*(curKLine.Hight-curKLine.Open);
+                    break;               
+                case 2:
                     price = curKLine.Hight;
                     break;
-                case 2:
+                case 3:
+                    price = curKLine.Hight-0.5*(curKLine.Hight-curKLine.Low);
+                    break;
+                case 4:
                     price = curKLine.Low;
                     break;
-                case 3:
-                    price = curKLine.Close;
+                case 5:
+                    price = curKLine.Low + 0.5 * (curKLine.Close - curKLine.Low);
                     break;
+                case 6:
+                    price = curKLine.Low;
+                    break;
+
 
             }
             count++;

@@ -57,15 +57,16 @@ namespace AcountViewer
         }
 
 
-        public Prediction MakePrediction(string pair)
+        public Prediction MakePrediction(string pair,double point)
         {
             foreach(var interval in Intervals) 
             {
                 if (!Strategists.ContainsKey(interval)) return Prediction.NOTHING;
                 if (!Strategists[interval].ContainsKey(pair)) return Prediction.NOTHING;            
             }
-            var pred15 = Strategists["15m"][pair].MakePrediction();
-            var predOne = Strategists["1h"][pair].MakePrediction();
+            return Strategists["15m"][pair].MakePrediction(point);
+            var pred15 = Strategists["15m"][pair].MakePrediction(point);
+            var predOne = Strategists["1h"][pair].MakePrediction(point);
              if(pred15 == Prediction.BUY&&predOne==Prediction.BUY)return Prediction.BUY;
             if(pred15 == Prediction.SELL&&predOne==Prediction.SELL)return Prediction.SELL;
             //if(pred15 == Prediction.BUY)return Prediction.BUY;
@@ -79,8 +80,16 @@ namespace AcountViewer
         {
             this.LinesHistory[interval][currentPair].DelliteLastPoint();
         }
-               
-        
+
+        public void ChangeLastPoin(string interval, string currentPair, double point)
+        {
+            if (!this.LinesHistory.ContainsKey(interval)) return;
+            if (!this.LinesHistory[interval].ContainsKey(currentPair)) return;
+            LinesHistory[interval][currentPair].ChangeLastPoint(point);
+            var lastData = LinesHistory[interval][currentPair].GetLastData();
+            //Strategists[interval][currentPair].AddData(lastData, kline);
+
+        }
 
         public void AddPoint(string interval, string currentPair, KLine kline)
         {

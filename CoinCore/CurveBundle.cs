@@ -60,6 +60,15 @@ namespace CoinCore
             SlowEma.DellLastPoint();
             DifEma.RemoveAt(DifEma.Count - 1);
         }
+
+        public void ChangeLastPoint(double point)
+        {
+            KLines[KLines.Count - 1].Insert(point);
+            Boll.ChangeLastPoint(point);
+            FastEma.ChangeLastPoint(point);
+            SlowEma.ChangeLastPoint(point);
+            DifEma[DifEma.Count - 1] = FastEma.EmaPoints.Last() - SlowEma.EmaPoints.Last();
+        }
         public void AddPoint(KLine point)
         {
             KLines.Add(point);

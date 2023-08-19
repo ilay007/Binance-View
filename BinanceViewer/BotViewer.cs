@@ -32,7 +32,7 @@ namespace BinanceAcountViewer
         private string PathToKnowledge;
         string opponentCurrency = "USDT";
         List<TradeCoinInfo> ListTradesCoins;
-        private int MaxCounterTimer = 4;
+        private int MaxCounterTimer = 7;
         private bool just15min = false;
         private int WindowSize = 60;
         private Dictionary<string,Dictionary<string,KLine[]>> LastKLines = new Dictionary<string, Dictionary<string, KLine[]>>();
@@ -55,7 +55,7 @@ namespace BinanceAcountViewer
             this.apiSecret = apiSecret;
             ListTradesCoins = new List<TradeCoinInfo>();
             ListTradesCoins.Add(new TradeCoinInfo(selectedCurrency, 0, 40d));          
-            //ListTradesCoins.Add(new TradeCoinInfo("FIRO", 0, 40d));
+            ListTradesCoins.Add(new TradeCoinInfo("FIRO", 0, 40d));
             CoinsStore = new CoinsStore(Intervals,18, 9, 24);
             foreach (var interval in Intervals)
             {
@@ -263,9 +263,16 @@ namespace BinanceAcountViewer
             if (Service == null) return false;
             //if (just15min && interval != Interval.FIFTEEN_MINUTE) return false;
             var data = await Service.GetKlineCandlestickData(currentPair, interval);
+            if (!RealMode)
+            {
+                var last = data.Last();
+                data.RemoveAt(data.Count - 1);
+                LastKLines[interval][currentPair][0] = last;
+                CoinsStore.TryAddData(data, interval.ToString(), currentPair);
+                return true;
+            }
             LastKLines[interval][currentPair][0] = new KLine(data.Last().OpenTime,data.Last().Close);            
-            CoinsStore.TryAddData(data, interval.ToString(), currentPair);
-            //data.RemoveAt(data.Count - 1);            
+            CoinsStore.TryAddData(data, interval.ToString(), currentPair);                                 
             return true;
         }
 
@@ -375,22 +382,25 @@ namespace BinanceAcountViewer
                     var del = Fee * cap.Bids[0][0];                                      
                     foreach (var interval in Intervals)
                     {
-                         DateTime currentDateTime = DateTime.Now;
-
+                         DateTime currentDateTime = DateTime.Now;                     
 
                        
-
-                        //CoinsStore.LinesHistory[interval][curPair].KLines.Last().Insert(cap.Bids[0][0]);
 
                         if (!RealMode || (currentDateTime.Minute % (interval.GetNum())) == 0)
                         {
                             var res1 = await UpdateKLines(interval, curPair);
                             if (!res1) return;
                         }
-
-                        LastKLines[interval][curPair][0].Insert(cap.Bids[0][0]);
-                        CoinsStore.AddPoint(interval, curPair, LastKLines[interval][curPair][0]);
-
+                        var point = cap.Bids[0][0];
+                        if(!RealMode)
+                        {
+                            CoinsStore.LinesHistory[interval][curPair].ChangeLastPoint(cap.Bids[0][0]);
+                        }
+                        else
+                        {
+                            LastKLines[interval][curPair][0].Insert(cap.Bids[0][0]);
+                            CoinsStore.AddPoint(interval, curPair, LastKLines[interval][curPair][0]);
+                        }
                         var openOrders = await Service.GetCurrentOpenedOrders(curPair);
                         if (openOrders.Count > 0)
                         {
@@ -398,11 +408,12 @@ namespace BinanceAcountViewer
                             continue;
                         }
                         if (interval != Interval.ONE_MINUTE) continue;
-                        var prediction = CoinsStore.MakePrediction(curPair);
+                        var prediction = CoinsStore.MakePrediction(curPair,point);
+                        //if (priceToBuy > (1.017) * coin.LastPriceCoin) prediction = Prediction.SELL;
                         // if (prediction != Prediction.NOTHING) LogInfo(prediction.ToString() + "price is " + cap.Bids[0][0].ToString());
                         if ((prediction.Value == Prediction.BUY && coin.BalanceUSDT > 20))
                         {
-                            // if (priceToBuy > (1 - Fee) * coin.LastPriceCoin) continue;
+                             //if (priceToBuy > (1 - Fee) * coin.LastPriceCoin) continue;
                             var q = coin.BalanceUSDT / priceToBuy;
                             var iq = (int)(10 * q);
                             q = ((double)iq / 10);
@@ -411,14 +422,17 @@ namespace BinanceAcountViewer
                             coin.LastPriceCoin = priceToBuy;
                             coin.BalanceUSDT = 0;
                             LogInfo("buy price=" + priceToBuy + " balanceUSDT=" + coin.BalanceUSDT);
-                            await SynckWithWallets();
-                            SaveListTradesCoins();
-                            SynkWalletInfoWithList();
+                            if(RealMode)
+                            {
+                                await SynckWithWallets();
+                                SaveListTradesCoins();
+                                SynkWalletInfoWithList();
+                            }                           
                             Console.WriteLine(LastKLines[interval][curPair][0].GetOpenDate());
                         }
                         else if ((prediction.Value == Prediction.SELL && coin.Balance * priceToSell > 20))
                         {
-                            //if (priceToSell < (1 + 2 * Fee) * coin.LastPriceCoin) continue;
+                            if (priceToSell < (1 + 2 * Fee) * coin.LastPriceCoin) continue;
                             var balance = coin.Balance;
                             var ibalance = (int)(10 * balance);
                             balance = ((double)ibalance) / 10;
@@ -427,9 +441,12 @@ namespace BinanceAcountViewer
                             coin.BalanceUSDT = (1 - Fee) * coin.Balance * priceToSell;
                             coin.Balance = 0;
                             LogInfo("sell price=" + priceToSell + " balanceUSDT=" + coin.BalanceUSDT);
-                            SynckWithWallets();
-                            SaveListTradesCoins();
-                            SynkWalletInfoWithList();
+                            if(RealMode)
+                            {
+                                SynckWithWallets();
+                                SaveListTradesCoins();
+                                SynkWalletInfoWithList();
+                            }                          
                             Console.WriteLine(LastKLines[interval][curPair][0].GetOpenDate());
                         }
 

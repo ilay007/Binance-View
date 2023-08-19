@@ -22,7 +22,7 @@ namespace CoinCore
             return null;
         }
 
-        public Prediction MakePrediction()
+        public Prediction MakePrediction(double point)
         {
             return Prediction.NOTHING;
         }
