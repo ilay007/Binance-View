@@ -81,7 +81,7 @@ namespace AcountViewer
             this.LinesHistory[interval][currentPair].DelliteLastPoint();
         }
 
-        public void ChangeLastPoin(string interval, string currentPair, double point)
+        public void ChangeLastPoint(string interval, string currentPair, double point)
         {
             if (!this.LinesHistory.ContainsKey(interval)) return;
             if (!this.LinesHistory[interval].ContainsKey(currentPair)) return;
@@ -116,7 +116,8 @@ namespace AcountViewer
                 for (k = data.Count - 1; k >= 0; k--) if (data[k].OpenTime == lastLine.OpenTime) break;
                 if (k < data.Count - 1)
                 {
-                    this.LinesHistory[invKey][currentPair].AddPoint(data[k + 1]);
+                    AddPoint(invKey,currentPair, data[k + 1]);
+                    //this.LinesHistory[invKey][currentPair].AddPoint(data[k + 1]);
 
                 }
             }

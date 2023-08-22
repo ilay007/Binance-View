@@ -64,10 +64,10 @@ namespace CoinCore
         public void ChangeLastPoint(double point)
         {
             KLines[KLines.Count - 1].Insert(point);
-            Boll.ChangeLastPoint(point);
+            /*Boll.ChangeLastPoint(point);
             FastEma.ChangeLastPoint(point);
             SlowEma.ChangeLastPoint(point);
-            DifEma[DifEma.Count - 1] = FastEma.EmaPoints.Last() - SlowEma.EmaPoints.Last();
+            DifEma[DifEma.Count - 1] = FastEma.EmaPoints.Last() - SlowEma.EmaPoints.Last();*/
         }
         public void AddPoint(KLine point)
         {
