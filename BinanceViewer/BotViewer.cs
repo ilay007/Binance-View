@@ -69,6 +69,7 @@ namespace BinanceAcountViewer
             ListTradesCoins.Add(new TradeCoinInfo(selectedCurrency, 0, 40d));          
             ListTradesCoins.Add(new TradeCoinInfo("FIRO", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("CTXC", 0, 0d));
+            ListTradesCoins.Add(new TradeCoinInfo("RVN", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("DOGE", 0, 0d));
             CoinsStore = new CoinsStore(Intervals,18, 9, 24);
             foreach (var interval in Intervals)
@@ -147,12 +148,12 @@ namespace BinanceAcountViewer
         }
 
         private async void SynckAll()
-        {
-            if (!Update) return;
+        {           
+            Update = false;
             await SynckWithWallets();
             SaveListTradesCoins();
             SynkWalletInfoWithList();
-            Update = false;
+            
         }
 
 
@@ -249,6 +250,10 @@ namespace BinanceAcountViewer
             listView1.Items.Clear();
             listView1.SetObjects(walletInfo);
             listView1.Update();
+            listView2.Items.Clear();
+            listView2.SetObjects(ListTradesCoins);
+            listView2.Update();
+
         }
 
         private async Task<bool> SynckWithWallets()
@@ -261,7 +266,7 @@ namespace BinanceAcountViewer
             foreach (var coin in ListTradesCoins)
             {
                 var coins = walletInfo.Where(s => s.Coin == coin.Name).ToList();
-                var USDT = walletInfo.Where(s => s.Coin == "USDT").ToList()[0];
+                var USDT = walletInfo.Where(s => s.Coin == "USDT").ToList()[0];               
                 if (coins.Count > 0)
                 {
                     coin.Balance = coins[0].Free;
@@ -274,6 +279,7 @@ namespace BinanceAcountViewer
                     {
                         coin.BalanceUSDT = 0;
                         coin.LastPriceCoin = coins[0].Balance / coins[0].Free;
+                       
 
                     }
                     LogInfo("Sync " + coin.Name);
@@ -529,14 +535,19 @@ namespace BinanceAcountViewer
                         //Service.CancelOpenedOrders(curPair);
                         //if (priceToBuy > (1.017) * coin.LastPriceCoin) prediction = Prediction.SELL;
                         // if (prediction != Prediction.NOTHING) LogInfo(prediction.ToString() + "price is " + cap.Bids[0][0].ToString());
+                        if(coin.Name=="FIRO")
+                        {
+
+                        }
                         if ((prediction.Value == Prediction.BUY && coin.BalanceUSDT > 20))
                         {
-                             //if (priceToBuy > (1 - Fee) * coin.LastPriceCoin) continue;
-                            var q = (coin.BalanceUSDT / priceToBuy);
+                             if (priceToBuy > (1 - Fee) * coin.LastPriceCoin) continue;
+                            var q = ((coin.BalanceUSDT > 40 ? 0.5 * coin.BalanceUSDT : coin.BalanceUSDT)/ priceToBuy);
                             var iq = (int)(10 * q);
                             q = ((double)iq / 10);
+                            if (priceToBuy < 1) q = Math.Round(q-1, 0);
                             Service.NewOrder(curPair, Side.BUY, (decimal)priceToBuy, (decimal)q);
-                            LogInfo("buy price=" + priceToBuy + " balanceUSDT=" + coin.BalanceUSDT);
+                            LogInfo("Num coins="+q+" buy price=" + priceToBuy + " balanceUSDT=" + coin.BalanceUSDT);
                             var curOrder = new Order(curPair, (decimal)priceToBuy, (decimal)q, Side.BUY);
                             lock (synckObj)
                             {
@@ -546,12 +557,13 @@ namespace BinanceAcountViewer
                         }
                         else if ((prediction.Value == Prediction.SELL && coin.Balance * priceToSell > 20))
                         {
-                            //if (priceToSell < (1 + 2 * Fee) * coin.LastPriceCoin) continue;
-                            var balance = coin.Balance;
+                            if (priceToSell < (1 + Fee) * coin.LastPriceCoin) continue;                            
+                            var balance = coin.Balance * priceToSell > 40?0.5*coin.Balance:coin.Balance;
                             var ibalance = (int)(10 * balance);
                             balance = ((double)ibalance) / 10;
+                            if (priceToSell < 1) balance = Math.Round(balance - 1, 0);
                             Service.NewOrder(curPair, Side.SELL, (decimal)priceToSell, (decimal)balance);
-                            LogInfo("sell price=" + priceToSell + " balanceUSDT=" + coin.BalanceUSDT);
+                            LogInfo("Num coins=" + balance + "sell price=" + priceToSell + " balanceUSDT=" + coin.BalanceUSDT);
                             var curOrder = new Order(curPair, (decimal)priceToSell, (decimal)balance, Side.SELL);
                             lock (synckObj)
                             {
@@ -739,6 +751,15 @@ namespace BinanceAcountViewer
             }
         }
 
+        private void tableLayoutPanel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void buttonUpdate_Click_1(object sender, EventArgs e)
+        {
+            SynckAll();
+        }
     }
 }
 

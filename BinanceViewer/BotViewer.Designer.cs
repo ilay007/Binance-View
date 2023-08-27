@@ -37,20 +37,15 @@ namespace BinanceAcountViewer
             this.components = new System.ComponentModel.Container();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.buttonUpdate = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.listView1 = new BrightIdeasSoftware.DataListView();
-            this.ovlColumn2 = new BrightIdeasSoftware.OLVColumn();
-            this.olvColumn1 = new BrightIdeasSoftware.OLVColumn();
-            this.olvPrice = new BrightIdeasSoftware.OLVColumn();
-            this.olvBalance = new BrightIdeasSoftware.OLVColumn();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
@@ -58,7 +53,7 @@ namespace BinanceAcountViewer
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.pictureBox6 = new System.Windows.Forms.PictureBox();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.pictureBox7 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -67,13 +62,21 @@ namespace BinanceAcountViewer
             this.button2 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.listView1 = new BrightIdeasSoftware.DataListView();
+            this.ovlColumn2 = new BrightIdeasSoftware.OLVColumn();
+            this.olvColumn1 = new BrightIdeasSoftware.OLVColumn();
+            this.olvPrice = new BrightIdeasSoftware.OLVColumn();
+            this.olvBalance = new BrightIdeasSoftware.OLVColumn();
+            this.listView2 = new BrightIdeasSoftware.DataListView();
+            this.olvName = new BrightIdeasSoftware.OLVColumn();
+            this.olvBalance1 = new BrightIdeasSoftware.OLVColumn();
+            this.olvPrice1 = new BrightIdeasSoftware.OLVColumn();
+            this.olvBalanceUSDT = new BrightIdeasSoftware.OLVColumn();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.pictureBox7 = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.listView1)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -82,8 +85,12 @@ namespace BinanceAcountViewer
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             this.panel5.SuspendLayout();
-            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
+            this.panel1.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
+            this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.listView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.listView2)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -93,20 +100,22 @@ namespace BinanceAcountViewer
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.90679F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 82.09322F));
             this.tableLayoutPanel1.Controls.Add(this.panel2, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel3, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 8.876405F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 91.1236F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1856, 890);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.buttonUpdate);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.checkBox3);
             this.panel2.Controls.Add(this.button5);
@@ -118,6 +127,16 @@ namespace BinanceAcountViewer
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(1518, 73);
             this.panel2.TabIndex = 1;
+            // 
+            // buttonUpdate
+            // 
+            this.buttonUpdate.Location = new System.Drawing.Point(116, 38);
+            this.buttonUpdate.Name = "buttonUpdate";
+            this.buttonUpdate.Size = new System.Drawing.Size(108, 35);
+            this.buttonUpdate.TabIndex = 6;
+            this.buttonUpdate.Text = "Update&Sync";
+            this.buttonUpdate.UseVisualStyleBackColor = true;
+            this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click_1);
             // 
             // label3
             // 
@@ -182,64 +201,6 @@ namespace BinanceAcountViewer
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.panel4);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(3, 82);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(326, 805);
-            this.panel3.TabIndex = 2;
-            // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.listView1);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(0, 0);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(326, 805);
-            this.panel4.TabIndex = 5;
-            // 
-            // listView1
-            // 
-            this.listView1.AllColumns.Add(this.ovlColumn2);
-            this.listView1.AllColumns.Add(this.olvColumn1);
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.olvColumn1,
-            this.ovlColumn2,
-            this.olvPrice,
-            this.olvBalance});
-            this.listView1.DataSource = null;
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
-            this.listView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(326, 805);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
-            // 
-            // ovlColumn2
-            // 
-            this.ovlColumn2.AspectName = "Free";
-            this.ovlColumn2.Text = "Sum";
-            // 
-            // olvColumn1
-            // 
-            this.olvColumn1.AspectName = "Coin";
-            this.olvColumn1.Text = "NameCoin";
-            // 
-            // olvPrice
-            // 
-            this.olvPrice.AspectName = "Price";
-            this.olvPrice.Text = "Price";
-            // 
-            // olvBalance
-            // 
-            this.olvBalance.AspectName = "Balance";
-            this.olvBalance.Text = "Balance";
-            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
@@ -263,6 +224,15 @@ namespace BinanceAcountViewer
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 95F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(1518, 805);
             this.tableLayoutPanel2.TabIndex = 3;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBox1.Location = new System.Drawing.Point(762, 712);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(753, 90);
+            this.richTextBox1.TabIndex = 0;
+            this.richTextBox1.Text = "";
             // 
             // pictureBox1
             // 
@@ -329,14 +299,14 @@ namespace BinanceAcountViewer
             this.panel5.Size = new System.Drawing.Size(753, 282);
             this.panel5.TabIndex = 6;
             // 
-            // richTextBox1
+            // pictureBox7
             // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(762, 712);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(753, 90);
-            this.richTextBox1.TabIndex = 0;
-            this.richTextBox1.Text = "";
+            this.pictureBox7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox7.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox7.Name = "pictureBox7";
+            this.pictureBox7.Size = new System.Drawing.Size(753, 282);
+            this.pictureBox7.TabIndex = 0;
+            this.pictureBox7.TabStop = false;
             // 
             // panel1
             // 
@@ -414,18 +384,114 @@ namespace BinanceAcountViewer
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // tableLayoutPanel3
+            // 
+            this.tableLayoutPanel3.ColumnCount = 1;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.Controls.Add(this.panel4, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.listView2, 0, 1);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 82);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 2;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(326, 805);
+            this.tableLayoutPanel3.TabIndex = 5;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.listView1);
+            this.panel4.Location = new System.Drawing.Point(3, 3);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(320, 396);
+            this.panel4.TabIndex = 5;
+            // 
+            // listView1
+            // 
+            this.listView1.AllColumns.Add(this.ovlColumn2);
+            this.listView1.AllColumns.Add(this.olvColumn1);
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.olvColumn1,
+            this.ovlColumn2,
+            this.olvPrice,
+            this.olvBalance});
+            this.listView1.DataSource = null;
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(320, 396);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
+            // 
+            // ovlColumn2
+            // 
+            this.ovlColumn2.AspectName = "Free";
+            this.ovlColumn2.Text = "Sum";
+            // 
+            // olvColumn1
+            // 
+            this.olvColumn1.AspectName = "Coin";
+            this.olvColumn1.Text = "NameCoin";
+            // 
+            // olvPrice
+            // 
+            this.olvPrice.AspectName = "Price";
+            this.olvPrice.Text = "Price";
+            // 
+            // olvBalance
+            // 
+            this.olvBalance.AspectName = "Balance";
+            this.olvBalance.Text = "Balance";
+            // 
+            // listView2
+            // 
+            this.listView2.AllColumns.Add(this.olvName);
+            this.listView2.AllColumns.Add(this.olvBalance1);
+            this.listView2.AllColumns.Add(this.olvPrice1);
+            this.listView2.AllColumns.Add(this.olvBalanceUSDT);
+            this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.olvName,
+            this.olvPrice1,
+            this.olvBalanceUSDT,
+            this.olvBalance1});
+            this.listView2.DataSource = null;
+            this.listView2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView2.Location = new System.Drawing.Point(3, 404);
+            this.listView2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.listView2.Name = "listView2";
+            this.listView2.Size = new System.Drawing.Size(320, 399);
+            this.listView2.TabIndex = 6;
+            this.listView2.UseCompatibleStateImageBehavior = false;
+            this.listView2.View = System.Windows.Forms.View.Details;
+            // 
+            // olvName
+            // 
+            this.olvName.AspectName = "Name";
+            this.olvName.Text = "NameCoin";
+            // 
+            // olvBalance1
+            // 
+            this.olvBalance1.AspectName = "Balance";
+            this.olvBalance1.Text = "Balance";
+            // 
+            // olvPrice1
+            // 
+            this.olvPrice1.AspectName = "LastPriceCoin";
+            this.olvPrice1.Text = "Price";
+            // 
+            // olvBalanceUSDT
+            // 
+            this.olvBalanceUSDT.AspectName = "BalanceUSDT";
+            this.olvBalanceUSDT.Text = "BalanceUSDT";
+            // 
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // pictureBox7
-            // 
-            this.pictureBox7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox7.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox7.Name = "pictureBox7";
-            this.pictureBox7.Size = new System.Drawing.Size(753, 282);
-            this.pictureBox7.TabIndex = 0;
-            this.pictureBox7.TabStop = false;
             // 
             // BotViewer
             // 
@@ -438,9 +504,6 @@ namespace BinanceAcountViewer
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.listView1)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
@@ -449,9 +512,13 @@ namespace BinanceAcountViewer
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             this.panel5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.listView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.listView2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -459,12 +526,16 @@ namespace BinanceAcountViewer
         #endregion
 
         private OLVColumn olvPrice;
+        private OLVColumn olvPrice1;
         private OLVColumn olvBalance;
         private OLVColumn ovlColumn2;
         private OLVColumn olvColumn1;
+        private OLVColumn olvName;
+        private OLVColumn olvBalance1;
+        private OLVColumn olvBalanceUSDT;
+
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
@@ -492,5 +563,8 @@ namespace BinanceAcountViewer
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.PictureBox pictureBox7;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private BrightIdeasSoftware.DataListView listView2;
+        private System.Windows.Forms.Button buttonUpdate;
     }
 }

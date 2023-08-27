@@ -67,7 +67,7 @@ namespace AcountViewer
             return Strategists["15m"][pair].MakePrediction(point);
             var pred15 = Strategists["15m"][pair].MakePrediction(point);
             var predOne = Strategists["1h"][pair].MakePrediction(point);
-             if(pred15 == Prediction.BUY&&predOne==Prediction.BUY)return Prediction.BUY;
+            if(pred15 == Prediction.BUY&&predOne==Prediction.BUY)return Prediction.BUY;
             if(pred15 == Prediction.SELL&&predOne==Prediction.SELL)return Prediction.SELL;
             //if(pred15 == Prediction.BUY)return Prediction.BUY;
            // if(pred15 == Prediction.SELL)return Prediction.SELL;
@@ -101,23 +101,25 @@ namespace AcountViewer
         }
 
 
-        public bool TryAddData(List<KLine> data, string invKey, string currentPair)
+        public bool TryAddData(List<KLine> data, string interval, string currentPair)
         {
-            if (!this.LinesHistory.ContainsKey(invKey)) AddTimeInterval(invKey);
-            if (!this.LinesHistory[invKey].ContainsKey(currentPair))
+            if (!this.LinesHistory.ContainsKey(interval)) AddTimeInterval(interval);
+            if (!this.LinesHistory[interval].ContainsKey(currentPair))
             {
-                this.LinesHistory[invKey].Add(currentPair, new CurveBundle(data, BollN, FastN, SlowN, currentPair, invKey));
+                this.LinesHistory[interval].Add(currentPair, new CurveBundle(data, BollN, FastN, SlowN, currentPair, interval));
+                var lastData = LinesHistory[interval][currentPair].GetLastData();
+                Strategists[interval][currentPair].AddData(lastData, data.Last());
             }
             else
             {
-                var bundle = this.LinesHistory[invKey][currentPair];
+                var bundle = this.LinesHistory[interval][currentPair];
                 var lastLine = bundle.KLines.Last();
                 int k = data.Count - 1;
                 for (k = data.Count - 1; k >= 0; k--) if (data[k].OpenTime == lastLine.OpenTime) break;
                 if (k < data.Count - 1)
                 {
-                    AddPoint(invKey,currentPair, data[k + 1]);
-                    //this.LinesHistory[invKey][currentPair].AddPoint(data[k + 1]);
+                    AddPoint(interval,currentPair, data[k + 1]);
+                    //this.LinesHistory[interval][currentPair].AddPoint(data[k + 1]);
 
                 }
             }
