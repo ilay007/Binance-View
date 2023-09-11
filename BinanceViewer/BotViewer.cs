@@ -1,7 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
-
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -38,17 +37,15 @@ namespace BinanceAcountViewer
         private int MaxCounterTimer = 7;
         private bool just15min = false;
         private int WindowSize = 60;
-        private Dictionary<string,Dictionary<string,KLine[]>> LastKLines = new Dictionary<string, Dictionary<string, KLine[]>>();
-        private bool CanselDrawing=false;
+        private Dictionary<string, Dictionary<string, KLine[]>> LastKLines = new Dictionary<string, Dictionary<string, KLine[]>>();
+        private bool CanselDrawing = false;
         private bool RealMode = false;
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private string TradingCoinPath = "";
-
-        private List<Order> OpenedOrders=new List<Order>();
-        private List<Order> NotExecutedOrders=new List<Order>();
-
-        private Object synckObj=new object();
-        private Object coinsObj=new object();
+        private List<Order> OpenedOrders = new List<Order>();
+        private List<Order> NotExecutedOrders = new List<Order>();
+        private Object synckObj = new object();
+        private Object coinsObj = new object();
         private bool Update = false;
 
 
@@ -59,6 +56,12 @@ namespace BinanceAcountViewer
             InitializeComponent();
             textBox1.Text = WindowSize.ToString();
             textBox2.Text = selectedCurrency;
+            Init();
+
+        }
+
+        private void Init()
+        {
             Intervals.Add(Interval.ONE_MINUTE);
             Intervals.Add(Interval.FIFTEEN_MINUTE);
             Intervals.Add(Interval.ONE_HOUR);
@@ -66,12 +69,14 @@ namespace BinanceAcountViewer
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
             ListTradesCoins = new List<TradeCoinInfo>();
-            ListTradesCoins.Add(new TradeCoinInfo(selectedCurrency, 0, 40d));          
+            ListTradesCoins.Add(new TradeCoinInfo(selectedCurrency, 0, 40d));
+            ListTradesCoins.Add(new TradeCoinInfo("BTC", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("FIRO", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("CTXC", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("RVN", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("DOGE", 0, 0d));
-            CoinsStore = new CoinsStore(Intervals,18, 9, 24);
+            ListTradesCoins.Add(new TradeCoinInfo("MINA", 0, 0d));
+            CoinsStore = new CoinsStore(Intervals, 18, 9, 24);
             foreach (var interval in Intervals)
             {
                 LastKLines.Add(interval, new Dictionary<string, KLine[]>());
@@ -79,41 +84,46 @@ namespace BinanceAcountViewer
                 {
                     LastKLines[interval].Add(coin.Name + opponentCurrency, new KLine[1]);
                 }
-            }           
+            }
             InitStrategists();
             PathToKnowledge = Properties.Settings.Default.PathToKnowledges;
-            TradingCoinPath= Properties.Settings.Default.PathToTradingStateReal;
+            TradingCoinPath = Properties.Settings.Default.PathToTradingStateReal;
             var th = new Thread(() => ControlOpenedOrders());
             th.Start();
         }
 
 
+
+
+
+
+
         private async void ControlOpenedOrders()
         {
-            while(true)
+            while (true)
             {
                 System.Threading.Thread.Sleep(5000);
                 if (OpenedOrders.Count == 0 || Service == null) continue;
                 try
                 {
-                    
+
                     var coins = new List<string>();
                     lock (synckObj)
-                    {                        
-                        foreach(var order in OpenedOrders)
+                    {
+                        foreach (var order in OpenedOrders)
                         {
                             coins.Add(order.Symbol);
                         }
                     }
-                    var waitingOrders=new List<Order>();
-                    foreach(var coin in coins)
+                    var waitingOrders = new List<Order>();
+                    foreach (var coin in coins)
                     {
                         var curOpendOrders = Service.GetCurrentOpenedOrders(coin).Result.ToList();
                         if (curOpendOrders.Count == 0) continue;
                         waitingOrders.AddRange(curOpendOrders);
                     }
                     var executed = new List<Order>();
-                    lock(synckObj)
+                    lock (synckObj)
                     {
                         foreach (var opOrder in OpenedOrders)
                         {
@@ -128,32 +138,32 @@ namespace BinanceAcountViewer
                             {
                                 CorrectListCoinInfo(opOrder);
                             }
-                        }                        
+                        }
                     }
 
                     foreach (var exOrder in executed)
                     {
-                        LogInfo( exOrder.Side+"price=" + exOrder.Price + " balanceUSDT=" + exOrder.ExecutedQty*exOrder.Price + "CoinBalnce="+exOrder.Price);
-                        OpenedOrders.Remove(exOrder);                        
+                        LogInfo(exOrder.Side + "price=" + exOrder.Price + " balanceUSDT=" + exOrder.ExecutedQty * exOrder.Price + "CoinBalnce=" + exOrder.Price);
+                        OpenedOrders.Remove(exOrder);
                     }
                     if (executed.Count > 0 && RealMode) Update = true;
-                    
+
                 }
                 catch (Exception ex)
                 {
                     LogInfo(ex.Message);
                 }
-               
-            }           
+
+            }
         }
 
         private async void SynckAll()
-        {           
+        {
             Update = false;
             await SynckWithWallets();
             SaveListTradesCoins();
             SynkWalletInfoWithList();
-            
+
         }
 
 
@@ -163,15 +173,18 @@ namespace BinanceAcountViewer
             {
                 var curCoin = ListTradesCoins.FirstOrDefault(s => order.Symbol.Contains(s.Name));
                 if (curCoin == null) return;
-                if(order.Side=="BUY")
+                if (order.Side == "BUY")
                 {
-                    curCoin.Balance += (1-Fee) * (double)order.ExecutedQty;
+                    var balanceBefore = curCoin.Balance;
+
+                    curCoin.Balance += (1 - Fee) * (double)order.ExecutedQty;
                     curCoin.BalanceUSDT -= (double)(order.ExecutedQty * order.Price);
+                    curCoin.LastPriceCoin = (curCoin.LastPriceCoin * balanceBefore + (double)(order.ExecutedQty * order.Price)) / curCoin.Balance;
                 }
                 else
                 {
                     curCoin.Balance -= (double)order.ExecutedQty;
-                    curCoin.BalanceUSDT +=(1-Fee)*(double)(order.ExecutedQty * order.Price);
+                    curCoin.BalanceUSDT += (1 - Fee) * (double)(order.ExecutedQty * order.Price);
 
                 }
             }
@@ -186,42 +199,38 @@ namespace BinanceAcountViewer
         }
 
         private void InitStrategists()
-        {           
+        {
             var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
-            /* foreach (var f in dir.GetFiles("*.dll"))
+            foreach (var f in dir.GetFiles("*.dll"))
+            {
+                var types = Assembly.LoadFile(f.FullName).GetTypes();
+                foreach (var t in types)
+                {
+                    if (t.GetInterfaces().Contains(typeof(IStrategist)))
+                    {
+                        var attr = t.GetCustomAttribute(typeof(CoinStrategistAttribute)) as CoinStrategistAttribute;
+                        var name = attr.Name;
+                        foreach (var interval in Intervals)
+                        {
+                            foreach (var coin in ListTradesCoins)
+                            {
+                                CoinsStore.AddStrategist(interval, coin.Name + opponentCurrency, Activator.CreateInstance(t) as IStrategist);
+                            }
+                        }
+                    }
+                }
+            }
+
+            /* foreach (var interval in Intervals)
              {
-                 var types = Assembly.LoadFile(f.FullName).GetTypes();
-                 foreach (var t in types)
+                 foreach (var coin in ListTradesCoins)
                  {
-                     if (t.GetInterfaces().Contains(typeof(IStrategist)))
-                     {
-                         var attr = t.GetCustomAttribute(typeof(CoinStrategistAttribute)) as CoinStrategistAttribute;
-                         var name = attr.Name;
-                         foreach (var interval in Intervals)
-                         {
-                             foreach (var coin in ListTradesCoins)
-                             {
-                                 CoinsStore.AddStrategist(interval, coin.Name + opponentCurrency, Activator.CreateInstance(t) as IStrategist);
-                             }
-                         }
-                     }
+
+                     CoinsStore.AddStrategist(interval, coin.Name + opponentCurrency, new Strategist());
+                     if (interval == Interval.ONE_HOUR) CoinsStore.Strategists[interval][coin.Name + opponentCurrency].SetTimeLemit(6);
                  }
              }*/
 
-            foreach (var interval in Intervals)
-            {
-                foreach (var coin in ListTradesCoins)
-                {
-                    // CoinsStore.AddStrategist(interval, coin.Name + opponentCurrency, new EmptyStrategist());
-                    CoinsStore.AddStrategist(interval, coin.Name + opponentCurrency, new Strategist());
-                    if (interval == Interval.ONE_HOUR) CoinsStore.Strategists[interval][coin.Name + opponentCurrency].SetTimeLemit(6);
-                }
-            }
-            if (CoinsStore.Strategists.Count==0)
-            {
-                
-
-            }
         }
 
 
@@ -246,7 +255,7 @@ namespace BinanceAcountViewer
 
 
         private void SynkWalletInfoWithList()
-        {            
+        {
             listView1.Items.Clear();
             listView1.SetObjects(walletInfo);
             listView1.Update();
@@ -258,7 +267,7 @@ namespace BinanceAcountViewer
 
         private async Task<bool> SynckWithWallets()
         {
-            var ok = await InitWalletsAsync();            
+            var ok = await InitWalletsAsync();
             if (ok) SynkWalletInfoWithList();
             LogInfo("Start wallets synck");
             if (walletInfo == null && !ok) return false;
@@ -266,25 +275,23 @@ namespace BinanceAcountViewer
             foreach (var coin in ListTradesCoins)
             {
                 var coins = walletInfo.Where(s => s.Coin == coin.Name).ToList();
-                var USDT = walletInfo.Where(s => s.Coin == "USDT").ToList()[0];               
+                var USDT = walletInfo.Where(s => s.Coin == "USDT").ToList()[0];
                 if (coins.Count > 0)
                 {
                     coin.Balance = coins[0].Free;
-                    if (coins[0].Balance < 20)
+                    /*if (coins[0].Balance < 20)
                     {
                         coin.BalanceUSDT = Math.Min(coin.BalanceUSDT, USDT.Free);
                         coin.LastPriceCoin = coins[0].Balance / coins[0].Free;
                     }
                     else
-                    {
-                        coin.BalanceUSDT = 0;
-                        coin.LastPriceCoin = coins[0].Balance / coins[0].Free;
-                       
+                    {                        
+                        coin.LastPriceCoin = coins[0].Balance / coins[0].Free;                     
 
-                    }
+                    }*/
                     LogInfo("Sync " + coin.Name);
                 }
-            }            
+            }
             return true;
 
         }
@@ -292,8 +299,8 @@ namespace BinanceAcountViewer
         private async void button1_Click(object sender, EventArgs e)
         {
             Service = new BinanceService(apiKey, apiSecret, MaxCounterTimer);
-            
-            TradingCoinPath= Properties.Settings.Default.PathToTradingStateReal; 
+
+            TradingCoinPath = Properties.Settings.Default.PathToTradingStateReal;
             label3.Text = "Real time mode";
             RealMode = true;
             var res = false;
@@ -302,7 +309,7 @@ namespace BinanceAcountViewer
                 foreach (var coin in ListTradesCoins)
                 {
                     var curPair = coin.Name + opponentCurrency;
-                    res = await UpdateKLines(interval,curPair);
+                    res = await UpdateKLines(interval, curPair);
                 }
             }
             foreach (var coin in ListTradesCoins)
@@ -314,7 +321,7 @@ namespace BinanceAcountViewer
             SaveListTradesCoins();
             if (!res) return;
             ReDraw();
-            
+
 
             StartTimer(5000);
         }
@@ -325,7 +332,7 @@ namespace BinanceAcountViewer
             var point = pictureBox1.PointToClient(Cursor.Position);
             DrawKLines(pictureBox7, null, Interval.ONE_MINUTE);
             DrawKLines(pictureBox1, pictureBox2, Interval.FIFTEEN_MINUTE);
-          
+
             if (pictureBox1.Image == null) return false;
             var width3 = pictureBox3.Width;
             var width5 = pictureBox5.Width;
@@ -398,12 +405,12 @@ namespace BinanceAcountViewer
                 CoinsStore.TryAddData(data, interval.ToString(), currentPair);
                 return true;
             }
-            LastKLines[interval][currentPair][0] = new KLine(data.Last().OpenTime,data.Last().Close);            
-            CoinsStore.TryAddData(data, interval.ToString(), currentPair);                                 
+            LastKLines[interval][currentPair][0] = new KLine(data.Last().OpenTime, data.Last().Close);
+            CoinsStore.TryAddData(data, interval.ToString(), currentPair);
             return true;
         }
 
-        
+
         public void DrawKLines(PictureBox picture1, PictureBox picture2, Interval interval)
         {
             numPoints = Convert.ToInt16(textBox1.Text);
@@ -433,7 +440,7 @@ namespace BinanceAcountViewer
             Drawer.DrawAsHistogram(image2, data.DifEma.GetRange(start, numPoints));
             Drawer.DrawGrapth(image2, curRange12, Color.Violet, curRange12.Max(), curRange12.Min());
             Drawer.DrawGrapth(image2, curRange26, Color.Pink, curRange12.Max(), curRange12.Min());
-            Drawer.SignImage(curImage, currentPair + "/" + interval.ToString());           
+            Drawer.SignImage(curImage, currentPair + "/" + interval.ToString());
             picture2.Image = image2;
         }
 
@@ -464,9 +471,9 @@ namespace BinanceAcountViewer
 
 
         private void LoadListTradesCoins()
-        {            
+        {
             var lines = File.ReadAllLines(TradingCoinPath);
-            ListTradesCoins=JsonConvert.DeserializeObject <List<TradeCoinInfo>> (lines[0]);
+            ListTradesCoins = JsonConvert.DeserializeObject<List<TradeCoinInfo>>(lines[0]);
         }
 
 
@@ -485,14 +492,60 @@ namespace BinanceAcountViewer
 
         private void SaveListTradesCoins()
         {
-            var listTradesCoins = JsonConvert.SerializeObject(ListTradesCoins);            
+            var listTradesCoins = JsonConvert.SerializeObject(ListTradesCoins);
             using (StreamWriter writer = new StreamWriter(TradingCoinPath))
             {
                 writer.WriteLine(listTradesCoins);
                 writer.Close();
             }
         }
-        
+
+
+        private void BuyCoin(TradeCoinInfo coin, double priceToBuy)
+        {
+            if (coin == null || coin.BalanceUSDT < 20) return;
+            var curPair = coin.Name + opponentCurrency;
+            //if (priceToBuy > (1 - Fee) * coin.LastPriceCoin) return;
+            var q = ((coin.BalanceUSDT > 40 ? 0.5 * coin.BalanceUSDT : coin.BalanceUSDT) / priceToBuy);
+            var iq = (int)(10 * q);
+            q = ((double)iq / 10);
+            if (priceToBuy < 1) q = Math.Round(q - 1, 0);
+            Service.NewOrder(curPair, Side.BUY, (decimal)priceToBuy, (decimal)q);
+            LogInfo("Num coins=" + q + " buy price=" + priceToBuy + " balanceUSDT=" + coin.BalanceUSDT);
+            var curOrder = new Order(curPair, (decimal)priceToBuy, (decimal)q, Side.BUY);
+            lock (synckObj)
+            {
+                OpenedOrders.Add(curOrder);
+            }
+            Console.WriteLine(LastKLines[Interval.FIFTEEN_MINUTE][curPair][0].GetOpenDate());
+        }
+
+
+        private void SellCoin(TradeCoinInfo coin, double priceToSell)
+        {
+            if (coin == null || coin.Balance * priceToSell < 20) return;
+            var curPair = coin.Name + opponentCurrency;
+            if (priceToSell < (1 + 2 * Fee + 0.005) * coin.LastPriceCoin) return;
+            var balance = coin.Balance * priceToSell > 40 ? 0.5 * coin.Balance : coin.Balance;
+            var ibalance = (int)(10 * balance);
+            balance = ((double)ibalance) / 10;
+            if (priceToSell < 1) balance = Math.Round(balance - 1, 0);
+            Service.NewOrder(curPair, Side.SELL, (decimal)priceToSell, (decimal)balance);
+            LogInfo("Num coins=" + balance + "sell price=" + priceToSell + " balanceUSDT=" + coin.BalanceUSDT);
+            var curOrder = new Order(curPair, (decimal)priceToSell, (decimal)balance, Side.SELL);
+            lock (synckObj)
+            {
+                OpenedOrders.Add(curOrder);
+            }
+            Console.WriteLine(LastKLines[Interval.FIFTEEN_MINUTE][curPair][0].GetOpenDate());
+        }
+
+
+
+
+
+
+
         private async void timer1_Tick(object sender, EventArgs e)
         {
             countTimer++;
@@ -505,18 +558,18 @@ namespace BinanceAcountViewer
                     var curPair = coin.Name + opponentCurrency;
                     Cap cap = await Service.GetOrders(curPair);
                     var priceToBuy = cap.Asks[0][0];
-                    var priceToSell = cap.Bids[0][0];
-                    var del = Fee * cap.Bids[0][0];                                      
+                    var priceToSell = cap.Asks[0][0]; // cap.Bids[0][0];
+                    var del = Fee * cap.Bids[0][0];
                     foreach (var interval in Intervals)
                     {
-                         DateTime currentDateTime = DateTime.Now;                                          
+                        DateTime currentDateTime = DateTime.Now;
                         if (!RealMode || (currentDateTime.Minute % (interval.GetNum())) == 0)
                         {
                             var res1 = await UpdateKLines(interval, curPair);
                             if (!res1) return;
                         }
                         var point = cap.Bids[0][0];
-                        if(RealMode)
+                        if (RealMode)
                         {
                             CoinsStore.LinesHistory[interval][curPair].ChangeLastPoint(cap.Bids[0][0]);
                         }
@@ -526,50 +579,27 @@ namespace BinanceAcountViewer
                             CoinsStore.AddPoint(interval, curPair, LastKLines[interval][curPair][0]);
                         }
                         //var openedOrders = await Service.GetCurrentOpenedOrders(curPair).Result.ToList();                                              
-                        lock(synckObj)
+                        lock (synckObj)
                         {
-                          if (OpenedOrders.FirstOrDefault(s => s.Symbol == curPair) != null) continue;
-                        }                        
+                            if (OpenedOrders.FirstOrDefault(s => s.Symbol == curPair) != null) continue;
+                        }
                         if (interval != Interval.ONE_MINUTE) continue;
-                         var prediction = CoinsStore.MakePrediction(curPair,point);
+                        var prediction = CoinsStore.MakePrediction(curPair, point);
                         //Service.CancelOpenedOrders(curPair);
                         //if (priceToBuy > (1.017) * coin.LastPriceCoin) prediction = Prediction.SELL;
                         // if (prediction != Prediction.NOTHING) LogInfo(prediction.ToString() + "price is " + cap.Bids[0][0].ToString());
-                        if(coin.Name=="FIRO")
+                        if (coin.Name == "FIRO")
                         {
 
                         }
-                        if ((prediction.Value == Prediction.BUY && coin.BalanceUSDT > 20))
+
+                        if ((prediction.Value == Prediction.BUY))
                         {
-                             if (priceToBuy > (1 - Fee) * coin.LastPriceCoin) continue;
-                            var q = ((coin.BalanceUSDT > 40 ? 0.5 * coin.BalanceUSDT : coin.BalanceUSDT)/ priceToBuy);
-                            var iq = (int)(10 * q);
-                            q = ((double)iq / 10);
-                            if (priceToBuy < 1) q = Math.Round(q-1, 0);
-                            Service.NewOrder(curPair, Side.BUY, (decimal)priceToBuy, (decimal)q);
-                            LogInfo("Num coins="+q+" buy price=" + priceToBuy + " balanceUSDT=" + coin.BalanceUSDT);
-                            var curOrder = new Order(curPair, (decimal)priceToBuy, (decimal)q, Side.BUY);
-                            lock (synckObj)
-                            {
-                                OpenedOrders.Add(curOrder);
-                            }
-                             Console.WriteLine(LastKLines[interval][curPair][0].GetOpenDate());
+                            BuyCoin(coin, priceToBuy);
                         }
-                        else if ((prediction.Value == Prediction.SELL && coin.Balance * priceToSell > 20))
+                        else if ((prediction.Value == Prediction.SELL))
                         {
-                            if (priceToSell < (1 + Fee) * coin.LastPriceCoin) continue;                            
-                            var balance = coin.Balance * priceToSell > 40?0.5*coin.Balance:coin.Balance;
-                            var ibalance = (int)(10 * balance);
-                            balance = ((double)ibalance) / 10;
-                            if (priceToSell < 1) balance = Math.Round(balance - 1, 0);
-                            Service.NewOrder(curPair, Side.SELL, (decimal)priceToSell, (decimal)balance);
-                            LogInfo("Num coins=" + balance + "sell price=" + priceToSell + " balanceUSDT=" + coin.BalanceUSDT);
-                            var curOrder = new Order(curPair, (decimal)priceToSell, (decimal)balance, Side.SELL);
-                            lock (synckObj)
-                            {
-                                OpenedOrders.Add(curOrder);
-                            }                                                                                                 
-                            Console.WriteLine(LastKLines[interval][curPair][0].GetOpenDate());                           
+                            SellCoin(coin, priceToSell);
                         }
 
                     }
@@ -579,11 +609,11 @@ namespace BinanceAcountViewer
                         FillRichBook(cap);
                     }
 
-                    foreach(var interval in Intervals)
+                    foreach (var interval in Intervals)
                     {
-                      if (cap != null&&!RealMode) CoinsStore.RemoveLastPoint(interval, curPair);
+                        if (cap != null && !RealMode) CoinsStore.RemoveLastPoint(interval, curPair);
                     }
-                                      
+
 
                 }
                 if (Update) SynckAll();
@@ -628,12 +658,14 @@ namespace BinanceAcountViewer
             }
             Service.InitService(dic, MaxCounterTimer, just15min);
             StartTimer(20);
-            foreach(var interval in Intervals)
+            foreach (var interval in Intervals)
             {
-                UpdateKLines(interval,GetCurrentPair());
-            }           
+                UpdateKLines(interval, GetCurrentPair());
+            }
             ReDraw();
         }
+
+
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
@@ -731,11 +763,11 @@ namespace BinanceAcountViewer
             await SynckWithWallets();
             SaveListTradesCoins();
             StartTimer(100);
-            foreach(var interval in Intervals)
+            foreach (var interval in Intervals)
             {
                 UpdateKLines(interval, GetCurrentPair());
             }
-            
+
             ReDraw();
         }
 
@@ -759,6 +791,24 @@ namespace BinanceAcountViewer
         private void buttonUpdate_Click_1(object sender, EventArgs e)
         {
             SynckAll();
+        }
+
+        private void buttonBuy_Click(object sender, EventArgs e)
+        {
+            var priceToBuy = Convert.ToDouble(textBoxPrice.Text);
+            foreach (var coin in ListTradesCoins)
+            {
+                if (coin.Name == selectedCurrency) BuyCoin(coin, priceToBuy);
+            }
+        }
+
+        private void buttonSell_Click(object sender, EventArgs e)
+        {
+            var priceToSell = Convert.ToDouble(textBoxPrice.Text);
+            foreach (var coin in ListTradesCoins)
+            {
+                if (coin.Name == selectedCurrency) SellCoin(coin, priceToSell);
+            }
         }
     }
 }
