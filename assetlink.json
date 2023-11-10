@@ -1,1 +1,9 @@
-asdfas
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.goznak.goznakident.debug",
+    "sha256_cert_fingerprints":
+    ["65:B9:EC:D9:1B:C7:A1:CA:0D:A2:AD:AE:FD:FE:B5:BB:4D:8A:DA:CB:73:7E:8A:81:60:F7:CC:68:C2:B3:12:1C"]
+  }
+}]
