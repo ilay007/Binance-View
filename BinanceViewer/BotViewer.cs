@@ -15,14 +15,15 @@ using BinanceTradingDrawer;
 using System.Net.Http;
 using CoinCore;
 using System.IO;
-using System.Diagnostics;
-using System.Reflection;
 using Newtonsoft.Json;
 using Strateges;
-using Castle.Core;
 using System.Threading;
+using Serilog;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Menu;
+using Tensorflow.Keras.Callbacks;
 using Tensorflow;
-using static HDF.PInvoke.H5T;
+using System.Diagnostics;
+using Microsoft.Extensions.Primitives;
 
 namespace BinanceAcountViewer
 {
@@ -40,7 +41,7 @@ namespace BinanceAcountViewer
         private Dictionary<string, Dictionary<string, KLine[]>> LastKLines = new Dictionary<string, Dictionary<string, KLine[]>>();
         private bool CanselDrawing = false;
         private bool RealMode = false;
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private string TradingCoinPath = "";
         private List<Order> OpenedOrders = new List<Order>();
         private List<Order> NotExecutedOrders = new List<Order>();
@@ -52,12 +53,27 @@ namespace BinanceAcountViewer
 
         public BotViewer(string apiKey, string apiSecret) : base(apiKey, apiSecret)
         {
-            log.Info("приложение запущено");
+            /* Log.Logger = new LoggerConfiguration()
+            .WriteTo.File("log.txt")
+            .CreateLogger();*/
+            InitLoger();
+            Log.Information("BotViewer is started");
             InitializeComponent();
             textBox1.Text = WindowSize.ToString();
             textBox2.Text = selectedCurrency;
             Init();
 
+
+
+        }
+
+        private void InitLoger()
+        {
+            Log.Logger = new LoggerConfiguration()
+            .WriteTo.RollingFile(
+              pathFormat: "logs\\log-{Date}.txt", // {Date} will be replaced with the date
+              outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
         }
 
         private void Init()
@@ -70,12 +86,13 @@ namespace BinanceAcountViewer
             this.apiSecret = apiSecret;
             ListTradesCoins = new List<TradeCoinInfo>();
             ListTradesCoins.Add(new TradeCoinInfo(selectedCurrency, 0, 40d));
+            ListTradesCoins.Add(new TradeCoinInfo("ICP", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("BTC", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("FIRO", 0, 0d));
-            ListTradesCoins.Add(new TradeCoinInfo("CTXC", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("RVN", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("DOGE", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("MINA", 0, 0d));
+
             CoinsStore = new CoinsStore(Intervals, 18, 9, 24);
             foreach (var interval in Intervals)
             {
@@ -90,6 +107,30 @@ namespace BinanceAcountViewer
             TradingCoinPath = Properties.Settings.Default.PathToTradingStateReal;
             var th = new Thread(() => ControlOpenedOrders());
             th.Start();
+
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                var btcs = db.Sessions.Where(s => s.Pair == "BTCUSDT").ToList();
+                var sessions = btcs.OrderBy(s => s.Date).ToList();
+                int k = 1;
+            }
+
+        }
+
+
+        private void InitCriptoPairs()
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                /* Pair pair1 = new Pair { Name = "ICP", ApponenName = "USDT" };
+                 Pair pair2 = new Pair { Name = "FIRO", ApponenName = "USDT" };
+                 Pair pair3 = new Pair { Name = "RVN", ApponenName = "USDT" };
+                 Pair pair4 = new Pair { Name = "DOGE", ApponenName = "USDT" };
+                 Pair pair5 = new Pair { Name = "MINA", ApponenName = "USDT" };
+                 db.Pairs.AddRange(pair1, pair2, pair3, pair4, pair5);
+                 db.SaveChanges();*/
+            }
+
         }
 
 
@@ -200,7 +241,7 @@ namespace BinanceAcountViewer
 
         private void InitStrategists()
         {
-            var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            /*var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
             foreach (var f in dir.GetFiles("*.dll"))
             {
                 var types = Assembly.LoadFile(f.FullName).GetTypes();
@@ -219,17 +260,17 @@ namespace BinanceAcountViewer
                         }
                     }
                 }
+            }*/
+
+            foreach (var interval in Intervals)
+            {
+                foreach (var coin in ListTradesCoins)
+                {
+
+                    CoinsStore.AddStrategist(interval, coin.Name + opponentCurrency, new Strategist());
+                    if (interval == Interval.ONE_HOUR) CoinsStore.Strategists[interval][coin.Name + opponentCurrency].SetTimeLemit(6);
+                }
             }
-
-            /* foreach (var interval in Intervals)
-             {
-                 foreach (var coin in ListTradesCoins)
-                 {
-
-                     CoinsStore.AddStrategist(interval, coin.Name + opponentCurrency, new Strategist());
-                     if (interval == Interval.ONE_HOUR) CoinsStore.Strategists[interval][coin.Name + opponentCurrency].SetTimeLemit(6);
-                 }
-             }*/
 
         }
 
@@ -299,7 +340,6 @@ namespace BinanceAcountViewer
         private async void button1_Click(object sender, EventArgs e)
         {
             Service = new BinanceService(apiKey, apiSecret, MaxCounterTimer);
-
             TradingCoinPath = Properties.Settings.Default.PathToTradingStateReal;
             label3.Text = "Real time mode";
             RealMode = true;
@@ -317,13 +357,43 @@ namespace BinanceAcountViewer
                 Service.CancelOpenedOrders(coin.Name);
             }
             LoadListTradesCoins();
+            foreach (var coin in ListTradesCoins)
+            {
+                Log.Information(coin.ToString());
+            }
+            foreach (var coin in ListTradesCoins)
+            {
+                var history = await getHistoryCurentCurrency(coin.Name);
+                coin.LastSellPrice = CountLastPrice(history, "SELL");
+                coin.LastBuyPrice = CountLastPrice(history, "BUY");
+            }
             await SynckWithWallets();
             SaveListTradesCoins();
             if (!res) return;
             ReDraw();
-
-
             StartTimer(5000);
+        }
+
+        private double CountLastPrice(List<HistoryItem> history, string patern)
+        {
+            if (history.Count == 1) return history[0].Price;
+            int count = history.Count - 1;
+            while (history[count].Side != patern) count--;
+            double balanceUsdt = 0;
+            double balanceCoin = 0;
+            for (int i = count; i > 0; i--)
+            {
+                if (history[i].Side == patern)
+                {
+                    balanceUsdt += history[i].ExecutedQty * history[i].Price;
+                    balanceCoin += history[i].ExecutedQty;
+
+                    continue;
+                }
+                break;
+            }
+            return balanceUsdt / balanceCoin;
+
         }
 
         private bool ReDraw()
@@ -501,17 +571,19 @@ namespace BinanceAcountViewer
         }
 
 
-        private void BuyCoin(TradeCoinInfo coin, double priceToBuy)
+        private void BuyCoin(TradeCoinInfo coin, double priceToBuy, bool inProfit)
         {
+
             if (coin == null || coin.BalanceUSDT < 20) return;
             var curPair = coin.Name + opponentCurrency;
-            //if (priceToBuy > (1 - Fee) * coin.LastPriceCoin) return;
+            //TO DO
+            if (inProfit && priceToBuy > (1 - 2 * Fee) * coin.LastBuyPrice) return;
             var q = ((coin.BalanceUSDT > 40 ? 0.5 * coin.BalanceUSDT : coin.BalanceUSDT) / priceToBuy);
             var iq = (int)(10 * q);
             q = ((double)iq / 10);
             if (priceToBuy < 1) q = Math.Round(q - 1, 0);
             Service.NewOrder(curPair, Side.BUY, (decimal)priceToBuy, (decimal)q);
-            LogInfo("Num coins=" + q + " buy price=" + priceToBuy + " balanceUSDT=" + coin.BalanceUSDT);
+            Log.Information(curPair + " num_coins=" + q + " buy price=" + priceToBuy + " balanceUSDT=" + coin.BalanceUSDT);
             var curOrder = new Order(curPair, (decimal)priceToBuy, (decimal)q, Side.BUY);
             lock (synckObj)
             {
@@ -521,17 +593,36 @@ namespace BinanceAcountViewer
         }
 
 
-        private void SellCoin(TradeCoinInfo coin, double priceToSell)
+        private void SellCoin(TradeCoinInfo coin, double priceToSell, bool inProfit)
         {
+
             if (coin == null || coin.Balance * priceToSell < 20) return;
             var curPair = coin.Name + opponentCurrency;
-            if (priceToSell < (1 + 2 * Fee + 0.005) * coin.LastPriceCoin) return;
+            if (coin.Name == "BTC") return;
+            if (inProfit && priceToSell < (1 + 2 * Fee + 0.07) * coin.LastBuyPrice) return;
             var balance = coin.Balance * priceToSell > 40 ? 0.5 * coin.Balance : coin.Balance;
-            var ibalance = (int)(10 * balance);
-            balance = ((double)ibalance) / 10;
+            double p = priceToSell;
+            int count = 1;
+            while (p > 1)
+            {
+                p /= 10;
+                count++;
+            }
+
+            int mn = (int)Math.Pow(10, (double)count);
+            var ibalance = (int)(mn * balance);
+            balance = ((double)ibalance) / mn;
             if (priceToSell < 1) balance = Math.Round(balance - 1, 0);
-            Service.NewOrder(curPair, Side.SELL, (decimal)priceToSell, (decimal)balance);
-            LogInfo("Num coins=" + balance + "sell price=" + priceToSell + " balanceUSDT=" + coin.BalanceUSDT);
+            try
+            {
+                Service.NewOrder(curPair, Side.SELL, (decimal)priceToSell, (decimal)balance);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Trying to sell " + curPair + " " + ex.Message.ToString());
+                return;
+            }
+            Log.Information(curPair + " num_coins=" + balance + " sell price=" + priceToSell + " balanceUSDT=" + coin.BalanceUSDT);
             var curOrder = new Order(curPair, (decimal)priceToSell, (decimal)balance, Side.SELL);
             lock (synckObj)
             {
@@ -541,8 +632,32 @@ namespace BinanceAcountViewer
         }
 
 
+        private bool enableDateSavingInDb = false;
 
+        private void SavingBidsInDb(Cap cap, string curPair)
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                db.Sessions.Add(new Session { Date = ulong.Parse(cap.LastUpdateId), Pair = curPair });
+                db.SaveChanges();
 
+            }
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                var session = db.Sessions.First(s => s.Date == ulong.Parse(cap.LastUpdateId));
+                for (int i = 0; i < cap.Asks.Count; i++)
+                {
+                    db.Orders.Add(new OrderH { IdSession = session.Id, Num = i, Price = cap.Asks[i][0], Quantity = cap.Asks[i][1], Type = "Ask" });
+
+                }
+                for (int i = 0; i < cap.Bids.Count; i++)
+                {
+                    db.Orders.Add(new OrderH { IdSession = session.Id, Num = i, Price = cap.Bids[i][0], Quantity = cap.Bids[i][1], Type = "Bid" });
+                }
+                db.SaveChanges();
+
+            }
+        }
 
 
 
@@ -550,16 +665,62 @@ namespace BinanceAcountViewer
         {
             countTimer++;
             richTextBox1.Clear();
+            
+            var Waps = new List<string>();
+            StringBuilder builderOrders = new StringBuilder();
             try
             {
                 var pair = getCurrentPair();
                 foreach (var coin in ListTradesCoins)
                 {
                     var curPair = coin.Name + opponentCurrency;
-                    Cap cap = await Service.GetOrders(curPair);
-                    var priceToBuy = cap.Asks[0][0];
-                    var priceToSell = cap.Asks[0][0]; // cap.Bids[0][0];
+                    String dataCap = await Service.GetOrders(curPair);
+                    Stopwatch stopWatch = new Stopwatch();
+                    stopWatch.Start();
+                    Cap cap = JsonConvert.DeserializeObject<Cap>(dataCap);
+                    var priceToBuy = cap.Asks[0][0];//want to sell
+                    var priceToSell = cap.Bids[0][0];//want to buy
+                    var sell0 = 0d;
+                    var sellCount = 0d;
+                    var buy0 = 0d;
+                    var buyCount = 0d;
+                    if (enableDateSavingInDb) SavingBidsInDb(cap, curPair);
+
+
+                    for (int i = 0; i < 40; i++)
+                    {
+                        sell0 += cap.Asks[i][0] * cap.Asks[i][1];
+                        sellCount += cap.Asks[i][1];
+                        buy0 += cap.Bids[i][0] * cap.Bids[i][1];
+                        buyCount += cap.Bids[i][1];
+                    }
+                    var midlSell = sell0 / sellCount;
+                    var midlBuy = buy0 / buyCount;
+                    var wap = (sell0 + buy0) / (sellCount + buyCount);
+                    Waps.Add(curPair + " " + priceToSell + " " + Math.Round(wap, 5));
+                    // cap.Bids[0][0];                
+                    // Log.Information(curPair + dataCap);
+                    //Console.WriteLine(stopWatch.ElapsedMilliseconds);
                     var del = Fee * cap.Bids[0][0];
+                    var openedOrders = await Service.GetCurrentOpenedOrders(curPair);
+                    if (openedOrders.Count > 0)
+                    {
+                        foreach (var order in openedOrders)
+                        {
+                            builderOrders.Append(order.Symbol);
+                            builderOrders.Append(" ");
+                            builderOrders.Append(order.Side);
+                            builderOrders.Append(" ");
+                            builderOrders.Append(order.Type);
+                            builderOrders.Append(" ");
+                            builderOrders.Append(Math.Round(order.Price, 3));
+                            builderOrders.Append(" ");
+                            builderOrders.Append(Math.Round(order.OrigQty, 3));
+                            builderOrders.Append(" ");
+                            builderOrders.Append("\n");
+                        }
+
+                    }
                     foreach (var interval in Intervals)
                     {
                         DateTime currentDateTime = DateTime.Now;
@@ -578,28 +739,32 @@ namespace BinanceAcountViewer
                             LastKLines[interval][curPair][0].Insert(cap.Bids[0][0]);
                             CoinsStore.AddPoint(interval, curPair, LastKLines[interval][curPair][0]);
                         }
-                        //var openedOrders = await Service.GetCurrentOpenedOrders(curPair).Result.ToList();                                              
+                      
                         lock (synckObj)
                         {
                             if (OpenedOrders.FirstOrDefault(s => s.Symbol == curPair) != null) continue;
                         }
                         if (interval != Interval.ONE_MINUTE) continue;
+
                         var prediction = CoinsStore.MakePrediction(curPair, point);
+
+
+                        if (prediction != "Nothing" && coin.Name != "BTC")
+                        {
+                            Log.Information(curPair + " prediction=  <<" + prediction + ">> price=" + priceToBuy);
+                        }
+
+
                         //Service.CancelOpenedOrders(curPair);
                         //if (priceToBuy > (1.017) * coin.LastPriceCoin) prediction = Prediction.SELL;
                         // if (prediction != Prediction.NOTHING) LogInfo(prediction.ToString() + "price is " + cap.Bids[0][0].ToString());
-                        if (coin.Name == "FIRO")
-                        {
-
-                        }
-
                         if ((prediction.Value == Prediction.BUY))
                         {
-                            BuyCoin(coin, priceToBuy);
+                            BuyCoin(coin, priceToBuy, true);
                         }
                         else if ((prediction.Value == Prediction.SELL))
                         {
-                            SellCoin(coin, priceToSell);
+                            SellCoin(coin, priceToSell, true);
                         }
 
                     }
@@ -624,8 +789,27 @@ namespace BinanceAcountViewer
                 Service = new BinanceService(apiKey, apiSecret, MaxCounterTimer);
                 // SynckWithWallets();
             }
+            if (countTimer % 10 != 0) return;
+            richTextBox2.Clear();
+            var builder = new StringBuilder();
+            foreach (var w in Waps)
+            {
 
+                builder.Append("\n");
+                builder.Append(w);
+            }
+            richTextBox2.AppendText(builder.ToString());
+            var curOrders = builderOrders.ToString();
+            if(LastBuildOrders!= curOrders)
+            {
+                richTextBox3.Clear();
+                richTextBox3.AppendText(curOrders);
+                LastBuildOrders= curOrders;
+            }
+            
         }
+
+        String LastBuildOrders = "";
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -798,7 +982,10 @@ namespace BinanceAcountViewer
             var priceToBuy = Convert.ToDouble(textBoxPrice.Text);
             foreach (var coin in ListTradesCoins)
             {
-                if (coin.Name == selectedCurrency) BuyCoin(coin, priceToBuy);
+                if (coin.Name == selectedCurrency)
+                {
+                    BuyCoin(coin, priceToBuy, false);
+                }
             }
         }
 
@@ -807,8 +994,18 @@ namespace BinanceAcountViewer
             var priceToSell = Convert.ToDouble(textBoxPrice.Text);
             foreach (var coin in ListTradesCoins)
             {
-                if (coin.Name == selectedCurrency) SellCoin(coin, priceToSell);
+                if (coin.Name == selectedCurrency) SellCoin(coin, priceToSell, false);
             }
+        }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            Service.CancelOpenedOrders(getCurrentPair());
+        }
+
+        private void tableLayoutPanel3_Paint_1(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

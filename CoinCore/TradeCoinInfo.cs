@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace CoinCore
 {
     public class TradeCoinInfo
@@ -7,6 +9,8 @@ namespace CoinCore
         public double StartBalanceUSDT;
         public double BalanceUSDT;
         public double LastPriceCoin=25000;
+        public double LastSellPrice;
+        public double LastBuyPrice;
         private int WaitCount;
         private int WaitCountLemit=50;
         
@@ -18,6 +22,18 @@ namespace CoinCore
             StartBalanceUSDT = balanceUSDT;
             BalanceUSDT=balanceUSDT;
        }
+
+
+        public string ToString()
+        {
+            var builder = new StringBuilder();
+            builder.Append(Name);
+            builder.Append(" ");
+            builder.Append(Balance);
+            builder.Append(" "); 
+            builder.Append(BalanceUSDT); 
+            return builder.ToString();
+        }
 
         public bool HaveWait()
         {

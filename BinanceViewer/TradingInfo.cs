@@ -32,51 +32,10 @@ namespace AcountViewer
             var result=await InitWalletsAsync();
             if (result) SynkWalletInfoWithList();
         }
-        private void RecountMidlPrice(List<HistoryItem> history)
-        {
-            double amountMoney = 0;
-            double amount = 0;
-            for (int i = 0; i < history.Count; i++)
-            {
-                var item = history[i];
-                if (item.Type.Contains("MARKET"))
-                {
-                    item.Price = item.MidlePrice;//it is bad to buy in Market
-                    continue;
-                }
-
-                if (item.Side == "BUY")
-                {
-
-                    amountMoney += item.ExecutedQty * item.Price;
-                    amount += (1-Fee) * item.ExecutedQty;
-                }
-                else
-                {
-
-                    var curMidl = amount > 0 ? amountMoney / amount : 0;
-                    item.Profit = Math.Round((1-Fee)* (item.Price - curMidl) * item.ExecutedQty,2);
-                    amountMoney -= item.ExecutedQty * curMidl;
-                    amount -= item.ExecutedQty;
-
-                    if (amountMoney < 0 || amount < 0)
-                    {
-                        amountMoney = 0;
-                        amount = 0;
-                    }
-                }
-                if (amount != 0) item.MidlePrice = Math.Round(amountMoney / amount, 6);
-            }
-        }
+      
 
 
-        private async Task<List<HistoryItem>> getHistoryCurentCurrency(string currency)
-        {
-            var history = await Service.GetAllOrders(currency, opponentCurrency);
-            var executed = history.Where(s => s.ExecutedQty > 0).ToList();
-            RecountMidlPrice(executed);
-            return executed;
-        }
+       
 
         private async void listView2_SelectedIndexChanged(object sender, EventArgs e)
         {

@@ -22,7 +22,15 @@ namespace CoinCore
             return null;
         }
 
-        public Prediction MakePrediction(double point)
+
+        public double GetDifInPercent(int stepsAgo)
+        {
+            return 0.1;
+        }
+
+
+
+            public Prediction MakePrediction(double point)
         {
             return Prediction.NOTHING;
         }

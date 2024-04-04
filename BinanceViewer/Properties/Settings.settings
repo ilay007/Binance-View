@@ -15,19 +15,19 @@
       <Value Profile="(Default)">0.001</Value>
     </Setting>
     <Setting Name="PathToFileWithKeys" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\ilayv\AppData\GitHub\MyGit\keys.txt</Value>
+      <Value Profile="(Default)">D:\mGitHub\MyGit\keys.txt</Value>
     </Setting>
     <Setting Name="PathToTradingStateReal" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\ilayv\AppData\GitHub\MyGit\tradingStateReal.txt</Value>
+      <Value Profile="(Default)">D:\mGitHub\MyGit\tradingStateReal.txt</Value>
     </Setting>
     <Setting Name="PathToTradingStateTrain" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\ilayv\AppData\GitHub\MyGit\tradingStateTrain.txt</Value>
+      <Value Profile="(Default)">D:\mGitHub\MyGit\tradingStateTrain.txt</Value>
     </Setting>
     <Setting Name="PathToKnowledges" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\ilayv\AppData\GitHub\MyGit\Knowledges\15mKnowledges.txt</Value>
+      <Value Profile="(Default)">D:\mGitHub\MyGit\Knowledges\15mKnowledges.txt</Value>
     </Setting>
     <Setting Name="PathToWalletFile" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\ilayv\AppData\GitHub\MyGit\walletInfo.txt</Value>
+      <Value Profile="(Default)">D:\mGitHub\MyGit\walletInfo.txt</Value>
     </Setting>
   </Settings>
 </SettingsFile>

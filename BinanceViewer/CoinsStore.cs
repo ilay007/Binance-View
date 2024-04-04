@@ -64,7 +64,11 @@ namespace AcountViewer
                 if (!Strategists.ContainsKey(interval)) return Prediction.NOTHING;
                 if (!Strategists[interval].ContainsKey(pair)) return Prediction.NOTHING;            
             }
-            return Strategists["15m"][pair].MakePrediction(point);
+            var prediction = Strategists["15m"][pair].MakePrediction(point);
+            var dif= Strategists["15m"]["BTCUSDT"].GetDifInPercent(150);
+           
+            if (dif > 0.15) return Prediction.NOTHING;
+            return prediction;
             var pred15 = Strategists["15m"][pair].MakePrediction(point);
             var predOne = Strategists["1h"][pair].MakePrediction(point);
             if(pred15 == Prediction.BUY&&predOne==Prediction.BUY)return Prediction.BUY;

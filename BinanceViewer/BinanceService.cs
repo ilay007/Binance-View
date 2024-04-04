@@ -75,20 +75,20 @@ namespace AcountViewer
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                //throw ex;
             }
          
         }
            
         
         
-        public async Task<Cap> GetOrders(string symbol)
+        public async Task<String> GetOrders(string symbol)
         {
            try
            {
-                var res = await Market.OrderBook(symbol, 4);
-                Cap orders = JsonConvert.DeserializeObject<Cap>(res);
-                return orders;
+                var res = await Market.OrderBook(symbol, 450);
+                return res;
+               
 
             }
             catch (Exception ex) 

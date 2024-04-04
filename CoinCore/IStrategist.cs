@@ -11,6 +11,8 @@ namespace CoinCore
 
         public Prediction MakePrediction(double point);
 
+        public double GetDifInPercent(int stepsAgo);
+
 
         public void AddKnowledgeSince(CurveBundle bundle, int num, bool isBuy);
 

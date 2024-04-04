@@ -30,7 +30,7 @@ namespace BinanceAcountViewer
           
         }
 
-        public async Task<Cap> GetOrders(string symbol)
+        public async Task<String> GetOrders(string symbol)
         {
             return null;
         }
