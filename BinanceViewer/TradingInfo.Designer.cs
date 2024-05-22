@@ -39,7 +39,7 @@ namespace AcountViewer
             this.ovlColumn3 = new BrightIdeasSoftware.OLVColumn();
             this.olvColumn4 = new BrightIdeasSoftware.OLVColumn();
             this.olvColumn11 = new BrightIdeasSoftware.OLVColumn();
-            this.ovlColumn5 = new BrightIdeasSoftware.OLVColumn();
+            this.olvColumn5 = new BrightIdeasSoftware.OLVColumn();
             this.olvColumn6 = new BrightIdeasSoftware.OLVColumn();
             this.olvColumn7 = new BrightIdeasSoftware.OLVColumn();
             this.olvColumn8 = new BrightIdeasSoftware.OLVColumn();
@@ -47,7 +47,7 @@ namespace AcountViewer
             this.olvColumn10 = new BrightIdeasSoftware.OLVColumn();
             this.panel3 = new System.Windows.Forms.Panel();
             this.listView1 = new BrightIdeasSoftware.DataListView();
-            this.ovlColumn2 = new BrightIdeasSoftware.OLVColumn();
+            this.olvColumn2 = new BrightIdeasSoftware.OLVColumn();
             this.olvColumn1 = new BrightIdeasSoftware.OLVColumn();
             this.olvPrice = new BrightIdeasSoftware.OLVColumn();
             this.olvBalance = new BrightIdeasSoftware.OLVColumn();
@@ -107,7 +107,7 @@ namespace AcountViewer
             this.ovlColumn3,
             this.olvColumn11,
             this.olvColumn4,
-            this.ovlColumn5,
+            this.olvColumn5,
             this.olvColumn6,
             this.olvColumn7,
             this.olvColumn8,
@@ -141,8 +141,8 @@ namespace AcountViewer
             // 
             // ovlColumn5
             // 
-            this.ovlColumn5.AspectName = "ExecutedQty";
-            this.ovlColumn5.Text = "ExecutedQty";
+            this.olvColumn5.AspectName = "ExecutedQty";
+            this.olvColumn5.Text = "ExecutedQty";
             // 
             // olvColumn6
             // 
@@ -180,11 +180,11 @@ namespace AcountViewer
             // 
             // listView1
             // 
-            this.listView1.AllColumns.Add(this.ovlColumn2);
+            this.listView1.AllColumns.Add(this.olvColumn2);
             this.listView1.AllColumns.Add(this.olvColumn1);
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvColumn1,
-            this.ovlColumn2,
+            this.olvColumn2,
             this.olvPrice,
             this.olvBalance});
             this.listView1.DataSource = null;
@@ -200,8 +200,8 @@ namespace AcountViewer
             // 
             // ovlColumn2
             // 
-            this.ovlColumn2.AspectName = "Free";
-            this.ovlColumn2.Text = "Sum";
+            this.olvColumn2.AspectName = "Free";
+            this.olvColumn2.Text = "Sum";
             // 
             // olvColumn1
             // 
@@ -277,11 +277,11 @@ namespace AcountViewer
 
         //ExecutedQty
 
-        private OLVColumn ovlColumn2;
+        private OLVColumn olvColumn2;
         private OLVColumn olvColumn1;
         private OLVColumn ovlColumn3;
         private OLVColumn olvColumn4;
-        private OLVColumn ovlColumn5;
+        private OLVColumn olvColumn5;
         private OLVColumn olvColumn6;
         private OLVColumn olvColumn7;
         private OLVColumn olvColumn8;

@@ -10,6 +10,9 @@
     <Compile Update="PriceStatistic.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="SetupTradingList.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="TradingInfo.cs">
       <SubType>Form</SubType>
     </Compile>
