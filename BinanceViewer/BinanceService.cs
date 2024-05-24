@@ -169,8 +169,10 @@ namespace AcountViewer
 
         public async Task<List<HistoryItem>> GetAllOrders(string currency, string opponentCurrency)
         {
+
             try
             {
+                Console.WriteLine(currency);
                 var ctxcOrders = await spotAccountTrade.AllOrders(currency + opponentCurrency);
                 List<HistoryItem> history = JsonConvert.DeserializeObject<List<HistoryItem>>(ctxcOrders);
                 var executed = history.Where(s => s.ExecutedQty > 0).ToList();

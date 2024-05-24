@@ -86,12 +86,12 @@ namespace BinanceAcountViewer
             this.apiSecret = apiSecret;
             ListTradesCoins = new List<TradeCoinInfo>();
             ListTradesCoins.Add(new TradeCoinInfo(selectedCurrency, 0, 40d));
-            ListTradesCoins.Add(new TradeCoinInfo("ICP", 0, 0d));
+            //ListTradesCoins.Add(new TradeCoinInfo("ICP", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("BTC", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("FIRO", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("RVN", 0, 0d));
             ListTradesCoins.Add(new TradeCoinInfo("DOGE", 0, 0d));
-            ListTradesCoins.Add(new TradeCoinInfo("MINA", 0, 0d));
+            //ListTradesCoins.Add(new TradeCoinInfo("MINA", 0, 0d));
 
             CoinsStore = new CoinsStore(Intervals, 18, 9, 24);
             foreach (var interval in Intervals)

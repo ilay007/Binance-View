@@ -86,7 +86,7 @@ namespace BinanceAcountViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\mGitHub\\MyGit\\tradingStateReal.txt")]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\mGitHub\\MyGit\\tradingStateTrain.txt")]
         public string PathToTradingStateReal {
             get {
                 return ((string)(this["PathToTradingStateReal"]));
