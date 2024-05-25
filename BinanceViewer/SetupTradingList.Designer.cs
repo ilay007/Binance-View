@@ -39,9 +39,13 @@ namespace BinanceAcountViewer
             olvColumn4 = new OLVColumn();
             olvColumn5 = new OLVColumn();
             olvColumn6 = new OLVColumn();
+            buttonAddCoin = new System.Windows.Forms.Button();
+            panel2 = new System.Windows.Forms.Panel();
+            button1 = new System.Windows.Forms.Button();
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)listView1).BeginInit();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -50,22 +54,26 @@ namespace BinanceAcountViewer
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 87.0171661F));
             tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.9828329F));
             tableLayoutPanel1.Controls.Add(panel1, 0, 0);
+            tableLayoutPanel1.Controls.Add(panel2, 1, 0);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 87.70053F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 12.2994652F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(932, 561);
+            tableLayoutPanel1.Size = new System.Drawing.Size(816, 421);
             tableLayoutPanel1.TabIndex = 0;
+            tableLayoutPanel1.Paint += tableLayoutPanel1_Paint;
             // 
             // panel1
             // 
             panel1.Controls.Add(listView1);
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            panel1.Location = new System.Drawing.Point(3, 3);
+            panel1.Location = new System.Drawing.Point(3, 2);
+            panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(805, 485);
+            panel1.Size = new System.Drawing.Size(704, 365);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint;
             // 
@@ -73,23 +81,22 @@ namespace BinanceAcountViewer
             // 
             listView1.AllColumns.Add(olvColumn2);
             listView1.AllColumns.Add(olvColumn1);
-            listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { olvColumn1, olvColumn2, olvColumn3, olvColumn4 });
+            listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { olvColumn1, olvColumn2, olvColumn3, olvColumn4, olvColumn5, olvColumn6 });
             listView1.DataSource = null;
             listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             listView1.Location = new System.Drawing.Point(0, 0);
             listView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             listView1.Name = "listView1";
-            listView1.Size = new System.Drawing.Size(805, 485);
+            listView1.Size = new System.Drawing.Size(704, 365);
             listView1.TabIndex = 0;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = System.Windows.Forms.View.Details;
-
-            //[{"Name":"LTC","Balance":0.710498,"StartBalanceUSDT":40.0,"BalanceUSDT":0.0,"LastPriceCoin":0.0}]
+            listView1.SelectedIndexChanged += listView2_SelectedIndexChanged;
             // 
             // olvColumn2
             // 
-            olvColumn2.AspectName = "Free";
-            olvColumn2.Text = "Sum";
+            olvColumn2.AspectName = "NumOfTradingCoins";
+            olvColumn2.Text = "NumOfTradingCoins";
             // 
             // olvColumn1
             // 
@@ -98,7 +105,7 @@ namespace BinanceAcountViewer
             // 
             // olvColumn3
             // 
-            olvColumn3.AspectName = "StartBalanceUSDT";
+            olvColumn3.AspectName = "BalanceUSDT";
             olvColumn3.Text = "BalanceUSDT";
             // 
             // olvColumn4
@@ -116,17 +123,50 @@ namespace BinanceAcountViewer
             olvColumn6.AspectName = "LastBuyPrice";
             olvColumn6.Text = "LastBuyPrice";
             // 
+            // buttonAddCoin
+            // 
+            buttonAddCoin.Location = new System.Drawing.Point(3, 8);
+            buttonAddCoin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            buttonAddCoin.Name = "buttonAddCoin";
+            buttonAddCoin.Size = new System.Drawing.Size(93, 22);
+            buttonAddCoin.TabIndex = 1;
+            buttonAddCoin.Text = "AddCoin";
+            buttonAddCoin.UseVisualStyleBackColor = true;
+            buttonAddCoin.Click += buttonAddCoin_Click;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(button1);
+            panel2.Controls.Add(buttonAddCoin);
+            panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel2.Location = new System.Drawing.Point(713, 3);
+            panel2.Name = "panel2";
+            panel2.Size = new System.Drawing.Size(100, 363);
+            panel2.TabIndex = 2;
+            // 
+            // button1
+            // 
+            button1.Location = new System.Drawing.Point(3, 35);
+            button1.Name = "button1";
+            button1.Size = new System.Drawing.Size(93, 23);
+            button1.TabIndex = 2;
+            button1.Text = "DeleteSelected";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
             // SetupTradingList
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(932, 561);
+            ClientSize = new System.Drawing.Size(816, 421);
             Controls.Add(tableLayoutPanel1);
+            Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Name = "SetupTradingList";
             Text = "SetupTradingList";
             tableLayoutPanel1.ResumeLayout(false);
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)listView1).EndInit();
+            panel2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -142,5 +182,8 @@ namespace BinanceAcountViewer
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Panel panel1;
         private DataListView listView1;
+        private System.Windows.Forms.Button buttonAddCoin;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button button1;
     }
 }

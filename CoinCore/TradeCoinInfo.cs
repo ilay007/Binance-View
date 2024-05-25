@@ -6,7 +6,7 @@ namespace CoinCore
     {
         public string Name;
         public double Balance;
-        public double StartBalanceUSDT;
+        public double NumOfTradingCoins;
         public double BalanceUSDT;
         public double LastPriceCoin=25000;
         public double LastSellPrice;
@@ -15,11 +15,11 @@ namespace CoinCore
         private int WaitCountLemit=50;
         
        
-       public TradeCoinInfo(string name,double balance,double balanceUSDT) 
+       public TradeCoinInfo(string name,double balance,double numOfTradingCoins,double balanceUSDT) 
        {
             Name = name;
             Balance = balance;
-            StartBalanceUSDT = balanceUSDT;
+            NumOfTradingCoins = numOfTradingCoins;
             BalanceUSDT=balanceUSDT;
        }
 
@@ -61,7 +61,7 @@ namespace CoinCore
         }
         public double GetProfit()
         {
-            return BalanceUSDT - StartBalanceUSDT;
+            return BalanceUSDT;// - StartBalanceUSDT;
         }
     }
 }
