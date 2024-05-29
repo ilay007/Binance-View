@@ -84,27 +84,12 @@ namespace BinanceAcountViewer
             Intervals.Add(Interval.FOUR_HOUR);
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
-            ListTradesCoins = new List<TradeCoinInfo>();
-            ListTradesCoins.Add(new TradeCoinInfo(selectedCurrency, 0, 40d,0d));
-            //ListTradesCoins.Add(new TradeCoinInfo("ICP", 0, 0d));
-            ListTradesCoins.Add(new TradeCoinInfo("BTC", 0, 0d,0d));
-            ListTradesCoins.Add(new TradeCoinInfo("FIRO", 0, 0d,0d));
-            ListTradesCoins.Add(new TradeCoinInfo("RVN", 0, 0d, 0d));
-            ListTradesCoins.Add(new TradeCoinInfo("DOGE", 0, 0d,0d));
-            //ListTradesCoins.Add(new TradeCoinInfo("MINA", 0, 0d));
-
-            CoinsStore = new CoinsStore(Intervals, 18, 9, 24);
-            foreach (var interval in Intervals)
-            {
-                LastKLines.Add(interval, new Dictionary<string, KLine[]>());
-                foreach (var coin in ListTradesCoins)
-                {
-                    LastKLines[interval].Add(coin.Name + opponentCurrency, new KLine[1]);
-                }
-            }
-            InitStrategists();
-            PathToKnowledge = Properties.Settings.Default.PathToKnowledges;
             TradingCoinPath = Properties.Settings.Default.PathToTradingStateReal;
+            FillTradingBotsData();
+            InitStrategists();
+
+
+            //Thead to control opende orders
             var th = new Thread(() => ControlOpenedOrders());
             th.Start();
 
@@ -115,6 +100,20 @@ namespace BinanceAcountViewer
                 int k = 1;
             }
 
+        }
+
+        private void FillTradingBotsData()
+        {
+            LoadListTradesCoins();
+            CoinsStore = new CoinsStore(Intervals, 18, 9, 24);
+            foreach (var interval in Intervals)
+            {
+                LastKLines.Add(interval, new Dictionary<string, KLine[]>());
+                foreach (var coin in ListTradesCoins)
+                {
+                    LastKLines[interval].Add(coin.Name + opponentCurrency, new KLine[1]);
+                }
+            }
         }
 
 
@@ -514,9 +513,9 @@ namespace BinanceAcountViewer
             picture2.Image = image2;
         }
 
-        private async void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        private async void listView2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var curItem = listView1.SelectedItem;
+            var curItem = listView2.SelectedItem;
             if (curItem == null) return;
             try
             {
@@ -542,8 +541,17 @@ namespace BinanceAcountViewer
 
         private void LoadListTradesCoins()
         {
-            var lines = File.ReadAllLines(TradingCoinPath);
-            ListTradesCoins = JsonConvert.DeserializeObject<List<TradeCoinInfo>>(lines[0]);
+            ListTradesCoins = new List<TradeCoinInfo>();
+            try
+            {
+                var lines = File.ReadAllLines(TradingCoinPath);
+                ListTradesCoins = JsonConvert.DeserializeObject<List<TradeCoinInfo>>(lines[0]);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.ToString());
+            }
+
         }
 
 
@@ -665,7 +673,7 @@ namespace BinanceAcountViewer
         {
             countTimer++;
             richTextBox1.Clear();
-            
+
             var Waps = new List<string>();
             StringBuilder builderOrders = new StringBuilder();
             try
@@ -703,24 +711,7 @@ namespace BinanceAcountViewer
                     //Console.WriteLine(stopWatch.ElapsedMilliseconds);
                     var del = Fee * cap.Bids[0][0];
                     var openedOrders = await Service.GetCurrentOpenedOrders(curPair);
-                    if (openedOrders.Count > 0)
-                    {
-                        foreach (var order in openedOrders)
-                        {
-                            builderOrders.Append(order.Symbol);
-                            builderOrders.Append(" ");
-                            builderOrders.Append(order.Side);
-                            builderOrders.Append(" ");
-                            builderOrders.Append(order.Type);
-                            builderOrders.Append(" ");
-                            builderOrders.Append(Math.Round(order.Price, 3));
-                            builderOrders.Append(" ");
-                            builderOrders.Append(Math.Round(order.OrigQty, 3));
-                            builderOrders.Append(" ");
-                            builderOrders.Append("\n");
-                        }
-
-                    }
+                    AddOpenOrders(builderOrders, openedOrders);
                     foreach (var interval in Intervals)
                     {
                         DateTime currentDateTime = DateTime.Now;
@@ -739,7 +730,7 @@ namespace BinanceAcountViewer
                             LastKLines[interval][curPair][0].Insert(cap.Bids[0][0]);
                             CoinsStore.AddPoint(interval, curPair, LastKLines[interval][curPair][0]);
                         }
-                      
+
                         lock (synckObj)
                         {
                             if (OpenedOrders.FirstOrDefault(s => s.Symbol == curPair) != null) continue;
@@ -800,13 +791,32 @@ namespace BinanceAcountViewer
             }
             richTextBox2.AppendText(builder.ToString());
             var curOrders = builderOrders.ToString();
-            if(LastBuildOrders!= curOrders)
+            if (LastBuildOrders != curOrders)
             {
                 richTextBox3.Clear();
                 richTextBox3.AppendText(curOrders);
-                LastBuildOrders= curOrders;
+                LastBuildOrders = curOrders;
             }
-            
+
+        }
+
+
+        private void AddOpenOrders(StringBuilder builderOrders, List<Order> openedOrders)
+        {
+            foreach (var order in openedOrders)
+            {
+                builderOrders.Append(order.Symbol);
+                builderOrders.Append(" ");
+                builderOrders.Append(order.Side);
+                builderOrders.Append(" ");
+                builderOrders.Append(order.Type);
+                builderOrders.Append(" ");
+                builderOrders.Append(Math.Round(order.Price, 3));
+                builderOrders.Append(" ");
+                builderOrders.Append(Math.Round(order.OrigQty, 3));
+                builderOrders.Append(" ");
+                builderOrders.Append("\n");
+            }
         }
 
         String LastBuildOrders = "";

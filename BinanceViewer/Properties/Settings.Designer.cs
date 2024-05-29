@@ -110,18 +110,6 @@ namespace BinanceAcountViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\mGitHub\\MyGit\\Knowledges\\15mKnowledges.txt")]
-        public string PathToKnowledges {
-            get {
-                return ((string)(this["PathToKnowledges"]));
-            }
-            set {
-                this["PathToKnowledges"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\mGitHub\\MyGit\\walletInfo.txt")]
         public string PathToWalletFile {
             get {

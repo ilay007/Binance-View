@@ -23,9 +23,6 @@
     <Setting Name="PathToTradingStateTrain" Type="System.String" Scope="User">
       <Value Profile="(Default)">D:\mGitHub\MyGit\tradingStateTrain.txt</Value>
     </Setting>
-    <Setting Name="PathToKnowledges" Type="System.String" Scope="User">
-      <Value Profile="(Default)">D:\mGitHub\MyGit\Knowledges\15mKnowledges.txt</Value>
-    </Setting>
     <Setting Name="PathToWalletFile" Type="System.String" Scope="User">
       <Value Profile="(Default)">D:\mGitHub\MyGit\walletInfo.txt</Value>
     </Setting>

@@ -68,18 +68,6 @@ namespace BinanceAcountViewer
             button2 = new System.Windows.Forms.Button();
             textBox1 = new System.Windows.Forms.TextBox();
             button1 = new System.Windows.Forms.Button();
-            tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-            panel4 = new System.Windows.Forms.Panel();
-            listView1 = new DataListView();
-            ovlColumn2 = new OLVColumn();
-            olvColumn1 = new OLVColumn();
-            olvPrice = new OLVColumn();
-            olvBalance = new OLVColumn();
-            listView2 = new DataListView();
-            olvName = new OLVColumn();
-            olvBalance1 = new OLVColumn();
-            olvPrice1 = new OLVColumn();
-            olvBalanceUSDT = new OLVColumn();
             panel6 = new System.Windows.Forms.Panel();
             tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             panel8 = new System.Windows.Forms.Panel();
@@ -87,6 +75,23 @@ namespace BinanceAcountViewer
             button3 = new System.Windows.Forms.Button();
             richTextBox3 = new System.Windows.Forms.RichTextBox();
             panel7 = new System.Windows.Forms.Panel();
+            tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            listView2 = new DataListView();
+            olvName = new OLVColumn();
+            olvBalance1 = new OLVColumn();
+            olvPrice1 = new OLVColumn();
+            olvBalanceUSDT = new OLVColumn();
+            panel9 = new System.Windows.Forms.Panel();
+            label6 = new System.Windows.Forms.Label();
+            panel10 = new System.Windows.Forms.Panel();
+            panel4 = new System.Windows.Forms.Panel();
+            listView1 = new DataListView();
+            ovlColumn2 = new OLVColumn();
+            olvColumn1 = new OLVColumn();
+            olvPrice = new OLVColumn();
+            olvBalance = new OLVColumn();
+            panel11 = new System.Windows.Forms.Panel();
+            label7 = new System.Windows.Forms.Label();
             timer1 = new System.Windows.Forms.Timer(components);
             tableLayoutPanel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -101,13 +106,16 @@ namespace BinanceAcountViewer
             ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             panel3.SuspendLayout();
             panel1.SuspendLayout();
-            tableLayoutPanel3.SuspendLayout();
-            panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)listView1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)listView2).BeginInit();
             panel6.SuspendLayout();
             tableLayoutPanel4.SuspendLayout();
             panel8.SuspendLayout();
+            tableLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)listView2).BeginInit();
+            panel9.SuspendLayout();
+            panel10.SuspendLayout();
+            panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)listView1).BeginInit();
+            panel11.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -120,9 +128,9 @@ namespace BinanceAcountViewer
             tableLayoutPanel1.Controls.Add(panel2, 1, 0);
             tableLayoutPanel1.Controls.Add(tableLayoutPanel2, 1, 1);
             tableLayoutPanel1.Controls.Add(panel1, 0, 0);
-            tableLayoutPanel1.Controls.Add(tableLayoutPanel3, 0, 1);
             tableLayoutPanel1.Controls.Add(panel6, 2, 1);
             tableLayoutPanel1.Controls.Add(panel7, 2, 0);
+            tableLayoutPanel1.Controls.Add(tableLayoutPanel3, 0, 1);
             tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -490,105 +498,6 @@ namespace BinanceAcountViewer
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
-            // tableLayoutPanel3
-            // 
-            tableLayoutPanel3.ColumnCount = 2;
-            tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            tableLayoutPanel3.Controls.Add(panel4, 0, 0);
-            tableLayoutPanel3.Controls.Add(listView2, 0, 1);
-            tableLayoutPanel3.Location = new System.Drawing.Point(3, 108);
-            tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            tableLayoutPanel3.Name = "tableLayoutPanel3";
-            tableLayoutPanel3.RowCount = 2;
-            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
-            tableLayoutPanel3.Size = new System.Drawing.Size(289, 1063);
-            tableLayoutPanel3.TabIndex = 5;
-            tableLayoutPanel3.Paint += tableLayoutPanel3_Paint_1;
-            // 
-            // panel4
-            // 
-            panel4.Controls.Add(listView1);
-            panel4.Location = new System.Drawing.Point(3, 4);
-            panel4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            panel4.Name = "panel4";
-            panel4.Size = new System.Drawing.Size(263, 523);
-            panel4.TabIndex = 5;
-            // 
-            // listView1
-            // 
-            listView1.AllColumns.Add(ovlColumn2);
-            listView1.AllColumns.Add(olvColumn1);
-            listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { olvColumn1, ovlColumn2, olvPrice, olvBalance });
-            listView1.DataSource = null;
-            listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            listView1.Location = new System.Drawing.Point(0, 0);
-            listView1.Name = "listView1";
-            listView1.Size = new System.Drawing.Size(263, 523);
-            listView1.TabIndex = 0;
-            listView1.UseCompatibleStateImageBehavior = false;
-            listView1.View = System.Windows.Forms.View.Details;
-            listView1.SelectedIndexChanged += listView1_SelectedIndexChanged;
-            // 
-            // ovlColumn2
-            // 
-            ovlColumn2.AspectName = "Free";
-            ovlColumn2.Text = "Sum";
-            // 
-            // olvColumn1
-            // 
-            olvColumn1.AspectName = "Coin";
-            olvColumn1.Text = "NameCoin";
-            // 
-            // olvPrice
-            // 
-            olvPrice.AspectName = "Price";
-            olvPrice.Text = "Price";
-            // 
-            // olvBalance
-            // 
-            olvBalance.AspectName = "Balance";
-            olvBalance.Text = "Balance";
-            // 
-            // listView2
-            // 
-            listView2.AllColumns.Add(olvName);
-            listView2.AllColumns.Add(olvBalance1);
-            listView2.AllColumns.Add(olvPrice1);
-            listView2.AllColumns.Add(olvBalanceUSDT);
-            listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { olvName, olvPrice1, olvBalanceUSDT, olvBalance1 });
-            listView2.DataSource = null;
-            listView2.Dock = System.Windows.Forms.DockStyle.Fill;
-            listView2.Location = new System.Drawing.Point(3, 534);
-            listView2.Name = "listView2";
-            listView2.Size = new System.Drawing.Size(263, 526);
-            listView2.TabIndex = 6;
-            listView2.UseCompatibleStateImageBehavior = false;
-            listView2.View = System.Windows.Forms.View.Details;
-            // 
-            // olvName
-            // 
-            olvName.AspectName = "Name";
-            olvName.Text = "NameCoin";
-            // 
-            // olvBalance1
-            // 
-            olvBalance1.AspectName = "Balance";
-            olvBalance1.Text = "Balance";
-            // 
-            // olvPrice1
-            // 
-            olvPrice1.AspectName = "LastSellPrice";
-            olvPrice1.Text = "Price";
-            // 
-            // olvBalanceUSDT
-            // 
-            olvBalanceUSDT.AspectName = "BalanceUSDT";
-            olvBalanceUSDT.Text = "BalanceUSDT";
-            // 
             // panel6
             // 
             panel6.Controls.Add(tableLayoutPanel4);
@@ -661,6 +570,158 @@ namespace BinanceAcountViewer
             panel7.Size = new System.Drawing.Size(151, 98);
             panel7.TabIndex = 7;
             // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.ColumnCount = 1;
+            tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            tableLayoutPanel3.Controls.Add(listView2, 0, 1);
+            tableLayoutPanel3.Controls.Add(panel9, 0, 2);
+            tableLayoutPanel3.Controls.Add(panel10, 0, 3);
+            tableLayoutPanel3.Controls.Add(panel11, 0, 0);
+            tableLayoutPanel3.Location = new System.Drawing.Point(3, 108);
+            tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 4;
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.3594046F));
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 88.6405945F));
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 476F));
+            tableLayoutPanel3.Size = new System.Drawing.Size(289, 1063);
+            tableLayoutPanel3.TabIndex = 5;
+            tableLayoutPanel3.Paint += tableLayoutPanel3_Paint_1;
+            // 
+            // listView2
+            // 
+            listView2.AllColumns.Add(olvName);
+            listView2.AllColumns.Add(olvBalance1);
+            listView2.AllColumns.Add(olvPrice1);
+            listView2.AllColumns.Add(olvBalanceUSDT);
+            listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { olvName, olvPrice1, olvBalanceUSDT, olvBalance1 });
+            listView2.DataSource = null;
+            listView2.Dock = System.Windows.Forms.DockStyle.Fill;
+            listView2.Location = new System.Drawing.Point(3, 64);
+            listView2.Name = "listView2";
+            listView2.Size = new System.Drawing.Size(283, 470);
+            listView2.TabIndex = 6;
+            listView2.UseCompatibleStateImageBehavior = false;
+            listView2.View = System.Windows.Forms.View.Details;
+            listView2.SelectedIndexChanged += listView2_SelectedIndexChanged;
+            // 
+            // olvName
+            // 
+            olvName.AspectName = "Name";
+            olvName.Text = "NameCoin";
+            // 
+            // olvBalance1
+            // 
+            olvBalance1.AspectName = "Balance";
+            olvBalance1.Text = "Balance";
+            // 
+            // olvPrice1
+            // 
+            olvPrice1.AspectName = "LastSellPrice";
+            olvPrice1.Text = "Price";
+            // 
+            // olvBalanceUSDT
+            // 
+            olvBalanceUSDT.AspectName = "BalanceUSDT";
+            olvBalanceUSDT.Text = "BalanceUSDT";
+            // 
+            // panel9
+            // 
+            panel9.Controls.Add(label6);
+            panel9.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel9.Location = new System.Drawing.Point(3, 540);
+            panel9.Name = "panel9";
+            panel9.Size = new System.Drawing.Size(283, 43);
+            panel9.TabIndex = 7;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Dock = System.Windows.Forms.DockStyle.Fill;
+            label6.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            label6.Location = new System.Drawing.Point(0, 0);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(261, 38);
+            label6.TabIndex = 0;
+            label6.Text = "Binance wallet state";
+            // 
+            // panel10
+            // 
+            panel10.Controls.Add(panel4);
+            panel10.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel10.Location = new System.Drawing.Point(3, 589);
+            panel10.Name = "panel10";
+            panel10.Size = new System.Drawing.Size(283, 471);
+            panel10.TabIndex = 8;
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(listView1);
+            panel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel4.Location = new System.Drawing.Point(0, 0);
+            panel4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            panel4.Name = "panel4";
+            panel4.Size = new System.Drawing.Size(283, 471);
+            panel4.TabIndex = 5;
+            // 
+            // listView1
+            // 
+            listView1.AllColumns.Add(ovlColumn2);
+            listView1.AllColumns.Add(olvColumn1);
+            listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] { olvColumn1, ovlColumn2, olvPrice, olvBalance });
+            listView1.DataSource = null;
+            listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            listView1.Location = new System.Drawing.Point(0, 0);
+            listView1.Name = "listView1";
+            listView1.Size = new System.Drawing.Size(283, 471);
+            listView1.TabIndex = 0;
+            listView1.UseCompatibleStateImageBehavior = false;
+            listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // ovlColumn2
+            // 
+            ovlColumn2.AspectName = "Free";
+            ovlColumn2.Text = "Sum";
+            // 
+            // olvColumn1
+            // 
+            olvColumn1.AspectName = "Coin";
+            olvColumn1.Text = "NameCoin";
+            // 
+            // olvPrice
+            // 
+            olvPrice.AspectName = "Price";
+            olvPrice.Text = "Price";
+            // 
+            // olvBalance
+            // 
+            olvBalance.AspectName = "Balance";
+            olvBalance.Text = "Balance";
+            // 
+            // panel11
+            // 
+            panel11.Controls.Add(label7);
+            panel11.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel11.Location = new System.Drawing.Point(3, 3);
+            panel11.Name = "panel11";
+            panel11.Size = new System.Drawing.Size(283, 55);
+            panel11.TabIndex = 9;
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Dock = System.Windows.Forms.DockStyle.Fill;
+            label7.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            label7.Location = new System.Drawing.Point(0, 0);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(182, 38);
+            label7.TabIndex = 0;
+            label7.Text = "Working bots";
+            // 
             // timer1
             // 
             timer1.Tick += timer1_Tick;
@@ -689,14 +750,19 @@ namespace BinanceAcountViewer
             panel3.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
-            tableLayoutPanel3.ResumeLayout(false);
-            panel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)listView1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)listView2).EndInit();
             panel6.ResumeLayout(false);
             tableLayoutPanel4.ResumeLayout(false);
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
+            tableLayoutPanel3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)listView2).EndInit();
+            panel9.ResumeLayout(false);
+            panel9.PerformLayout();
+            panel10.ResumeLayout(false);
+            panel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)listView1).EndInit();
+            panel11.ResumeLayout(false);
+            panel11.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -756,5 +822,10 @@ namespace BinanceAcountViewer
         private System.Windows.Forms.Panel panel8;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RichTextBox richTextBox3;
+        private System.Windows.Forms.Panel panel9;
+        private System.Windows.Forms.Panel panel10;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Panel panel11;
+        private System.Windows.Forms.Label label7;
     }
 }
