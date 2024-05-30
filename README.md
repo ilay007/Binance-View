@@ -1,6 +1,20 @@
-# BinanceTrading
+# How to start project
 To connect to Binance I used the project https://github.com/binance/binance-connector-dotnet.git.
+First, create an account on Binance, then configure Binance API for your bot.
+Don't forget to mark:
+ - Enable Spot & Margin Trading
+ - Enable Symbol Whitelist
+ - Restrict access to trusted IPs only (Recommended) (Add your Ip)
+ - ![binanceApi](https://github.com/ilay007/Binance-View/assets/44927371/b46fc91a-9206-42fb-86b8-a5f07ac1a973)
+
+Before you start the project:
+1) Sync system time on your computer
+2) Create txt file and write there: api key;and api secret. Then write path to this file into value PathToFileWithKeys witch is located in Bot-Viewr/App.config 
+
+
+
 The project is in developing mode.
+
 
 This projcet helps you: 
 1) - to count and view your income on the Binance for some coin
