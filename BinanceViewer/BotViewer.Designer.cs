@@ -37,17 +37,16 @@ namespace BinanceAcountViewer
             components = new System.ComponentModel.Container();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             panel2 = new System.Windows.Forms.Panel();
+            button7 = new System.Windows.Forms.Button();
+            label10 = new System.Windows.Forms.Label();
+            label9 = new System.Windows.Forms.Label();
+            button3 = new System.Windows.Forms.Button();
             buttonSell = new System.Windows.Forms.Button();
             buttonBuy = new System.Windows.Forms.Button();
             label4 = new System.Windows.Forms.Label();
             textBoxPrice = new System.Windows.Forms.TextBox();
             buttonUpdate = new System.Windows.Forms.Button();
             label3 = new System.Windows.Forms.Label();
-            checkBox3 = new System.Windows.Forms.CheckBox();
-            button5 = new System.Windows.Forms.Button();
-            button4 = new System.Windows.Forms.Button();
-            checkBox2 = new System.Windows.Forms.CheckBox();
-            checkBox1 = new System.Windows.Forms.CheckBox();
             tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             pictureBox1 = new System.Windows.Forms.PictureBox();
             pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -72,8 +71,14 @@ namespace BinanceAcountViewer
             tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             panel8 = new System.Windows.Forms.Panel();
             label5 = new System.Windows.Forms.Label();
-            button3 = new System.Windows.Forms.Button();
             richTextBox3 = new System.Windows.Forms.RichTextBox();
+            panel12 = new System.Windows.Forms.Panel();
+            label8 = new System.Windows.Forms.Label();
+            button5 = new System.Windows.Forms.Button();
+            button4 = new System.Windows.Forms.Button();
+            checkBox1 = new System.Windows.Forms.CheckBox();
+            checkBox2 = new System.Windows.Forms.CheckBox();
+            checkBox3 = new System.Windows.Forms.CheckBox();
             panel7 = new System.Windows.Forms.Panel();
             tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             listView2 = new DataListView();
@@ -109,6 +114,7 @@ namespace BinanceAcountViewer
             panel6.SuspendLayout();
             tableLayoutPanel4.SuspendLayout();
             panel8.SuspendLayout();
+            panel12.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)listView2).BeginInit();
             panel9.SuspendLayout();
@@ -144,17 +150,16 @@ namespace BinanceAcountViewer
             // 
             // panel2
             // 
+            panel2.Controls.Add(button7);
+            panel2.Controls.Add(label10);
+            panel2.Controls.Add(label9);
+            panel2.Controls.Add(button3);
             panel2.Controls.Add(buttonSell);
             panel2.Controls.Add(buttonBuy);
             panel2.Controls.Add(label4);
             panel2.Controls.Add(textBoxPrice);
             panel2.Controls.Add(buttonUpdate);
             panel2.Controls.Add(label3);
-            panel2.Controls.Add(checkBox3);
-            panel2.Controls.Add(button5);
-            panel2.Controls.Add(button4);
-            panel2.Controls.Add(checkBox2);
-            panel2.Controls.Add(checkBox1);
             panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             panel2.Location = new System.Drawing.Point(298, 4);
             panel2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -162,9 +167,51 @@ namespace BinanceAcountViewer
             panel2.Size = new System.Drawing.Size(1347, 96);
             panel2.TabIndex = 1;
             // 
+            // button7
+            // 
+            button7.Location = new System.Drawing.Point(257, 57);
+            button7.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            button7.Name = "button7";
+            button7.Size = new System.Drawing.Size(136, 35);
+            button7.TabIndex = 13;
+            button7.Text = "CanselAllOrders";
+            button7.UseVisualStyleBackColor = true;
+            button7.Click += button7_Click;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            label10.Location = new System.Drawing.Point(1115, 35);
+            label10.Name = "label10";
+            label10.Size = new System.Drawing.Size(133, 23);
+            label10.TabIndex = 12;
+            label10.Text = "Coin price USDT";
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            label9.Location = new System.Drawing.Point(11, 5);
+            label9.Name = "label9";
+            label9.Size = new System.Drawing.Size(240, 37);
+            label9.TabIndex = 11;
+            label9.Text = "Manual operations";
+            // 
+            // button3
+            // 
+            button3.Location = new System.Drawing.Point(848, 55);
+            button3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            button3.Name = "button3";
+            button3.Size = new System.Drawing.Size(136, 35);
+            button3.TabIndex = 11;
+            button3.Text = "CanselOrders";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click_1;
+            // 
             // buttonSell
             // 
-            buttonSell.Location = new System.Drawing.Point(594, 47);
+            buttonSell.Location = new System.Drawing.Point(990, 60);
             buttonSell.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             buttonSell.Name = "buttonSell";
             buttonSell.Size = new System.Drawing.Size(101, 37);
@@ -175,7 +222,7 @@ namespace BinanceAcountViewer
             // 
             // buttonBuy
             // 
-            buttonBuy.Location = new System.Drawing.Point(823, 51);
+            buttonBuy.Location = new System.Drawing.Point(1235, 59);
             buttonBuy.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             buttonBuy.Name = "buttonBuy";
             buttonBuy.Size = new System.Drawing.Size(99, 35);
@@ -187,24 +234,24 @@ namespace BinanceAcountViewer
             // label4
             // 
             label4.AutoSize = true;
-            label4.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            label4.Location = new System.Drawing.Point(646, 3);
+            label4.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            label4.Location = new System.Drawing.Point(709, 5);
             label4.Name = "label4";
-            label4.Size = new System.Drawing.Size(243, 37);
+            label4.Size = new System.Drawing.Size(316, 31);
             label4.TabIndex = 8;
-            label4.Text = "Price_selected_coin";
+            label4.Text = "Opearatins with selected coin";
             // 
             // textBoxPrice
             // 
-            textBoxPrice.Location = new System.Drawing.Point(702, 53);
+            textBoxPrice.Location = new System.Drawing.Point(1097, 63);
             textBoxPrice.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             textBoxPrice.Name = "textBoxPrice";
-            textBoxPrice.Size = new System.Drawing.Size(114, 27);
+            textBoxPrice.Size = new System.Drawing.Size(132, 27);
             textBoxPrice.TabIndex = 7;
             // 
             // buttonUpdate
             // 
-            buttonUpdate.Location = new System.Drawing.Point(133, 51);
+            buttonUpdate.Location = new System.Drawing.Point(257, 5);
             buttonUpdate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             buttonUpdate.Name = "buttonUpdate";
             buttonUpdate.Size = new System.Drawing.Size(123, 47);
@@ -217,69 +264,11 @@ namespace BinanceAcountViewer
             // 
             label3.AutoSize = true;
             label3.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            label3.Location = new System.Drawing.Point(333, 56);
+            label3.Location = new System.Drawing.Point(11, 51);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(90, 37);
             label3.TabIndex = 5;
             label3.Text = "label3";
-            // 
-            // checkBox3
-            // 
-            checkBox3.AutoSize = true;
-            checkBox3.Location = new System.Drawing.Point(333, 15);
-            checkBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            checkBox3.Name = "checkBox3";
-            checkBox3.Size = new System.Drawing.Size(133, 24);
-            checkBox3.TabIndex = 4;
-            checkBox3.Text = "start/stopTimer";
-            checkBox3.UseVisualStyleBackColor = true;
-            checkBox3.CheckedChanged += checkBox3_CheckedChanged;
-            // 
-            // button5
-            // 
-            button5.Location = new System.Drawing.Point(3, 51);
-            button5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            button5.Name = "button5";
-            button5.Size = new System.Drawing.Size(122, 47);
-            button5.TabIndex = 3;
-            button5.Text = "TeachStrategists";
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
-            // 
-            // button4
-            // 
-            button4.Location = new System.Drawing.Point(3, 4);
-            button4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            button4.Name = "button4";
-            button4.Size = new System.Drawing.Size(122, 47);
-            button4.TabIndex = 2;
-            button4.Text = "SaveKnowledge";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click;
-            // 
-            // checkBox2
-            // 
-            checkBox2.AutoSize = true;
-            checkBox2.Location = new System.Drawing.Point(237, 15);
-            checkBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new System.Drawing.Size(94, 24);
-            checkBox2.TabIndex = 1;
-            checkBox2.Text = "buyMarks";
-            checkBox2.UseVisualStyleBackColor = true;
-            checkBox2.CheckedChanged += checkBox2_CheckedChanged;
-            // 
-            // checkBox1
-            // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new System.Drawing.Point(133, 15);
-            checkBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new System.Drawing.Size(92, 24);
-            checkBox1.TabIndex = 0;
-            checkBox1.Text = "sellMarks";
-            checkBox1.UseVisualStyleBackColor = true;
-            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
             // 
             // tableLayoutPanel2
             // 
@@ -513,6 +502,7 @@ namespace BinanceAcountViewer
             tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             tableLayoutPanel4.Controls.Add(panel8, 0, 0);
+            tableLayoutPanel4.Controls.Add(panel12, 0, 1);
             tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             tableLayoutPanel4.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -525,7 +515,6 @@ namespace BinanceAcountViewer
             // panel8
             // 
             panel8.Controls.Add(label5);
-            panel8.Controls.Add(button3);
             panel8.Controls.Add(richTextBox3);
             panel8.Dock = System.Windows.Forms.DockStyle.Fill;
             panel8.Location = new System.Drawing.Point(3, 3);
@@ -536,23 +525,13 @@ namespace BinanceAcountViewer
             // label5
             // 
             label5.AutoSize = true;
+            label5.Dock = System.Windows.Forms.DockStyle.Top;
             label5.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            label5.Location = new System.Drawing.Point(15, 53);
+            label5.Location = new System.Drawing.Point(0, 0);
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(124, 28);
             label5.TabIndex = 12;
             label5.Text = "Open Orders";
-            // 
-            // button3
-            // 
-            button3.Location = new System.Drawing.Point(3, 4);
-            button3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            button3.Name = "button3";
-            button3.Size = new System.Drawing.Size(136, 35);
-            button3.TabIndex = 11;
-            button3.Text = "CanselOrders";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click_1;
             // 
             // richTextBox3
             // 
@@ -562,6 +541,88 @@ namespace BinanceAcountViewer
             richTextBox3.Size = new System.Drawing.Size(264, 314);
             richTextBox3.TabIndex = 0;
             richTextBox3.Text = "";
+            // 
+            // panel12
+            // 
+            panel12.Controls.Add(label8);
+            panel12.Controls.Add(button5);
+            panel12.Controls.Add(button4);
+            panel12.Controls.Add(checkBox1);
+            panel12.Controls.Add(checkBox2);
+            panel12.Controls.Add(checkBox3);
+            panel12.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel12.Location = new System.Drawing.Point(3, 418);
+            panel12.Name = "panel12";
+            panel12.Size = new System.Drawing.Size(264, 644);
+            panel12.TabIndex = 1;
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            label8.Location = new System.Drawing.Point(15, 19);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(145, 38);
+            label8.TabIndex = 0;
+            label8.Text = "Test Mode";
+            // 
+            // button5
+            // 
+            button5.Location = new System.Drawing.Point(15, 72);
+            button5.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            button5.Name = "button5";
+            button5.Size = new System.Drawing.Size(141, 47);
+            button5.TabIndex = 3;
+            button5.Text = "TeachStrategists";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
+            // 
+            // button4
+            // 
+            button4.Location = new System.Drawing.Point(15, 127);
+            button4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            button4.Name = "button4";
+            button4.Size = new System.Drawing.Size(141, 47);
+            button4.TabIndex = 2;
+            button4.Text = "SaveKnowledge";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new System.Drawing.Point(15, 192);
+            checkBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new System.Drawing.Size(92, 24);
+            checkBox1.TabIndex = 0;
+            checkBox1.Text = "sellMarks";
+            checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
+            // 
+            // checkBox2
+            // 
+            checkBox2.AutoSize = true;
+            checkBox2.Location = new System.Drawing.Point(15, 224);
+            checkBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            checkBox2.Name = "checkBox2";
+            checkBox2.Size = new System.Drawing.Size(94, 24);
+            checkBox2.TabIndex = 1;
+            checkBox2.Text = "buyMarks";
+            checkBox2.UseVisualStyleBackColor = true;
+            checkBox2.CheckedChanged += checkBox2_CheckedChanged;
+            // 
+            // checkBox3
+            // 
+            checkBox3.AutoSize = true;
+            checkBox3.Location = new System.Drawing.Point(15, 256);
+            checkBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            checkBox3.Name = "checkBox3";
+            checkBox3.Size = new System.Drawing.Size(133, 24);
+            checkBox3.TabIndex = 4;
+            checkBox3.Text = "start/stopTimer";
+            checkBox3.UseVisualStyleBackColor = true;
+            checkBox3.CheckedChanged += checkBox3_CheckedChanged;
             // 
             // panel7
             // 
@@ -754,6 +815,8 @@ namespace BinanceAcountViewer
             tableLayoutPanel4.ResumeLayout(false);
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
+            panel12.ResumeLayout(false);
+            panel12.PerformLayout();
             tableLayoutPanel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)listView2).EndInit();
             panel9.ResumeLayout(false);
@@ -827,5 +890,10 @@ namespace BinanceAcountViewer
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Panel panel12;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button button7;
     }
 }

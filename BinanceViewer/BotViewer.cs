@@ -19,11 +19,7 @@ using Newtonsoft.Json;
 using Strateges;
 using System.Threading;
 using Serilog;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Menu;
-using Tensorflow.Keras.Callbacks;
-using Tensorflow;
 using System.Diagnostics;
-using Microsoft.Extensions.Primitives;
 
 namespace BinanceAcountViewer
 {
@@ -1014,6 +1010,11 @@ namespace BinanceAcountViewer
         }
 
         private void tableLayoutPanel3_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button7_Click(object sender, EventArgs e)
         {
 
         }
