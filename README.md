@@ -1,3 +1,37 @@
+Table of contents:
+1. Purpose
+2. About free bot
+3. How create own bot
+4. About interface of the application
+5. Getting started
+
+1. Purpose
+    The purpose of this application is to provide a toolkit that helps you trade in real-time mode. It heps to:
+   - make your trading more effective
+   - show how profitably you trade
+   - help to create your own bot
+   - replay recorded historical data to derive feature sets for training
+     
+2. About bot
+   There is a simple bot (free bot) that trades approximately so:  
+![image_bot4h_logic](https://github.com/ilay007/Binance-View/assets/44927371/03f866a6-55ca-4ce6-9427-c5fd850ac53b)
+This bot can be profitable while the market is fluctuating, but I recommend you to create your own bot.
+
+3. How create your own bot.
+   - To create your own bot you need to create your own class which initialized interface IStrategist.
+   - To enforce your class to work you need to realize just two methods:
+     AddData(CurveBundle curveBundle, KLine point) - this method supplies the bot with data, you need to process it.
+     MakePrediction(double point) - this method makes predictions: buy,sell, nothing.
+     
+ 4. About interface of the application
+
+   
+  
+
+     
+   
+   
+
 # How to start project
 To connect to Binance I used the project https://github.com/binance/binance-connector-dotnet.git.
 First, create an account on Binance, then configure Binance API for your bot.
