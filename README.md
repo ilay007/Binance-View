@@ -1,16 +1,19 @@
-Table of contents:
-1. Purpose
-2. About free bot
-3. How create own bot
-4. About interface of the application
-5. Getting started
+# Table of contents:
+## 1. Purpose
+## 2. About free bot
+## 3. How create own bot
+## 4. About interface of the application
+## 5. Getting started
 
 ## 1. Purpose
-    The purpose of this application is to provide a toolkit that helps you trade in real-time mode. It heps to:
+The purpose of this application is to provide a toolkit that helps you trade in real-time mode. 
+    It heps to:
    - make your trading more effective
    - show how profitably you trade
    - help to create your own bot
    - replay recorded historical data to derive feature sets for training
+
+     
      
  ## 2. About bot
    There is a simple bot (free bot) that trades approximately so:  
@@ -25,8 +28,10 @@ This bot can be profitable while the market is fluctuating, but I recommend you 
      
  ## 4. About interface of the application
 This window shows the history of your trading. There are two buttons on this window in case you have two accounts on Binance.
+
  ![TradingInfo](https://github.com/ilay007/Binance-View/assets/44927371/9fd7a273-2787-46c4-839e-67ebdaf08cda)
  If click on the button "StartRealTrading", you will see this picture.
+ 
  ![2024-06-01_12-21-00](https://github.com/ilay007/Binance-View/assets/44927371/c7148815-2f68-4622-9963-8bbf0c8e4f23)
 
   
