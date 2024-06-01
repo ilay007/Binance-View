@@ -25,9 +25,10 @@ This bot can be profitable while the market is fluctuating, but I recommend you 
      
  ## 4. About interface of the application
 This window shows the history of your trading. There are two buttons on this window in case you have two accounts on Binance.
- ![BotViewerDemoTrading](https://github.com/ilay007/Binance-View/assets/44927371/4c9badb2-adc1-48d8-a544-9c4cd33b94c0)
+ ![TradingInfo](https://github.com/ilay007/Binance-View/assets/44927371/9fd7a273-2787-46c4-839e-67ebdaf08cda)
+ If click on the button "StartRealTrading", you will see this picture.
+ ![2024-06-01_12-21-00](https://github.com/ilay007/Binance-View/assets/44927371/c7148815-2f68-4622-9963-8bbf0c8e4f23)
 
-   
   
 
      
@@ -37,12 +38,13 @@ This window shows the history of your trading. There are two buttons on this win
 # How to start project
 To connect to Binance I used the project https://github.com/binance/binance-connector-dotnet.git.
 First, create an account on Binance, then configure Binance API for your bot.
+
 Don't forget to mark:
  - Enable Spot & Margin Trading
  - Enable Symbol Whitelist
  - Restrict access to trusted IPs only (Recommended) (Add your Ip)
- - ![binanceApi](https://github.com/ilay007/Binance-View/assets/44927371/b46fc91a-9206-42fb-86b8-a5f07ac1a973)
-
+ - 
+ - 
 Before you start the project:
 1) Sync system time on your computer
 2) Create txt file and write there: api key;and api secret. Then write path to this file into value PathToFileWithKeys witch is located in Bot-Viewr/App.config 
@@ -64,11 +66,3 @@ For using this project you need to have Binance credential data: ApiKey, SecretK
 Create keys.txt file and write there: ApiKey;SecretKey.
 Find in BinanceIncomeViewer file Settings.settings and find there settings with name PathToFileWithKeys and write there path to file keys.txt.
 
-![TradingInfo](https://github.com/ilay007/Binance-View/assets/44927371/9fd7a273-2787-46c4-839e-67ebdaf08cda)
-
-
-
-
-
-
-![BotViewerRealTrading](https://github.com/ilay007/Binance-View/assets/44927371/f4c65b0e-20d8-4b82-abf9-33ec7da691cc)
