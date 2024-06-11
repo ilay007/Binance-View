@@ -1,5 +1,6 @@
 ﻿using CoinCore;
 using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,16 +19,45 @@ namespace BinanceAcountViewer
 {
     public partial class SetupTradingList : Form
     {
-        private List<TradeCoinInfo> ListTradesCoins;
+        private List<TradeCoinInfo> ListTradeCoins=new List<TradeCoinInfo>();
         private string TradingCoinPath;
         public SetupTradingList()
         {
+            InitLoger();
             InitializeComponent();
-            TradingCoinPath = Properties.Settings.Default.PathToTradingStateReal;
-            ListTradesCoins = JsonConvert.DeserializeObject<List<TradeCoinInfo>>(File.ReadAllLines(TradingCoinPath)[0]);
             UpdateListView();
+            InitListTradeCoins();
 
 
+        }
+
+
+        private void InitLoger()
+        {
+            Log.Logger = new LoggerConfiguration()
+            .WriteTo.RollingFile(
+              pathFormat: "logs\\log-{Date}.txt", // {Date} will be replaced with the date
+              outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
+        }
+
+        private void InitListTradeCoins()
+        {
+            try
+            {
+                TradingCoinPath = Properties.Settings.Default.PathToTradingStateReal;
+                ListTradeCoins = JsonConvert.DeserializeObject<List<TradeCoinInfo>>(File.ReadAllLines(TradingCoinPath)[0]);
+            }
+            catch (FileNotFoundException ex)
+            {
+                Log.Error("File not found: " + ex.Message);            
+                throw new Exception("File not found: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("An error occurred: " + ex.Message);
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -46,7 +76,7 @@ namespace BinanceAcountViewer
         {
             try
             {                                         
-                listView1.SetObjects(ListTradesCoins);
+                listView1.SetObjects(ListTradeCoins);
                 listView1.Update();
 
             }
@@ -61,21 +91,21 @@ namespace BinanceAcountViewer
         private async void listView2_SelectedIndexChanged(object sender, EventArgs e)
         {
             var newLines = JsonConvert.DeserializeObject<List<TradeCoinInfo>>(File.ReadAllLines(TradingCoinPath)[0]);
-            if (newLines.Count == ListTradesCoins.Count) return;
+            if (newLines.Count == ListTradeCoins.Count) return;
             UpdateListView();
         }
 
         private void buttonAddCoin_Click(object sender, EventArgs e)
         {
-            var user1Form = new NewBotForm(ListTradesCoins, TradingCoinPath);
+            var user1Form = new NewBotForm(ListTradeCoins, TradingCoinPath);
             user1Form.Show();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             var curItem = listView1.SelectedItem;
-            TradeCoinInfo selected=ListTradesCoins.First(s => s.Name == curItem.Text);
-            ListTradesCoins.Remove(selected);
+            TradeCoinInfo selected=ListTradeCoins.First(s => s.Name == curItem.Text);
+            ListTradeCoins.Remove(selected);
             UpdateListView();
 
 

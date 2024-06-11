@@ -13,10 +13,10 @@ namespace CoinCore
 
         public double GetDifInPercent(int stepsAgo);
 
-
         public void AddKnowledgeSince(CurveBundle bundle, int num, bool isBuy);
 
         public void LoadKnowledge(string path);
+
         public string GetLastKnowledges();
 
         public void DeleteLastPoint();      

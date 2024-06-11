@@ -58,10 +58,10 @@ namespace BinanceAcountViewer
             textBox1.Text = WindowSize.ToString();
             textBox2.Text = selectedCurrency;
             Init();
-
-
-
+            
         }
+
+       
 
         private void InitLoger()
         {
@@ -636,7 +636,7 @@ namespace BinanceAcountViewer
         }
 
 
-        private bool enableDateSavingInDb = false;
+        private bool enableDateSavingInDb = true;
 
         private void SavingBidsInDb(Cap cap, string curPair)
         {

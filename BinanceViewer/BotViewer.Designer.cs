@@ -37,6 +37,7 @@ namespace BinanceAcountViewer
             components = new System.ComponentModel.Container();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             panel2 = new System.Windows.Forms.Panel();
+            button8 = new System.Windows.Forms.Button();
             button7 = new System.Windows.Forms.Button();
             label10 = new System.Windows.Forms.Label();
             label9 = new System.Windows.Forms.Label();
@@ -150,6 +151,7 @@ namespace BinanceAcountViewer
             // 
             // panel2
             // 
+            panel2.Controls.Add(button8);
             panel2.Controls.Add(button7);
             panel2.Controls.Add(label10);
             panel2.Controls.Add(label9);
@@ -166,6 +168,16 @@ namespace BinanceAcountViewer
             panel2.Name = "panel2";
             panel2.Size = new System.Drawing.Size(1347, 96);
             panel2.TabIndex = 1;
+            // 
+            // button8
+            // 
+            button8.Location = new System.Drawing.Point(399, 58);
+            button8.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            button8.Name = "button8";
+            button8.Size = new System.Drawing.Size(96, 35);
+            button8.TabIndex = 14;
+            button8.Text = "AllBotsBuy";
+            button8.UseVisualStyleBackColor = true;
             // 
             // button7
             // 
@@ -895,5 +907,6 @@ namespace BinanceAcountViewer
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
     }
 }
