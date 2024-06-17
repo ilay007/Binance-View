@@ -86,7 +86,7 @@ namespace BinanceAcountViewer
 
         }
 
-        public async Task<Cap> GetOrders(string symbol)
+        public async Task<String> GetOrders(string symbol)
         {
 
             if (count >= MaxCounterTimer)
@@ -120,12 +120,11 @@ namespace BinanceAcountViewer
                     price = curKLine.Low;
                     break;
 
-
             }
             count++;
             CurrentCap.Asks[0][0] = price;
             CurrentCap.Bids[0][0] = Math.Round(price * 0.999, 2);
-            return CurrentCap;
+            return JsonConvert.SerializeObject(CurrentCap); ;
         }
 
         public async Task<List<CoinInfo>> GetWalletInfo()
@@ -187,6 +186,8 @@ namespace BinanceAcountViewer
                 return null;
             }
         }
+
+
         public async Task<Object> GetSymbolOrderBook(string pair)
         {
             return null;

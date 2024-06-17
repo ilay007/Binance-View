@@ -32,7 +32,7 @@ namespace BinanceAcountViewer
 
         public async Task<String> GetOrders(string symbol)
         {
-            return null;
+            return "";
         }
 
         public async Task<List<CoinInfo>> GetWalletInfo()

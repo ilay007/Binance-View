@@ -44,7 +44,7 @@ namespace BinanceAcountViewer
         private Object synckObj = new object();
         private Object coinsObj = new object();
         private bool Update = false;
-
+        private bool TestMode = false;
 
 
         public BotViewer(string apiKey, string apiSecret) : base(apiKey, apiSecret)
@@ -58,10 +58,10 @@ namespace BinanceAcountViewer
             textBox1.Text = WindowSize.ToString();
             textBox2.Text = selectedCurrency;
             Init();
-            
+
         }
 
-       
+
 
         private void InitLoger()
         {
@@ -489,6 +489,7 @@ namespace BinanceAcountViewer
             var count = data.KLines.Count;
             var lastrange = data.KLines.GetRange(data.KLines.Count() - 5, 4);
             var start = data.KLines.Count - numPoints - curPoint;
+            if (start < 0) return;
             Drawer.DrawKLines(curImage, data.KLines.GetRange(start, numPoints));
             var max = data.KLines.Select(s => s.Hight).ToList().GetRange(start, numPoints).Max();
             var min = data.KLines.Select(s => s.Low).ToList().GetRange(start, numPoints).Min();
@@ -636,7 +637,7 @@ namespace BinanceAcountViewer
         }
 
 
-        private bool enableDateSavingInDb = true;
+        private bool enableDateSavingInDb = false;
 
         private void SavingBidsInDb(Cap cap, string curPair)
         {
@@ -688,10 +689,10 @@ namespace BinanceAcountViewer
                     var sellCount = 0d;
                     var buy0 = 0d;
                     var buyCount = 0d;
-                    if (enableDateSavingInDb) SavingBidsInDb(cap, curPair);
+                    if (enableDateSavingInDb&&!TestMode) SavingBidsInDb(cap, curPair);
 
-
-                    for (int i = 0; i < 40; i++)
+                    var num=Math.Min(40, cap.Asks.Count());
+                    for (int i = 0; i < num; i++)
                     {
                         sell0 += cap.Asks[i][0] * cap.Asks[i][1];
                         sellCount += cap.Asks[i][1];
@@ -773,7 +774,7 @@ namespace BinanceAcountViewer
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                Service = new BinanceService(apiKey, apiSecret, MaxCounterTimer);
+                if (!TestMode) Service = new BinanceService(apiKey, apiSecret, MaxCounterTimer);
                 // SynckWithWallets();
             }
             if (countTimer % 10 != 0) return;
@@ -922,33 +923,47 @@ namespace BinanceAcountViewer
 
         private async void button6_Click(object sender, EventArgs e)
         {
+            TestMode = true;
             label3.Text = "Test mode";
             selectedCurrency = textBox2.Text.ToString();
             Service = new BinanceServiceEmulator();
             TradingCoinPath = Properties.Settings.Default.PathToTradingStateTrain;
             SynckWithWallets();
-            var files = Directory.GetFiles(Properties.Settings.Default.DataBase);
-            var dic = new Dictionary<string, List<KLine>>();
-            var pair = getCurrentPair();
-            if (!dic.ContainsKey(pair)) dic.Add(pair, new List<KLine>());
-            foreach (var file in files)
+            try
             {
-                if (file.Contains(selectedCurrency))
+                var files = Directory.GetFiles(Properties.Settings.Default.DataBase);
+                var dic = new Dictionary<string, List<KLine>>();
+                var pair = getCurrentPair();
+                if (!dic.ContainsKey(pair)) dic.Add(pair, new List<KLine>());
+                foreach (var file in files)
                 {
-                    var lines = File.ReadAllLines(file).ToList();
-                    var kLines = new List<KLine>();
-                    for (int i = 1; i < lines.Count - 1; i++)
+                    if (file.Contains(selectedCurrency))
                     {
-                        var line = lines[i];
-                        var parts = line.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                        var kLine = new KLine(parts);
-                        kLines.Add(kLine);
+                        var lines = File.ReadAllLines(file).ToList();
+                        var kLines = new List<KLine>();
+                        for (int i = 1; i < lines.Count - 1; i++)
+                        {
+                            var line = lines[i];
+                            var parts = line.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                            var kLine = new KLine(parts);
+                            kLines.Add(kLine);
+                        }
+                        dic[pair].AddRange(kLines);
+                        //break;
                     }
-                    dic[pair].AddRange(kLines);
-                    //break;
                 }
+                Service.InitService(dic, MaxCounterTimer, just15min);
             }
-            Service.InitService(dic, MaxCounterTimer, just15min);
+            catch (FileNotFoundException ex)
+            {
+                Log.Error(ex.ToString());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+
             LoadListTradesCoins();
             await SynckWithWallets();
             SaveListTradesCoins();
