@@ -24,9 +24,9 @@ namespace BinanceAcountViewer
         public SetupTradingList()
         {
             InitLoger();
-            InitializeComponent();
-            UpdateListView();
+            InitializeComponent();            
             InitListTradeCoins();
+            UpdateListView();
 
 
         }
@@ -70,22 +70,17 @@ namespace BinanceAcountViewer
 
         }
 
-
-
         private void UpdateListView()
         {
             try
             {                                         
                 listView1.SetObjects(ListTradeCoins);
                 listView1.Update();
-
             }
             catch(Exception ex)
             {
                 throw ex;
             }
-           
-
         }
 
         private async void listView2_SelectedIndexChanged(object sender, EventArgs e)
@@ -104,11 +99,21 @@ namespace BinanceAcountViewer
         private void button1_Click(object sender, EventArgs e)
         {
             var curItem = listView1.SelectedItem;
+            if(curItem == null) return;
             TradeCoinInfo selected=ListTradeCoins.First(s => s.Name == curItem.Text);
             ListTradeCoins.Remove(selected);
             UpdateListView();
+            SaveListTradesCoins();
+        }
 
-
+        private void SaveListTradesCoins()
+        {
+            var listTradesCoins = JsonConvert.SerializeObject(ListTradeCoins);
+            using (StreamWriter writer = new StreamWriter(TradingCoinPath))
+            {
+                writer.WriteLine(listTradesCoins);
+                writer.Close();
+            }
         }
     }
 }
