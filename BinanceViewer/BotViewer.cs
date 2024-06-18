@@ -20,6 +20,7 @@ using Strateges;
 using System.Threading;
 using Serilog;
 using System.Diagnostics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BinanceAcountViewer
 {
@@ -41,8 +42,8 @@ namespace BinanceAcountViewer
         private string TradingCoinPath = "";
         private List<Order> OpenedOrders = new List<Order>();
         private List<Order> NotExecutedOrders = new List<Order>();
-        private Object synckObj = new object();
-        private Object coinsObj = new object();
+        private object synckObj = new object();
+        private object coinsObj = new object();
         private bool Update = false;
         private bool TestMode = false;
 
@@ -679,7 +680,7 @@ namespace BinanceAcountViewer
                 foreach (var coin in ListTradesCoins)
                 {
                     var curPair = coin.Name + opponentCurrency;
-                    String dataCap = await Service.GetOrders(curPair);
+                    string dataCap = await Service.GetOrders(curPair);
                     Stopwatch stopWatch = new Stopwatch();
                     stopWatch.Start();
                     Cap cap = JsonConvert.DeserializeObject<Cap>(dataCap);
@@ -713,8 +714,9 @@ namespace BinanceAcountViewer
                     {
                         DateTime currentDateTime = DateTime.Now;
                         if (!RealMode || (currentDateTime.Minute % (interval.GetNum())) == 0)
-                        {
+                        {                           
                             var res1 = await UpdateKLines(interval, curPair);
+                            Console.WriteLine(getPriceStatistic());
                             if (!res1) return;
                         }
                         var point = cap.Bids[0][0];
@@ -794,7 +796,44 @@ namespace BinanceAcountViewer
                 richTextBox3.AppendText(curOrders);
                 LastBuildOrders = curOrders;
             }
+        }
 
+        private string getPriceStatistic()
+        {     
+            var pair=getCurrentPair();
+            var builder = new StringBuilder();
+            foreach (var interval in Intervals)
+            {
+                var data=CoinsStore.LinesHistory[interval][pair].KLines;
+                var lastKline = data[data.Count - 1];
+                var lastPrice = lastKline.Close;
+                double lesValueCount = 0;
+                double moreValueCount = 0;
+                for (int i = data.Count - 1; i > 0; i--)
+                {
+                    if (data[i].Low > lastPrice)
+                    {
+                        moreValueCount += data[i].Volume;
+                        continue;
+                    }
+                    lesValueCount += data[i].Volume;
+
+                }
+                
+                builder.Append(selectedCurrency);
+                builder.Append(' ');
+                builder.Append(interval);
+                builder.Append(" ");                
+                int proc = 100 * (int)(moreValueCount - lesValueCount) / (int)lesValueCount;
+                double delCount = Math.Round(moreValueCount - lesValueCount, 2);
+                builder.Append("100*(more-les)/les=");
+                builder.Append(proc);
+                builder.Append(" ");
+                builder.Append("(more-les)=");
+                builder.Append(delCount);    
+                builder.AppendLine();
+            }
+            return builder.ToString();
         }
 
 
@@ -816,7 +855,7 @@ namespace BinanceAcountViewer
             }
         }
 
-        String LastBuildOrders = "";
+        string LastBuildOrders = "";
 
         private void button3_Click(object sender, EventArgs e)
         {
