@@ -1,3 +1,5 @@
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace CoinCore
 {
     public class CurveBundle
@@ -7,10 +9,12 @@ namespace CoinCore
         public Ema SlowEma;
         public List<KLine> KLines;
         public List<double> DifEma;
-        public String Pair;
-        public String Interval;
+        public List<int> GainVolumeProc;
+        public List<int> GainVolume;
+        public string Pair;
+        public string Interval;
         public static int NumLastCodes = 4;
-        public CurveBundle(List<KLine> kLines, int bollN, int fastN, int slowN, String pair, String interval)
+        public CurveBundle(List<KLine> kLines, int bollN, int fastN, int slowN, string pair, string interval)
         {
             KLines = kLines;
             Pair = pair;
@@ -20,10 +24,34 @@ namespace CoinCore
             FastEma = new Ema(lines, fastN);
             SlowEma = new Ema(lines, slowN);
             DifEma = new List<double>();
-            for(int i=0;i<FastEma.EmaPoints.Count;i++)
+            GainVolume=new List<int>();
+            GainVolumeProc=new List<int>();
+            for (int i=0;i<FastEma.EmaPoints.Count;i++)
             {
                 DifEma.Add(FastEma.EmaPoints[i] - SlowEma.EmaPoints[i]);
             }
+            GainVolume.Add(0);
+            GainVolumeProc.Add(0);
+            for (int k=0;k<kLines.Count-1;k++)
+            {
+                var lastKline = kLines;
+                var lastPrice = lastKline[k+1].Close;
+                double lesValueCount = 1;
+                double moreValueCount = 1;
+                for (int i = k; i > 0; i--)
+                {
+                    if (kLines[i].Low > lastPrice)
+                    {
+                        moreValueCount += kLines[i].Volume;
+                        continue;
+                    }
+                    lesValueCount += kLines[i].Volume;
+                }
+                int proc = 100 * (int)(moreValueCount - lesValueCount) / (int)lesValueCount;
+                GainVolumeProc.Add(proc);
+                int delCount = (int)Math.Round(moreValueCount - lesValueCount, 2);
+                GainVolume.Add(delCount);
+            }            
         }
 
         public CurveBundle()
@@ -41,6 +69,8 @@ namespace CoinCore
             nBundle.FastEma = FastEma.GetRange(start, len);
             nBundle.SlowEma = SlowEma.GetRange(start, len);
             nBundle.DifEma = DifEma.GetRange(start, len);
+            nBundle.GainVolumeProc= GainVolumeProc.GetRange(start,len);
+            nBundle.GainVolume = GainVolume.GetRange(start, len);
             return nBundle;
         }
 
@@ -48,13 +78,15 @@ namespace CoinCore
         {
             return GetRange(num - NumLastCodes, NumLastCodes);
         }
-        public CurveBundle GetLastData()
+        public CurveBundle GetLastData(int num)
         {
-            return GetRange(KLines.Count - 2, 1);
+            return GetRange(KLines.Count - num-1, num);
         }
         public void DelliteLastPoint()
         {
             KLines.RemoveAt(KLines.Count - 1);
+            GainVolume.RemoveAt(KLines.Count - 1);
+            GainVolumeProc.RemoveAt(KLines.Count - 1);
             Boll.DeliteLastPoint();
             FastEma.DellLastPoint();
             SlowEma.DellLastPoint();
@@ -76,6 +108,23 @@ namespace CoinCore
             FastEma.AddCrudePoint(point.Close);
             SlowEma.AddCrudePoint(point.Close);
             DifEma.Add(FastEma.EmaPoints.Last()-SlowEma.EmaPoints.Last());
+            var lastKline = KLines[KLines.Count - 1];
+            var lastPrice = lastKline.Close;
+            double lesValueCount = 1;
+            double moreValueCount = 1;
+            for (int i = KLines.Count - 1; i > 0; i--)
+            {
+                if (KLines[i].Low > lastPrice)
+                {
+                    moreValueCount += KLines[i].Volume;
+                    continue;
+                }
+                lesValueCount += KLines[i].Volume;
+            }
+            int proc = 100 * (int)(moreValueCount - lesValueCount) / (int)lesValueCount;
+            int delCount = (int)Math.Round(moreValueCount - lesValueCount, 2);
+            GainVolumeProc.Add(proc);
+            GainVolume.Add(delCount);
         }
     }
 }

@@ -84,6 +84,7 @@ namespace CoinCore
             Hight = lines.Select(s=>s.Hight).ToList().Max();
             Low = lines.Select(s=>s.Low).ToList().Min();
             Close = lines.Last().Close;
+            Volume=lines.Select(s=>s.Volume).ToList().Sum();
 
         }
     }

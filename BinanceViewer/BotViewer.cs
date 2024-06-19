@@ -21,6 +21,7 @@ using System.Threading;
 using Serilog;
 using System.Diagnostics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Castle.Core.Internal;
 
 namespace BinanceAcountViewer
 {
@@ -45,7 +46,7 @@ namespace BinanceAcountViewer
         private object synckObj = new object();
         private object coinsObj = new object();
         private bool Update = false;
-        private bool TestMode = false;
+
 
 
         public BotViewer(string apiKey, string apiSecret) : base(apiKey, apiSecret)
@@ -139,7 +140,7 @@ namespace BinanceAcountViewer
         {
             while (true)
             {
-                System.Threading.Thread.Sleep(5000);
+                if (RealMode) System.Threading.Thread.Sleep(5000);
                 if (OpenedOrders.Count == 0 || Service == null) continue;
                 try
                 {
@@ -263,7 +264,7 @@ namespace BinanceAcountViewer
                 foreach (var coin in ListTradesCoins)
                 {
 
-                    CoinsStore.AddStrategist(interval, coin.Name + opponentCurrency, new Strategist());
+                    CoinsStore.AddStrategist(interval, coin.Name + opponentCurrency, new StatisticStrategist());
                     if (interval == Interval.ONE_HOUR) CoinsStore.Strategists[interval][coin.Name + opponentCurrency].SetTimeLemit(6);
                 }
             }
@@ -583,7 +584,7 @@ namespace BinanceAcountViewer
             if (coin == null || coin.BalanceUSDT < 20) return;
             var curPair = coin.Name + opponentCurrency;
             //TO DO
-            if (inProfit && priceToBuy > (1 - 2 * Fee) * coin.LastBuyPrice) return;
+            //if (inProfit && priceToBuy > (1 - 2 * Fee) * coin.LastBuyPrice) return;
             var q = ((coin.BalanceUSDT > 40 ? 0.5 * coin.BalanceUSDT : coin.BalanceUSDT) / priceToBuy);
             var iq = (int)(10 * q);
             q = ((double)iq / 10);
@@ -690,9 +691,9 @@ namespace BinanceAcountViewer
                     var sellCount = 0d;
                     var buy0 = 0d;
                     var buyCount = 0d;
-                    if (enableDateSavingInDb&&!TestMode) SavingBidsInDb(cap, curPair);
+                    if (enableDateSavingInDb && !RealMode) SavingBidsInDb(cap, curPair);
 
-                    var num=Math.Min(40, cap.Asks.Count());
+                    var num = Math.Min(40, cap.Asks.Count());
                     for (int i = 0; i < num; i++)
                     {
                         sell0 += cap.Asks[i][0] * cap.Asks[i][1];
@@ -714,9 +715,9 @@ namespace BinanceAcountViewer
                     {
                         DateTime currentDateTime = DateTime.Now;
                         if (!RealMode || (currentDateTime.Minute % (interval.GetNum())) == 0)
-                        {                           
+                        {
                             var res1 = await UpdateKLines(interval, curPair);
-                            Console.WriteLine(getPriceStatistic());
+                            //Console.WriteLine(getPriceStatistic());
                             if (!res1) return;
                         }
                         var point = cap.Bids[0][0];
@@ -776,7 +777,7 @@ namespace BinanceAcountViewer
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                if (!TestMode) Service = new BinanceService(apiKey, apiSecret, MaxCounterTimer);
+                if (RealMode) Service = new BinanceService(apiKey, apiSecret, MaxCounterTimer);
                 // SynckWithWallets();
             }
             if (countTimer % 10 != 0) return;
@@ -799,38 +800,22 @@ namespace BinanceAcountViewer
         }
 
         private string getPriceStatistic()
-        {     
-            var pair=getCurrentPair();
+        {
+            var pair = getCurrentPair();
             var builder = new StringBuilder();
             foreach (var interval in Intervals)
             {
-                var data=CoinsStore.LinesHistory[interval][pair].KLines;
-                var lastKline = data[data.Count - 1];
-                var lastPrice = lastKline.Close;
-                double lesValueCount = 0;
-                double moreValueCount = 0;
-                for (int i = data.Count - 1; i > 0; i--)
-                {
-                    if (data[i].Low > lastPrice)
-                    {
-                        moreValueCount += data[i].Volume;
-                        continue;
-                    }
-                    lesValueCount += data[i].Volume;
-
-                }
-                
                 builder.Append(selectedCurrency);
                 builder.Append(' ');
                 builder.Append(interval);
-                builder.Append(" ");                
-                int proc = 100 * (int)(moreValueCount - lesValueCount) / (int)lesValueCount;
-                double delCount = Math.Round(moreValueCount - lesValueCount, 2);
+                builder.Append(" ");
+                int proc = CoinsStore.LinesHistory[interval][pair].GainVolumeProc.Last();
+                double delCount = CoinsStore.LinesHistory[interval][pair].GainVolume.Last();
                 builder.Append("100*(more-les)/les=");
                 builder.Append(proc);
                 builder.Append(" ");
                 builder.Append("(more-les)=");
-                builder.Append(delCount);    
+                builder.Append(delCount);
                 builder.AppendLine();
             }
             return builder.ToString();
@@ -962,7 +947,6 @@ namespace BinanceAcountViewer
 
         private async void button6_Click(object sender, EventArgs e)
         {
-            TestMode = true;
             label3.Text = "Test mode";
             selectedCurrency = textBox2.Text.ToString();
             Service = new BinanceServiceEmulator();
@@ -970,25 +954,30 @@ namespace BinanceAcountViewer
             SynckWithWallets();
             try
             {
-                var files = Directory.GetFiles(Properties.Settings.Default.DataBase);
+                var path = Directory.GetCurrentDirectory();
+                var p = Path.Combine(path, Properties.Settings.Default.DataBase);
+                var dirs = Directory.GetDirectories(p);
                 var dic = new Dictionary<string, List<KLine>>();
-                var pair = getCurrentPair();
-                if (!dic.ContainsKey(pair)) dic.Add(pair, new List<KLine>());
-                foreach (var file in files)
+                foreach (var dir in dirs)
                 {
-                    if (file.Contains(selectedCurrency))
+                    var files = Directory.GetFiles(dir);
+                    foreach (var file in files)
                     {
+                        var comps = file.Split('\\').ToList();
+                        var coin = comps[comps.Count - 2];
+                        var pair = coin + "USDT";
+                        if (!dic.ContainsKey(pair)) dic.Add(pair, new List<KLine>());
                         var lines = File.ReadAllLines(file).ToList();
                         var kLines = new List<KLine>();
                         for (int i = 1; i < lines.Count - 1; i++)
                         {
                             var line = lines[i];
+                            if (line.IsNullOrEmpty()) continue;
                             var parts = line.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                             var kLine = new KLine(parts);
                             kLines.Add(kLine);
                         }
                         dic[pair].AddRange(kLines);
-                        //break;
                     }
                 }
                 Service.InitService(dic, MaxCounterTimer, just15min);

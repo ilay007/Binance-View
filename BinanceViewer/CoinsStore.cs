@@ -65,13 +65,15 @@ namespace AcountViewer
                 if (!Strategists[interval].ContainsKey(pair)) return Prediction.NOTHING;            
             }
             //var prediction = Strategists["15m"][pair].MakePrediction(point);
-            //var dif= Strategists["15m"]["BTCUSDT"].GetDifInPercent(150);           
+             var dif= Strategists["15m"]["BTCUSDT"].GetDifInPercent(150);           
             //if (dif > 0.15) return Prediction.NOTHING;
             //return prediction;
             var pred15 = Strategists["15m"][pair].MakePrediction(point);
-            var predOne = Strategists["1h"][pair].MakePrediction(point);
-            if(pred15 == Prediction.BUY&&predOne==Prediction.BUY)return Prediction.BUY;
-            if(pred15 == Prediction.SELL&&predOne==Prediction.SELL)return Prediction.SELL;
+            //var predOne = Strategists["1h"][pair].MakePrediction(point);
+            //if(pred15 == Prediction.BUY&&predOne==Prediction.BUY)return Prediction.BUY;
+            //if(pred15 == Prediction.SELL&&predOne==Prediction.SELL)return Prediction.SELL;
+            if (pred15 == Prediction.BUY) return Prediction.BUY;
+            if (pred15 == Prediction.SELL) return Prediction.SELL;
             return Prediction.NOTHING;
         }
 
@@ -87,7 +89,7 @@ namespace AcountViewer
             if (!this.LinesHistory.ContainsKey(interval)) return;
             if (!this.LinesHistory[interval].ContainsKey(currentPair)) return;
             LinesHistory[interval][currentPair].ChangeLastPoint(point);
-            var lastData = LinesHistory[interval][currentPair].GetLastData();
+            var lastData = LinesHistory[interval][currentPair].GetLastData(1);
             //Strategists[interval][currentPair].AddData(lastData, kline);
 
         }
@@ -97,7 +99,7 @@ namespace AcountViewer
             if (!this.LinesHistory.ContainsKey(interval)) return;
             if (!this.LinesHistory[interval].ContainsKey(currentPair)) return;
             LinesHistory[interval][currentPair].AddPoint(kline);
-            var lastData = LinesHistory[interval][currentPair].GetLastData();
+            var lastData = LinesHistory[interval][currentPair].GetLastData(1);
             Strategists[interval][currentPair].AddData(lastData, kline);
         }
 
@@ -108,7 +110,7 @@ namespace AcountViewer
             if (!this.LinesHistory[interval].ContainsKey(currentPair))
             {
                 this.LinesHistory[interval].Add(currentPair, new CurveBundle(data, BollN, FastN, SlowN, currentPair, interval));
-                var lastData = LinesHistory[interval][currentPair].GetLastData();
+                var lastData = LinesHistory[interval][currentPair].GetLastData(5);
                 Strategists[interval][currentPair].AddData(lastData, data.Last());
             }
             else
