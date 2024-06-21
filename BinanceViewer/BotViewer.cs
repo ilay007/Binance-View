@@ -35,7 +35,7 @@ namespace BinanceAcountViewer
         List<TradeCoinInfo> ListTradesCoins;
         private int MaxCounterTimer = 7;
         private bool just15min = false;
-        private int WindowSize = 60;
+
         private Dictionary<string, Dictionary<string, KLine[]>> LastKLines = new Dictionary<string, Dictionary<string, KLine[]>>();
         private bool CanselDrawing = false;
         private bool RealMode = false;
@@ -57,7 +57,7 @@ namespace BinanceAcountViewer
             InitLoger();
             Log.Information("BotViewer is started");
             InitializeComponent();
-            textBox1.Text = WindowSize.ToString();
+            textBox1.Text = numPoints.ToString();
             textBox2.Text = selectedCurrency;
         }
 
@@ -111,27 +111,6 @@ namespace BinanceAcountViewer
                 }
             }
         }
-
-
-        private void InitCriptoPairs()
-        {
-            using (ApplicationContext db = new ApplicationContext())
-            {
-                /* Pair pair1 = new Pair { Name = "ICP", ApponenName = "USDT" };
-                 Pair pair2 = new Pair { Name = "FIRO", ApponenName = "USDT" };
-                 Pair pair3 = new Pair { Name = "RVN", ApponenName = "USDT" };
-                 Pair pair4 = new Pair { Name = "DOGE", ApponenName = "USDT" };
-                 Pair pair5 = new Pair { Name = "MINA", ApponenName = "USDT" };
-                 db.Pairs.AddRange(pair1, pair2, pair3, pair4, pair5);
-                 db.SaveChanges();*/
-            }
-
-        }
-
-
-
-
-
 
 
         private async void ControlOpenedOrders()
@@ -404,22 +383,33 @@ namespace BinanceAcountViewer
             var width5 = pictureBox5.Width;
             Graphics g = Graphics.FromImage((Image)pictureBox1.Image);
             g.DrawLine(new Pen(Color.Black), point.X, 0, point.X, pictureBox1.Image.Height);
+            double numStepsLeftSide = ((double)(point.X - 3) / (int)(pictureBox1.Width / numPoints));
+            double numStepsRiteSide = 15 * (numPoints - numStepsLeftSide);
+            double x_min = (numPoints - numStepsRiteSide) * pictureBox7.Width / numPoints;
+            if ((x_min + 3) < pictureBox7.Width)
+            {
+                DrawCursorLine(pictureBox7, (int)x_min);
+            }
             if (!just15min)
             {
                 DrawKLines(pictureBox3, pictureBox4, Interval.ONE_HOUR);
                 DrawKLines(pictureBox5, pictureBox6, Interval.FOUR_HOUR);
                 if (pictureBox3.Image == null) return false;
                 var x1 = (point.X + 3 * width3) / 4;
-                Graphics g1 = Graphics.FromImage((Image)pictureBox3.Image);
-                g1.DrawLine(new Pen(Color.Black), x1, 0, x1, pictureBox3.Image.Height);
-
                 if (pictureBox5.Image == null) return false;
-                var x2 = (x1 + 3 * width5) / 4;
-                Graphics g2 = Graphics.FromImage((Image)pictureBox5.Image);
-                g2.DrawLine(new Pen(Color.Black), x2, 0, x2, pictureBox5.Image.Height);
+                DrawCursorLine(pictureBox5, x1);
+                DrawCursorLine(pictureBox3, (x1 + 3 * width5) / 4);
+
+
             }
             return true;
+        }
 
+
+        private void DrawCursorLine(PictureBox pictureBox, int x)
+        {
+            Graphics g2 = Graphics.FromImage((Image)pictureBox.Image);
+            g2.DrawLine(new Pen(Color.Black), x, 0, x, pictureBox.Image.Height);
         }
 
         private async void FillRichBook(Cap cap)
@@ -764,13 +754,10 @@ namespace BinanceAcountViewer
                         var res = ReDraw();
                         FillRichBook(cap);
                     }
-
                     foreach (var interval in Intervals)
                     {
                         if (cap != null && !RealMode) CoinsStore.RemoveLastPoint(interval, curPair);
                     }
-
-
                 }
                 if (Update) SynckAll();
             }
