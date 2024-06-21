@@ -59,8 +59,6 @@ namespace BinanceAcountViewer
             InitializeComponent();
             textBox1.Text = WindowSize.ToString();
             textBox2.Text = selectedCurrency;
-            Init();
-
         }
 
 
@@ -74,15 +72,15 @@ namespace BinanceAcountViewer
             .CreateLogger();
         }
 
-        private void Init()
+        private void Init(string pathToWallet)
         {
+            TradingCoinPath = pathToWallet;
             Intervals.Add(Interval.ONE_MINUTE);
             Intervals.Add(Interval.FIFTEEN_MINUTE);
             Intervals.Add(Interval.ONE_HOUR);
             Intervals.Add(Interval.FOUR_HOUR);
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
-            TradingCoinPath = Properties.Settings.Default.PathToTradingStateReal;
             FillTradingBotsData();
             InitStrategists();
 
@@ -338,6 +336,7 @@ namespace BinanceAcountViewer
         {
             Service = new BinanceService(apiKey, apiSecret, MaxCounterTimer);
             TradingCoinPath = Properties.Settings.Default.PathToTradingStateReal;
+            Init(Properties.Settings.Default.PathToTradingStateReal);
             label3.Text = "Real time mode";
             RealMode = true;
             var res = false;
@@ -580,12 +579,12 @@ namespace BinanceAcountViewer
 
         private void BuyCoin(TradeCoinInfo coin, double priceToBuy, bool inProfit)
         {
-
-            if (coin == null || coin.BalanceUSDT < 20) return;
+            double coinsToBuy = coin.NumOfTradingCoins - coin.Balance;
+            if (coin == null || coinsToBuy * priceToBuy < 20) return;
             var curPair = coin.Name + opponentCurrency;
             //TO DO
             //if (inProfit && priceToBuy > (1 - 2 * Fee) * coin.LastBuyPrice) return;
-            var q = ((coin.BalanceUSDT > 40 ? 0.5 * coin.BalanceUSDT : coin.BalanceUSDT) / priceToBuy);
+            var q = coinsToBuy;
             var iq = (int)(10 * q);
             q = ((double)iq / 10);
             if (priceToBuy < 1) q = Math.Round(q - 1, 0);
@@ -606,7 +605,7 @@ namespace BinanceAcountViewer
             if (coin == null || coin.Balance * priceToSell < 20) return;
             var curPair = coin.Name + opponentCurrency;
             if (coin.Name == "BTC") return;
-            if (inProfit && priceToSell < (1 + 2 * Fee + 0.07) * coin.LastBuyPrice) return;
+            //if (inProfit && priceToSell < (1 + 2 * Fee + 0.07) * coin.LastBuyPrice) return;
             var balance = coin.Balance * priceToSell > 40 ? 0.5 * coin.Balance : coin.Balance;
             double p = priceToSell;
             int count = 1;
@@ -714,10 +713,10 @@ namespace BinanceAcountViewer
                     foreach (var interval in Intervals)
                     {
                         DateTime currentDateTime = DateTime.Now;
-                        if (!RealMode || (currentDateTime.Minute % (interval.GetNum())) == 0)
+                        if (!RealMode || currentDateTime.Minute % (interval.GetNum()) == 0)
                         {
                             var res1 = await UpdateKLines(interval, curPair);
-                            //Console.WriteLine(getPriceStatistic());
+                            if (RealMode) Console.WriteLine(getPriceStatistic());
                             if (!res1) return;
                         }
                         var point = cap.Bids[0][0];
@@ -727,6 +726,7 @@ namespace BinanceAcountViewer
                         }
                         else
                         {
+                            var lsfg = LastKLines[interval][curPair];
                             LastKLines[interval][curPair][0].Insert(cap.Bids[0][0]);
                             CoinsStore.AddPoint(interval, curPair, LastKLines[interval][curPair][0]);
                         }
@@ -951,6 +951,7 @@ namespace BinanceAcountViewer
             selectedCurrency = textBox2.Text.ToString();
             Service = new BinanceServiceEmulator();
             TradingCoinPath = Properties.Settings.Default.PathToTradingStateTrain;
+            Init(TradingCoinPath);
             SynckWithWallets();
             try
             {
@@ -958,6 +959,7 @@ namespace BinanceAcountViewer
                 var p = Path.Combine(path, Properties.Settings.Default.DataBase);
                 var dirs = Directory.GetDirectories(p);
                 var dic = new Dictionary<string, List<KLine>>();
+                int delData = 4;//для тестов пока используем только 1/ часть
                 foreach (var dir in dirs)
                 {
                     var files = Directory.GetFiles(dir);
@@ -969,7 +971,7 @@ namespace BinanceAcountViewer
                         if (!dic.ContainsKey(pair)) dic.Add(pair, new List<KLine>());
                         var lines = File.ReadAllLines(file).ToList();
                         var kLines = new List<KLine>();
-                        for (int i = 1; i < lines.Count - 1; i++)
+                        for (int i = 1; i < (lines.Count - 1) / delData; i++)
                         {
                             var line = lines[i];
                             if (line.IsNullOrEmpty()) continue;
@@ -995,13 +997,13 @@ namespace BinanceAcountViewer
             LoadListTradesCoins();
             await SynckWithWallets();
             SaveListTradesCoins();
-            StartTimer(100);
+
             foreach (var interval in Intervals)
             {
                 UpdateKLines(interval, GetCurrentPair());
             }
-
             ReDraw();
+            StartTimer(100);
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
