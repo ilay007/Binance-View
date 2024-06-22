@@ -133,7 +133,7 @@ namespace AcountViewer
 
         public void AddKnowledges(string pair, int start, Interval interval)
         {
-            int steps = 4;//for 15 minutes
+            int steps = 8;//for 15 minutes
             if(interval==Interval.ONE_MINUTE)
             {
                 steps *= 15;

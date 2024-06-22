@@ -1,4 +1,8 @@
-﻿using System;
+﻿using AcountViewer;
+using Binance.Spot.Models;
+using Castle.Core;
+using Strateges;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,14 +11,66 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using CoinCore;
+using Strateges;
+using BinanceTradingDrawer;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BinanceAcountViewer
 {
     public partial class KnowledgeViewer : Form
     {
+        int count = 0;
+        StatisticStrategist strategist;
+
+
         public KnowledgeViewer()
         {
             InitializeComponent();
+            strategist = new StatisticStrategist();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var PathToKnowledge = "D:\\mGitHub\\MyGit\\LTCUSDTKnowledge.txt";
+            strategist.LoadKnowledge(PathToKnowledge);
+            ReDrawPicture();
+
+
+        }
+
+
+        private void ReDrawPicture()
+        {
+            var data = strategist.Knowledge.BuyKnowledges[this.count];
+            var curImage = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            var image = Drawer.DrawKLines(curImage, data.KLines);
+            var numPoints = data.KLines.Count;
+            var max = data.KLines.Select(s => s.Hight).ToList().GetRange(0, numPoints).Max();
+            var min = data.KLines.Select(s => s.Low).ToList().GetRange(0, numPoints).Min();
+            Drawer.DrawGrapth(curImage, data.Boll.CurveHight.GetRange(0, numPoints), Color.Violet, max, min);
+            Drawer.DrawGrapth(curImage, data.Boll.Ema.EmaPoints.GetRange(0, numPoints), Color.Brown, max, min);
+            Drawer.DrawGrapth(curImage, data.Boll.CurveLow.GetRange(0, numPoints), Color.Orange, max, min);
+            pictureBox1.Image = image;
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            count++;
+            if (count > strategist.Knowledge.BuyKnowledges.Count()-1) count = 0;
+            ReDrawPicture();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            count--;
+            if(count<0) count = 0;
+            ReDrawPicture();
+
+        }
+
+
     }
 }

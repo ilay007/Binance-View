@@ -34,32 +34,9 @@ namespace AcountViewer
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
-            /* using (BinanceAcountViewer.ApplicationContext db = new BinanceAcountViewer.ApplicationContext())
-             {
-                 // создаем два объекта User
-                 User user1 = new User { Name = "Tom", Age = 33 };
-                 User user2 = new User { Name = "Alice", Age = 26 };
-                 Warrior war = new Warrior { Nicname = "Aldboy", Age = 96 };
-
-                 // добавляем их в бд
-                 db.Users.AddRange(user1, user2);
-                 db.SaveChanges();
-             }
-             // получение данных
-             using (BinanceAcountViewer.ApplicationContext db = new BinanceAcountViewer.ApplicationContext())
-             {
-                 // получаем объекты из бд и выводим на консоль
-                 var users = db.Users.ToList();
-                 Console.WriteLine("Users list:");
-                 foreach (User u in users)
-                 {
-                     Console.WriteLine($"{u.Id}.{u.Name} - {u.Age}");
-                 }
-             }
-
-             var statisticForm = new PriceStatistic();
-             statisticForm.IsMdiContainer = true;
-             statisticForm.Show();*/
+            var user1Form = new KnowledgeViewer();
+            user1Form.IsMdiContainer = true;
+            user1Form.Show();
         }
 
         private void toolStripButton4_Click(object sender, EventArgs e)

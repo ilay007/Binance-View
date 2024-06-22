@@ -884,12 +884,20 @@ namespace BinanceAcountViewer
             var currentPair = GetCurrentPair();
             var widhStep = Drawer.CountStepWidth(pictureBox1.Width, numPoints);
             int numberStep = point.X / widhStep + 1;
-            var numLastSteps = 4;
+
             var start = Math.Min(numberStep, numPoints);
             var numStepsRightSide = GetNumStepOn1MinGraph();
             if (numStepsRightSide < 0) return;
-            if (BuyMode) CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.ONE_MINUTE);
-            if (SellMode) CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.ONE_MINUTE);
+            if (BuyMode)
+            {
+                CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.ONE_MINUTE);
+                CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.FIFTEEN_MINUTE);
+            }
+            if (SellMode)
+            {
+                CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.ONE_MINUTE);
+                CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.FIFTEEN_MINUTE);
+            }
 
         }
 
