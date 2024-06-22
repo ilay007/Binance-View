@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Binance.Spot.Models;
 using CoinCore;
+using Strateges;
 
 namespace AcountViewer
 {
@@ -129,42 +131,43 @@ namespace AcountViewer
             return true;
         }
 
-        public void AddKnowledges(string pair, int start, bool isBuy)
+        public void AddKnowledges(string pair, int start, Interval interval)
         {
-            var crude = LinesHistory[Interval.FIFTEEN_MINUTE][pair].GetLastKnowledgesSinceNum(start);
-            Strategists[Interval.FIFTEEN_MINUTE][pair].AddKnowledgeSince(crude, start, true);
+            int steps = 4;//for 15 minutes
+            if(interval==Interval.ONE_MINUTE)
+            {
+                steps *= 15;
+            }
+            var startInHistory = LinesHistory[interval][pair].KLines.Count - start - steps;
+            var crude = LinesHistory[interval][pair].GetRange(startInHistory,steps);
+            Strategists[interval][pair].AddKnowledgeSince(crude, start, true);
 
         }
 
         public void SaveKnowledges(string path)
         {
-            foreach (var interval in Strategists)
-            {
-                foreach (var strategist in interval.Value)
+            foreach (var strategist in Strategists[Interval.ONE_MINUTE])
+            {               
+                var serialized = strategist.Value.GetKnowledge();
+                var builder = new StringBuilder();
+                builder.Append(path);
+                builder.Append(strategist.Key);
+                builder.Append("Knowledge.txt");
+                using (StreamWriter writer = new StreamWriter(builder.ToString()))
                 {
-                    var serialized = strategist.Value.GetKnowledge();
-                    var pathToFile = interval.Key + path + "";
-                    using (StreamWriter writer = new StreamWriter(pathToFile))
-                    {
-                        writer.WriteLine(serialized);
-                        writer.Close();
-                    }
+                    writer.WriteLine(serialized);
+                    writer.Close();
                 }
-            }
+            }            
         }
 
-        public void TeachStrategists(string pathToKnowledge)
+        public void TeachStrategists(string pathToKnowledge,Interval interval,string pair)
         {
-            //TODO
             try
             {
-                foreach (var intervalStrat in Strategists)
-                {
-                    foreach (var strategist in intervalStrat.Value)
-                    {
-                        strategist.Value.LoadKnowledge(pathToKnowledge);
-                    }
-                }
+                Strategists.Add(interval, new Dictionary<string, IStrategist>());
+                Strategists[interval].Add(pair,new StatisticStrategist());
+                Strategists[interval][pair].LoadKnowledge(pathToKnowledge);
             }
             catch (Exception ex)
             {

@@ -7,6 +7,9 @@
     <Compile Update="BotViewer.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="KnowledgeViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="NewBotForm.cs">
       <SubType>Form</SubType>
     </Compile>

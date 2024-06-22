@@ -54,6 +54,19 @@ namespace CoinCore
             }            
         }
 
+        public CurveBundle(Boll boll, Ema fastEma, Ema slowEma, List<KLine> kLines, List<double> difEma, List<int> gainVolumeProc, List<int> gainVolume)
+        {
+            Boll Boll = boll;
+            Ema FastEma = fastEma;
+            Ema SlowEma = slowEma;
+            List<KLine> KLines = kLines;
+            List<double> DifEma = difEma;
+            List<int> GainVolumeProc = gainVolumeProc;
+            List<int> GainVolume = gainVolume;
+        }
+
+    
+
         public CurveBundle()
         {
 

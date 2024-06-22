@@ -9,6 +9,12 @@ namespace CoinCore
         public Double Low;
         public Double Close;
         public Double Volume;
+
+
+        public KLine()
+        {
+
+        }
     
         public KLine(DateTime opentime,double open)
         {

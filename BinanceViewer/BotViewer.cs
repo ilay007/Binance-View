@@ -371,6 +371,15 @@ namespace BinanceAcountViewer
 
         }
 
+        private int GetNumStepOn1MinGraph()
+        {
+            var point = pictureBox1.PointToClient(Cursor.Position);
+            double numStepsLeftSide = ((double)(point.X - 3) / (int)(pictureBox1.Width / numPoints));
+            double numStepsRiteSide = 15 * (numPoints - numStepsLeftSide);
+            return (int)numStepsRiteSide;
+            //return (int)((numPoints - numStepsRiteSide) * pictureBox7.Width / numPoints);
+        }
+
         private bool ReDraw()
         {
             if (Service == null) return false;
@@ -385,7 +394,7 @@ namespace BinanceAcountViewer
             g.DrawLine(new Pen(Color.Black), point.X, 0, point.X, pictureBox1.Image.Height);
             double numStepsLeftSide = ((double)(point.X - 3) / (int)(pictureBox1.Width / numPoints));
             double numStepsRiteSide = 15 * (numPoints - numStepsLeftSide);
-            double x_min = (numPoints - numStepsRiteSide) * pictureBox7.Width / numPoints;
+            var x_min = (int)((numPoints - GetNumStepOn1MinGraph()) * pictureBox7.Width / numPoints);
             if ((x_min + 3) < pictureBox7.Width)
             {
                 DrawCursorLine(pictureBox7, (int)x_min);
@@ -876,9 +885,11 @@ namespace BinanceAcountViewer
             var widhStep = Drawer.CountStepWidth(pictureBox1.Width, numPoints);
             int numberStep = point.X / widhStep + 1;
             var numLastSteps = 4;
-            var start = numberStep + numLastSteps;
-            if (BuyMode) CoinsStore.AddKnowledges(currentPair, start, true);
-            if (SellMode) CoinsStore.AddKnowledges(currentPair, start, false);
+            var start = Math.Min(numberStep, numPoints);
+            var numStepsRightSide = GetNumStepOn1MinGraph();
+            if (numStepsRightSide < 0) return;
+            if (BuyMode) CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.ONE_MINUTE);
+            if (SellMode) CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.ONE_MINUTE);
 
         }
 
@@ -919,6 +930,7 @@ namespace BinanceAcountViewer
 
         private void button4_Click(object sender, EventArgs e)
         {
+            PathToKnowledge = "D:\\mGitHub\\MyGit\\";
             CoinsStore.SaveKnowledges(PathToKnowledge);
 
         }
@@ -927,7 +939,10 @@ namespace BinanceAcountViewer
         private void button5_Click(object sender, EventArgs e)
         {
             selectedCurrency = textBox2.Text.ToString();
-            CoinsStore.TeachStrategists(PathToKnowledge);
+            PathToKnowledge = "D:\\mGitHub\\MyGit\\LTCUSDTKnowledge.txt";
+            LoadListTradesCoins();
+            CoinsStore = new CoinsStore(Intervals, 18, 9, 24);
+            CoinsStore.TeachStrategists(PathToKnowledge, Interval.ONE_MINUTE, "LTCUSDT");
 
         }
 
