@@ -133,12 +133,13 @@ namespace AcountViewer
 
         public void AddKnowledges(string pair, int start, Interval interval)
         {
-            int steps = 8;//for 15 minutes
+            int steps = 15;//for 15 minutes
             if(interval==Interval.ONE_MINUTE)
             {
                 steps *= 15;
             }
-            var startInHistory = LinesHistory[interval][pair].KLines.Count - start - steps;
+            var startInHistory = LinesHistory[interval][pair].KLines.Count-50 + start - steps;
+            if (startInHistory < 0) startInHistory = 0;
             var crude = LinesHistory[interval][pair].GetRange(startInHistory,steps);
             Strategists[interval][pair].AddKnowledgeSince(crude, start, true);
 
@@ -146,19 +147,28 @@ namespace AcountViewer
 
         public void SaveKnowledges(string path)
         {
-            foreach (var strategist in Strategists[Interval.ONE_MINUTE])
-            {               
+            SaveStrategist(Interval.FIFTEEN_MINUTE, path);
+            SaveStrategist(Interval.ONE_MINUTE, path);
+        }
+
+        private void SaveStrategist(Interval interval,string path)
+        {
+            foreach (var strategist in Strategists[interval])
+            {
                 var serialized = strategist.Value.GetKnowledge();
                 var builder = new StringBuilder();
                 builder.Append(path);
                 builder.Append(strategist.Key);
-                builder.Append("Knowledge.txt");
+                builder.Append("_");
+                builder.Append(interval);
+                builder.Append(".txt");
                 using (StreamWriter writer = new StreamWriter(builder.ToString()))
                 {
                     writer.WriteLine(serialized);
                     writer.Close();
                 }
-            }            
+            }
+
         }
 
         public void TeachStrategists(string pathToKnowledge,Interval interval,string pair)

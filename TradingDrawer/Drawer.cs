@@ -110,12 +110,12 @@ namespace BinanceTradingDrawer
                 var curPen = new Pen(Color.Green, 2);
                 var cheight = (int)(Math.Abs(listClose[i] - listOpen[i]) * stepY);
                 var startRY = height - (int)((listClose[i] - min) * stepY);
-                Rectangle rect = new Rectangle(i * stepX, startRY, stepX,cheight);
+                Rectangle rect = new Rectangle(i * stepX, startRY, stepX-2,cheight);
                 if (listClose[i] < listOpen[i])
                 {
                     curPen = redPen;
                     startRY = height - (int)((listOpen[i] - min) * stepY);
-                    rect = new Rectangle(i * stepX,startRY, stepX, cheight);
+                    rect = new Rectangle(i * stepX,startRY, stepX-2, cheight);
                 }
                 var maxHeight = (int)(Math.Abs(listHight[i] - listLow[i]) * stepY);
                 g.DrawLine(curPen, i *stepX+stepX/2, height - (int)((listLow[i] - min) * stepY), i *stepX+stepX/2, height - (int)((listHight[i] - min) * stepY));

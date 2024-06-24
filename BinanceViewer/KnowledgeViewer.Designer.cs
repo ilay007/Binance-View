@@ -103,9 +103,9 @@
             // 
             button1.Location = new System.Drawing.Point(9, 9);
             button1.Name = "button1";
-            button1.Size = new System.Drawing.Size(134, 39);
+            button1.Size = new System.Drawing.Size(175, 39);
             button1.TabIndex = 0;
-            button1.Text = "DownloadKnoledge";
+            button1.Text = "DownloadKnowledge";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 

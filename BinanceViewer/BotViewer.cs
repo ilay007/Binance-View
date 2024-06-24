@@ -371,14 +371,26 @@ namespace BinanceAcountViewer
 
         }
 
-        private int GetNumStepOn1MinGraph()
+
+
+        private double getStepForOneMin(System.Drawing.Point point)
         {
-            var point = pictureBox1.PointToClient(Cursor.Position);
-            double numStepsLeftSide = ((double)(point.X - 3) / (int)(pictureBox1.Width / numPoints));
-            double numStepsRiteSide = 15 * (numPoints - numStepsLeftSide);
-            return (int)numStepsRiteSide;
-            //return (int)((numPoints - numStepsRiteSide) * pictureBox7.Width / numPoints);
+            var widthStep = Drawer.CountStepWidth(pictureBox1.Width, numPoints);
+            int numberStep = (point.X / widthStep);
+            int pix = point.X - numberStep * widthStep;
+            int p15 = (numPoints - numberStep) * widthStep - pix;
+            var fromLeftMin = ((double)((p15) * 15) / widthStep);
+            return fromLeftMin;
         }
+
+        private double getLeftStepForOneHour(System.Drawing.Point point)
+        {
+            var widthStep = Drawer.CountStepWidth(pictureBox1.Width, numPoints);
+            int numberStep = (point.X / widthStep);
+            int stepsFromLeft15min = numPoints - numberStep;
+            return stepsFromLeft15min / 4;
+        }
+
 
         private bool ReDraw()
         {
@@ -390,26 +402,28 @@ namespace BinanceAcountViewer
             if (pictureBox1.Image == null) return false;
             var width3 = pictureBox3.Width;
             var width5 = pictureBox5.Width;
-            Graphics g = Graphics.FromImage((Image)pictureBox1.Image);
-            g.DrawLine(new Pen(Color.Black), point.X, 0, point.X, pictureBox1.Image.Height);
-            double numStepsLeftSide = ((double)(point.X - 3) / (int)(pictureBox1.Width / numPoints));
-            double numStepsRiteSide = 15 * (numPoints - numStepsLeftSide);
-            var x_min = (int)((numPoints - GetNumStepOn1MinGraph()) * pictureBox7.Width / numPoints);
-            if ((x_min + 3) < pictureBox7.Width)
+            DrawCursorLine(pictureBox1, (int)point.X);
+            var steps_oneMin = numPoints - getStepForOneMin(new System.Drawing.Point(point.X + 1, point.Y));
+            var widthStepMin = Drawer.CountStepWidth(pictureBox7.Width, numPoints);
+            var x_OneMin = (int)(steps_oneMin * widthStepMin);
+            if (x_OneMin > 0 && x_OneMin < pictureBox7.Width)
             {
-                DrawCursorLine(pictureBox7, (int)x_min);
+                DrawCursorLine(pictureBox7, (int)x_OneMin);
             }
             if (!just15min)
             {
+
                 DrawKLines(pictureBox3, pictureBox4, Interval.ONE_HOUR);
                 DrawKLines(pictureBox5, pictureBox6, Interval.FOUR_HOUR);
                 if (pictureBox3.Image == null) return false;
                 var x1 = (point.X + 3 * width3) / 4;
                 if (pictureBox5.Image == null) return false;
-                DrawCursorLine(pictureBox5, x1);
-                DrawCursorLine(pictureBox3, (x1 + 3 * width5) / 4);
-
-
+                var widthStepHour = Drawer.CountStepWidth(pictureBox3.Width, numPoints);
+                var widthStep4Hour = Drawer.CountStepWidth(pictureBox5.Width, numPoints);
+                var stepsOneHour = numPoints - getLeftStepForOneHour(point);
+                var steps4Hour = numPoints - getLeftStepForOneHour(point) / 4;
+                DrawCursorLine(pictureBox5, (int)(steps4Hour * widthStep4Hour));
+                DrawCursorLine(pictureBox3, (int)(widthStepHour * stepsOneHour));
             }
             return true;
         }
@@ -882,21 +896,24 @@ namespace BinanceAcountViewer
         {
             var point = pictureBox1.PointToClient(Cursor.Position);
             var currentPair = GetCurrentPair();
-            var widhStep = Drawer.CountStepWidth(pictureBox1.Width, numPoints);
-            int numberStep = point.X / widhStep + 1;
+            var widthStep = Drawer.CountStepWidth(pictureBox1.Width, numPoints);
+            int numberStep = (point.X / widthStep);
+            int pix = point.X - numberStep * widthStep;
+            int p15 = (numPoints - numberStep) * widthStep - pix;
+            var fromLeftMin = (int)((double)((p15) * 15) / widthStep);
 
             var start = Math.Min(numberStep, numPoints);
-            var numStepsRightSide = GetNumStepOn1MinGraph();
+            var numStepsRightSide = numPoints - fromLeftMin;
             if (numStepsRightSide < 0) return;
             if (BuyMode)
             {
                 CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.ONE_MINUTE);
-                CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.FIFTEEN_MINUTE);
+                CoinsStore.AddKnowledges(currentPair, numberStep, Interval.FIFTEEN_MINUTE);
             }
             if (SellMode)
             {
                 CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.ONE_MINUTE);
-                CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.FIFTEEN_MINUTE);
+                CoinsStore.AddKnowledges(currentPair, numberStep, Interval.FIFTEEN_MINUTE);
             }
 
         }

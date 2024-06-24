@@ -76,6 +76,10 @@ namespace CoinCore
         public CurveBundle GetRange(int start, int len)
         {
             var nBundle = new CurveBundle();
+            if(start+len>KLines.Count)
+            {
+                len=KLines.Count-start-1;
+            }
             nBundle.KLines = KLines.GetRange(start, len);
             nBundle.KLines = KLines.GetRange(start, len);
             nBundle.Boll = Boll.GetRange(start, len);
