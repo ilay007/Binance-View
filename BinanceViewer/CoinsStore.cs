@@ -131,17 +131,17 @@ namespace AcountViewer
             return true;
         }
 
-        public void AddKnowledges(string pair, int start, Interval interval)
+        public void AddKnowledges(string pair, int end, Interval interval)
         {
             int steps = 15;//for 15 minutes
             if(interval==Interval.ONE_MINUTE)
             {
                 steps *= 15;
             }
-            var startInHistory = LinesHistory[interval][pair].KLines.Count-50 + start - steps;
+            var startInHistory = LinesHistory[interval][pair].KLines.Count- end - steps;
             if (startInHistory < 0) startInHistory = 0;
             var crude = LinesHistory[interval][pair].GetRange(startInHistory,steps);
-            Strategists[interval][pair].AddKnowledgeSince(crude, start, true);
+            Strategists[interval][pair].AddKnowledgeSince(crude, end, true);
 
         }
 
@@ -149,6 +149,8 @@ namespace AcountViewer
         {
             SaveStrategist(Interval.FIFTEEN_MINUTE, path);
             SaveStrategist(Interval.ONE_MINUTE, path);
+            SaveStrategist(Interval.ONE_HOUR, path);
+            SaveStrategist(Interval.FOUR_HOUR, path);
         }
 
         private void SaveStrategist(Interval interval,string path)

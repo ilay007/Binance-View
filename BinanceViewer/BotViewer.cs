@@ -383,12 +383,12 @@ namespace BinanceAcountViewer
             return fromLeftMin;
         }
 
-        private double getLeftStepForOneHour(System.Drawing.Point point)
+        private int getLeftStepForOneHour(System.Drawing.Point point)
         {
             var widthStep = Drawer.CountStepWidth(pictureBox1.Width, numPoints);
             int numberStep = (point.X / widthStep);
             int stepsFromLeft15min = numPoints - numberStep;
-            return stepsFromLeft15min / 4;
+            return (int)(stepsFromLeft15min / 4);
         }
 
 
@@ -905,10 +905,14 @@ namespace BinanceAcountViewer
             var start = Math.Min(numberStep, numPoints);
             var numStepsRightSide = numPoints - fromLeftMin;
             if (numStepsRightSide < 0) return;
+            var stepsOneHour = getLeftStepForOneHour(point);
+            var steps4Hour = getLeftStepForOneHour(point) / 4;
             if (BuyMode)
             {
                 CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.ONE_MINUTE);
                 CoinsStore.AddKnowledges(currentPair, numberStep, Interval.FIFTEEN_MINUTE);
+                CoinsStore.AddKnowledges(currentPair, stepsOneHour, Interval.ONE_HOUR);
+                CoinsStore.AddKnowledges(currentPair, steps4Hour, Interval.FOUR_HOUR);
             }
             if (SellMode)
             {

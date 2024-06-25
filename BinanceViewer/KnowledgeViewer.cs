@@ -31,17 +31,34 @@ namespace BinanceAcountViewer
             strategists = new Dictionary<string, StatisticStrategist>();
             strategists.Add("1m", new StatisticStrategist());
             strategists.Add("15m", new StatisticStrategist());
+            strategists.Add("1h", new StatisticStrategist());
+            strategists.Add("4h", new StatisticStrategist());
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             var PathToKnowledge = "D:\\mGitHub\\MyGit\\LTCUSDT_1m.txt";
             var PathToKnowledge2 = "D:\\mGitHub\\MyGit\\LTCUSDT_15m.txt";
+            var PathToKnowledge3 = "D:\\mGitHub\\MyGit\\LTCUSDT_1h.txt";
+            var PathToKnowledge4 = "D:\\mGitHub\\MyGit\\LTCUSDT_4h.txt";
             strategists["1m"].LoadKnowledge(PathToKnowledge);
             strategists["15m"].LoadKnowledge(PathToKnowledge2);
+            strategists["1h"].LoadKnowledge(PathToKnowledge3);
+            strategists["4h"].LoadKnowledge(PathToKnowledge4);
+            ReDraw();
+
+
+
+
+        }
+
+
+        private void ReDraw()
+        {
             ReDrawPicture(strategists["1m"], pictureBox1);
             ReDrawPicture(strategists["15m"], pictureBox3);
-
+            ReDrawPicture(strategists["1h"], pictureBox4);
+            ReDrawPicture(strategists["4h"], pictureBox5);
 
         }
 
@@ -70,16 +87,15 @@ namespace BinanceAcountViewer
         {
             count++;
             if (count > strategists["1m"].Knowledge.BuyKnowledges.Count() - 1) count = 0;
-            ReDrawPicture(strategists["1m"], pictureBox1);
-            ReDrawPicture(strategists["15m"], pictureBox3);
+            ReDraw();
+
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             count--;
             if (count < 0) count = 0;
-            ReDrawPicture(strategists["1m"], pictureBox1);
-            ReDrawPicture(strategists["15m"], pictureBox3);
+            ReDraw();
 
         }
 
