@@ -55,16 +55,17 @@ namespace BinanceAcountViewer
 
         private void ReDraw()
         {
-            ReDrawPicture(strategists["1m"], pictureBox1);
-            ReDrawPicture(strategists["15m"], pictureBox3);
-            ReDrawPicture(strategists["1h"], pictureBox4);
-            ReDrawPicture(strategists["4h"], pictureBox5);
+            ReDrawPicture(strategists["1m"], pictureBox5);
+            ReDrawPicture(strategists["15m"], pictureBox1);
+            ReDrawPicture(strategists["1h"], pictureBox3);
+            ReDrawPicture(strategists["4h"], pictureBox4);
 
         }
 
 
         private void ReDrawPicture(StatisticStrategist strategist, PictureBox pictureBox)
         {
+            
             var data = strategist.Knowledge.BuyKnowledges[this.count];
             while (data == null)
             {
@@ -86,7 +87,7 @@ namespace BinanceAcountViewer
         private void button3_Click(object sender, EventArgs e)
         {
             count++;
-            if (count > strategists["1m"].Knowledge.BuyKnowledges.Count() - 1) count = 0;
+            if (count >= strategists["1m"].Knowledge.BuyKnowledges.Count() - 1) count = 0;
             ReDraw();
 
         }

@@ -133,10 +133,10 @@ namespace AcountViewer
 
         public void AddKnowledges(string pair, int end, Interval interval)
         {
-            int steps = 15;//for 15 minutes
+            int steps = 50;//for 15 minutes
             if(interval==Interval.ONE_MINUTE)
             {
-                steps *= 15;
+                steps *= 2;
             }
             var startInHistory = LinesHistory[interval][pair].KLines.Count- end - steps;
             if (startInHistory < 0) startInHistory = 0;

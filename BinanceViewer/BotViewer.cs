@@ -403,8 +403,8 @@ namespace BinanceAcountViewer
             var width3 = pictureBox3.Width;
             var width5 = pictureBox5.Width;
             DrawCursorLine(pictureBox1, (int)point.X);
-            var steps_oneMin = numPoints - getStepForOneMin(new System.Drawing.Point(point.X + 1, point.Y));
-            var widthStepMin = Drawer.CountStepWidth(pictureBox7.Width, numPoints);
+            var steps_oneMin = 2 * numPoints - getStepForOneMin(new System.Drawing.Point(point.X + 1, point.Y));
+            var widthStepMin = Drawer.CountStepWidth(pictureBox7.Width, 2 * numPoints);
             var x_OneMin = (int)(steps_oneMin * widthStepMin);
             if (x_OneMin > 0 && x_OneMin < pictureBox7.Width)
             {
@@ -500,24 +500,25 @@ namespace BinanceAcountViewer
             var curImage = new Bitmap(picture1.Width, picture1.Height);
             Graphics g = Graphics.FromImage(curImage);
             g.Clear(Color.White);
-            var count = data.KLines.Count;
-            var lastrange = data.KLines.GetRange(data.KLines.Count() - 5, 4);
-            var start = data.KLines.Count - numPoints - curPoint;
-            if (start < 0) return;
-            Drawer.DrawKLines(curImage, data.KLines.GetRange(start, numPoints));
-            var max = data.KLines.Select(s => s.Hight).ToList().GetRange(start, numPoints).Max();
-            var min = data.KLines.Select(s => s.Low).ToList().GetRange(start, numPoints).Min();
-            Drawer.DrawGrapth(curImage, data.Boll.CurveHight.GetRange(start, numPoints), Color.Violet, max, min);
-            Drawer.DrawGrapth(curImage, data.Boll.Ema.EmaPoints.GetRange(start, numPoints), Color.Brown, max, min);
+            var count = numPoints;
+            if (interval == Interval.ONE_MINUTE) count *= 2;
+            if (count > data.KLines.Count) count = data.KLines.Count - 1;
+            var start = data.KLines.Count - count - curPoint;
+            if (start < 0) start = 0;
+            Drawer.DrawKLines(curImage, data.KLines.GetRange(start, count));
+            var max = data.KLines.Select(s => s.Hight).ToList().GetRange(start, count).Max();
+            var min = data.KLines.Select(s => s.Low).ToList().GetRange(start, count).Min();
+            Drawer.DrawGrapth(curImage, data.Boll.CurveHight.GetRange(start, count), Color.Violet, max, min);
+            Drawer.DrawGrapth(curImage, data.Boll.Ema.EmaPoints.GetRange(start, count), Color.Brown, max, min);
             Drawer.DrawGrapth(curImage, data.Boll.CurveLow.GetRange(start, numPoints), Color.Orange, max, min);
             picture1.Image = curImage;
             if (picture2 == null) return;
             var image2 = new Bitmap(picture2.Width, picture2.Height);
             Graphics g2 = Graphics.FromImage(image2);
             g2.Clear(Color.White);
-            var curRange12 = data.FastEma.EmaPoints.GetRange(start, numPoints);
-            var curRange26 = data.SlowEma.EmaPoints.GetRange(start, numPoints);
-            Drawer.DrawAsHistogram(image2, data.DifEma.GetRange(start, numPoints));
+            var curRange12 = data.FastEma.EmaPoints.GetRange(start, count);
+            var curRange26 = data.SlowEma.EmaPoints.GetRange(start, count);
+            Drawer.DrawAsHistogram(image2, data.DifEma.GetRange(start, count));
             Drawer.DrawGrapth(image2, curRange12, Color.Violet, curRange12.Max(), curRange12.Min());
             Drawer.DrawGrapth(image2, curRange26, Color.Pink, curRange12.Max(), curRange12.Min());
             Drawer.SignImage(curImage, currentPair + "/" + interval.ToString());
@@ -897,27 +898,23 @@ namespace BinanceAcountViewer
             var point = pictureBox1.PointToClient(Cursor.Position);
             var currentPair = GetCurrentPair();
             var widthStep = Drawer.CountStepWidth(pictureBox1.Width, numPoints);
-            int numberStep = (point.X / widthStep);
-            int pix = point.X - numberStep * widthStep;
-            int p15 = (numPoints - numberStep) * widthStep - pix;
-            var fromLeftMin = (int)((double)((p15) * 15) / widthStep);
-
-            var start = Math.Min(numberStep, numPoints);
-            var numStepsRightSide = numPoints - fromLeftMin;
-            if (numStepsRightSide < 0) return;
+            int numberStepLeft = numPoints - (point.X / widthStep);
+            var stepOneMinLeft = (int)getStepForOneMin(new System.Drawing.Point(point.X + 1, point.Y));
             var stepsOneHour = getLeftStepForOneHour(point);
             var steps4Hour = getLeftStepForOneHour(point) / 4;
             if (BuyMode)
             {
-                CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.ONE_MINUTE);
-                CoinsStore.AddKnowledges(currentPair, numberStep, Interval.FIFTEEN_MINUTE);
+                CoinsStore.AddKnowledges(currentPair, stepOneMinLeft, Interval.ONE_MINUTE);
+                CoinsStore.AddKnowledges(currentPair, numberStepLeft, Interval.FIFTEEN_MINUTE);
                 CoinsStore.AddKnowledges(currentPair, stepsOneHour, Interval.ONE_HOUR);
                 CoinsStore.AddKnowledges(currentPair, steps4Hour, Interval.FOUR_HOUR);
             }
             if (SellMode)
             {
-                CoinsStore.AddKnowledges(currentPair, numStepsRightSide, Interval.ONE_MINUTE);
-                CoinsStore.AddKnowledges(currentPair, numberStep, Interval.FIFTEEN_MINUTE);
+                CoinsStore.AddKnowledges(currentPair, stepOneMinLeft, Interval.ONE_MINUTE);
+                CoinsStore.AddKnowledges(currentPair, numberStepLeft, Interval.FIFTEEN_MINUTE);
+                CoinsStore.AddKnowledges(currentPair, stepsOneHour, Interval.ONE_HOUR);
+                CoinsStore.AddKnowledges(currentPair, steps4Hour, Interval.FOUR_HOUR); ;
             }
 
         }
