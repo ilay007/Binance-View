@@ -510,7 +510,7 @@ namespace BinanceAcountViewer
             var min = data.KLines.Select(s => s.Low).ToList().GetRange(start, count).Min();
             Drawer.DrawGrapth(curImage, data.Boll.CurveHight.GetRange(start, count), Color.Violet, max, min);
             Drawer.DrawGrapth(curImage, data.Boll.Ema.EmaPoints.GetRange(start, count), Color.Brown, max, min);
-            Drawer.DrawGrapth(curImage, data.Boll.CurveLow.GetRange(start, numPoints), Color.Orange, max, min);
+            Drawer.DrawGrapth(curImage, data.Boll.CurveLow.GetRange(start, count), Color.Orange, max, min);
             picture1.Image = curImage;
             if (picture2 == null) return;
             var image2 = new Bitmap(picture2.Width, picture2.Height);
@@ -904,17 +904,17 @@ namespace BinanceAcountViewer
             var steps4Hour = getLeftStepForOneHour(point) / 4;
             if (BuyMode)
             {
-                CoinsStore.AddKnowledges(currentPair, stepOneMinLeft, Interval.ONE_MINUTE);
-                CoinsStore.AddKnowledges(currentPair, numberStepLeft, Interval.FIFTEEN_MINUTE);
-                CoinsStore.AddKnowledges(currentPair, stepsOneHour, Interval.ONE_HOUR);
-                CoinsStore.AddKnowledges(currentPair, steps4Hour, Interval.FOUR_HOUR);
+                CoinsStore.AddKnowledges(currentPair, stepOneMinLeft, Interval.ONE_MINUTE, true);
+                CoinsStore.AddKnowledges(currentPair, numberStepLeft, Interval.FIFTEEN_MINUTE, true);
+                CoinsStore.AddKnowledges(currentPair, stepsOneHour, Interval.ONE_HOUR, true);
+                CoinsStore.AddKnowledges(currentPair, steps4Hour, Interval.FOUR_HOUR, true);
             }
             if (SellMode)
             {
-                CoinsStore.AddKnowledges(currentPair, stepOneMinLeft, Interval.ONE_MINUTE);
-                CoinsStore.AddKnowledges(currentPair, numberStepLeft, Interval.FIFTEEN_MINUTE);
-                CoinsStore.AddKnowledges(currentPair, stepsOneHour, Interval.ONE_HOUR);
-                CoinsStore.AddKnowledges(currentPair, steps4Hour, Interval.FOUR_HOUR); ;
+                CoinsStore.AddKnowledges(currentPair, stepOneMinLeft, Interval.ONE_MINUTE, false);
+                CoinsStore.AddKnowledges(currentPair, numberStepLeft, Interval.FIFTEEN_MINUTE, false);
+                CoinsStore.AddKnowledges(currentPair, stepsOneHour, Interval.ONE_HOUR, false);
+                CoinsStore.AddKnowledges(currentPair, steps4Hour, Interval.FOUR_HOUR, false);
             }
 
         }

@@ -33,9 +33,17 @@ namespace BinanceAcountViewer
             strategists.Add("15m", new StatisticStrategist());
             strategists.Add("1h", new StatisticStrategist());
             strategists.Add("4h", new StatisticStrategist());
+            LoadKnowledges();
+            ReDraw();
         }
 
         private void button1_Click(object sender, EventArgs e)
+        {
+            LoadKnowledges();
+            ReDraw();
+        }
+
+        private void LoadKnowledges()
         {
             var PathToKnowledge = "D:\\mGitHub\\MyGit\\LTCUSDT_1m.txt";
             var PathToKnowledge2 = "D:\\mGitHub\\MyGit\\LTCUSDT_15m.txt";
@@ -47,26 +55,23 @@ namespace BinanceAcountViewer
             strategists["4h"].LoadKnowledge(PathToKnowledge4);
             ReDraw();
 
-
-
-
         }
 
 
         private void ReDraw()
         {
-            ReDrawPicture(strategists["1m"], pictureBox5);
-            ReDrawPicture(strategists["15m"], pictureBox1);
-            ReDrawPicture(strategists["1h"], pictureBox3);
-            ReDrawPicture(strategists["4h"], pictureBox4);
+            ReDrawPicture(strategists["1m"], pictureBox5, pictureBox8);
+            ReDrawPicture(strategists["15m"], pictureBox1, pictureBox2);
+            ReDrawPicture(strategists["1h"], pictureBox3, pictureBox6);
+            ReDrawPicture(strategists["4h"], pictureBox4, pictureBox7);
 
         }
 
 
-        private void ReDrawPicture(StatisticStrategist strategist, PictureBox pictureBox)
+        private void ReDrawPicture(StatisticStrategist strategist, PictureBox pictureBox, PictureBox pictureBox2)
         {
-            
-            var data = strategist.Knowledge.BuyKnowledges[this.count];
+
+            var data = !checkBox1.Checked ? strategist.Knowledge.BuyKnowledges[this.count] : strategist.Knowledge.SellKnowledges[this.count];
             while (data == null)
             {
                 this.count++;
@@ -81,7 +86,13 @@ namespace BinanceAcountViewer
             Drawer.DrawGrapth(curImage, data.Boll.Ema.EmaPoints.GetRange(0, numPoints), Color.Brown, max, min);
             Drawer.DrawGrapth(curImage, data.Boll.CurveLow.GetRange(0, numPoints), Color.Orange, max, min);
             pictureBox.Image = image;
-
+            var curRange12 = data.FastEma.EmaPoints.GetRange(0, numPoints);
+            var curRange26 = data.SlowEma.EmaPoints.GetRange(0, numPoints);
+            if (pictureBox2 == null) return;
+            var secondImage = new Bitmap(pictureBox2.Width, pictureBox2.Height);
+            Drawer.DrawAsHistogram(secondImage, data.DifEma.GetRange(0, numPoints));
+            Drawer.DrawGrapth(secondImage, curRange12, Color.Violet, curRange12.Max(), curRange12.Min());
+            pictureBox2.Image = secondImage;
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -100,6 +111,14 @@ namespace BinanceAcountViewer
 
         }
 
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            checkBox2.Checked = !checkBox1.Checked;
+        }
 
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            checkBox1.Checked = !checkBox2.Checked;
+        }
     }
 }

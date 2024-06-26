@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Net.NetworkInformation;
 using CoinCore;
 
 namespace BinanceTradingDrawer
@@ -46,7 +47,6 @@ namespace BinanceTradingDrawer
                 {
                     curPen = redPen;
                     startY = (int)height / 2;
-
                 }                                  
                 Rectangle rect = new Rectangle(i * stepX, startY, stepX, (int)Math.Abs(cheight));
                 g.DrawRectangle(curPen, rect);
@@ -100,9 +100,14 @@ namespace BinanceTradingDrawer
             var max = listHight.Max();
             var min = listLow.Min();
             var dely = (max - min);
-            var stepX = CountStepWidth(width,klines.Count);// width / klines.Count;
-            //var stepY =dely>1?(k*height/ (d*dely)):k*height*dely/d;
+            var stepX = CountStepWidth(width, klines.Count);
             var stepY = (k * height / (d * dely));
+            
+           
+
+
+
+            
             Pen redPen = new Pen(Color.Red, 2);
             Pen greenPen = new Pen(Color.Green, 2);
             for(int i=0;i<klines.Count;i++)
@@ -123,8 +128,39 @@ namespace BinanceTradingDrawer
                 SolidBrush curBrush = new SolidBrush(curPen.Color);                
                 g.FillRectangle(curBrush, rect);
             }
+            for (int i = 0; i < listHight.Count; i++)
+            {
+                if (listHight[i].Equals(max))
+                {
+                    SolidBrush curBrush = new SolidBrush(Color.Lime);
+                    var startRY = height - (int)((listHight[i] - min + 4) * stepY);
+                    g.DrawString(max.ToString(), new Font("Arial", 11), curBrush, new PointF(i * stepX, (int)startRY));
+                    break;
+                }
+            }
+            var delt = Math.Round(100 *(max - min) / max,1);
+            SolidBrush curBrush1 = new SolidBrush(Color.BlueViolet);
+            g.DrawString(delt.ToString()+"%", new Font("Arial", 11), curBrush1, new PointF(0, 50));
+            for (int i = 0; i < listLow.Count; i++)
+            {
+                if (listLow[i].Equals(min))
+                {
+                    SolidBrush curBrush = new SolidBrush(Color.BurlyWood);
+                    var startRY = height - (int)((listLow[i] - min - 4) * stepY);
+                    if (startRY >= height) startRY = height - 20;
+                    g.DrawString(min.ToString(), new Font("Arial", 11), curBrush, new PointF(i * stepX, (int)startRY));
+                    break;
+                }
+            }
+
+
+
             return image;
         }
+
+       
+
+
 
     }
 }

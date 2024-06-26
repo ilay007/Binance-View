@@ -131,7 +131,7 @@ namespace AcountViewer
             return true;
         }
 
-        public void AddKnowledges(string pair, int end, Interval interval)
+        public void AddKnowledges(string pair, int end, Interval interval, bool isBuy)
         {
             int steps = 50;//for 15 minutes
             if(interval==Interval.ONE_MINUTE)
@@ -141,7 +141,7 @@ namespace AcountViewer
             var startInHistory = LinesHistory[interval][pair].KLines.Count- end - steps;
             if (startInHistory < 0) startInHistory = 0;
             var crude = LinesHistory[interval][pair].GetRange(startInHistory,steps);
-            Strategists[interval][pair].AddKnowledgeSince(crude, end, true);
+            Strategists[interval][pair].AddKnowledgeSince(crude, end, isBuy);
 
         }
 

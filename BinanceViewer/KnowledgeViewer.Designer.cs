@@ -30,6 +30,8 @@
         {
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             panel1 = new System.Windows.Forms.Panel();
+            checkBox2 = new System.Windows.Forms.CheckBox();
+            checkBox1 = new System.Windows.Forms.CheckBox();
             button3 = new System.Windows.Forms.Button();
             button2 = new System.Windows.Forms.Button();
             button1 = new System.Windows.Forms.Button();
@@ -38,21 +40,28 @@
             pictureBox1 = new System.Windows.Forms.PictureBox();
             panel3 = new System.Windows.Forms.Panel();
             panel4 = new System.Windows.Forms.Panel();
-            panel5 = new System.Windows.Forms.Panel();
-            panel6 = new System.Windows.Forms.Panel();
+            pictureBox6 = new System.Windows.Forms.PictureBox();
             pictureBox3 = new System.Windows.Forms.PictureBox();
+            panel5 = new System.Windows.Forms.Panel();
+            pictureBox7 = new System.Windows.Forms.PictureBox();
             pictureBox4 = new System.Windows.Forms.PictureBox();
+            panel6 = new System.Windows.Forms.Panel();
+            pictureBox8 = new System.Windows.Forms.PictureBox();
             pictureBox5 = new System.Windows.Forms.PictureBox();
+            button4 = new System.Windows.Forms.Button();
             tableLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             panel4.SuspendLayout();
-            panel5.SuspendLayout();
-            panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
+            panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             SuspendLayout();
             // 
@@ -79,6 +88,9 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(button4);
+            panel1.Controls.Add(checkBox2);
+            panel1.Controls.Add(checkBox1);
             panel1.Controls.Add(button3);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(button1);
@@ -88,9 +100,31 @@
             panel1.Size = new System.Drawing.Size(198, 373);
             panel1.TabIndex = 0;
             // 
+            // checkBox2
+            // 
+            checkBox2.AutoSize = true;
+            checkBox2.Location = new System.Drawing.Point(9, 136);
+            checkBox2.Name = "checkBox2";
+            checkBox2.Size = new System.Drawing.Size(134, 24);
+            checkBox2.TabIndex = 4;
+            checkBox2.Text = "Buy Knowledge";
+            checkBox2.UseVisualStyleBackColor = true;
+            checkBox2.CheckedChanged += checkBox2_CheckedChanged;
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new System.Drawing.Point(9, 105);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new System.Drawing.Size(134, 24);
+            checkBox1.TabIndex = 3;
+            checkBox1.Text = "Sell Knowledge";
+            checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
+            // 
             // button3
             // 
-            button3.Location = new System.Drawing.Point(92, 54);
+            button3.Location = new System.Drawing.Point(92, 165);
             button3.Name = "button3";
             button3.Size = new System.Drawing.Size(84, 29);
             button3.TabIndex = 2;
@@ -100,7 +134,7 @@
             // 
             // button2
             // 
-            button2.Location = new System.Drawing.Point(9, 54);
+            button2.Location = new System.Drawing.Point(9, 165);
             button2.Name = "button2";
             button2.Size = new System.Drawing.Size(77, 29);
             button2.TabIndex = 1;
@@ -156,6 +190,7 @@
             // 
             // panel4
             // 
+            panel4.Controls.Add(pictureBox6);
             panel4.Controls.Add(pictureBox3);
             panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             panel4.Location = new System.Drawing.Point(788, 3);
@@ -163,23 +198,14 @@
             panel4.Size = new System.Drawing.Size(598, 373);
             panel4.TabIndex = 3;
             // 
-            // panel5
+            // pictureBox6
             // 
-            panel5.Controls.Add(pictureBox4);
-            panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            panel5.Location = new System.Drawing.Point(207, 382);
-            panel5.Name = "panel5";
-            panel5.Size = new System.Drawing.Size(575, 373);
-            panel5.TabIndex = 4;
-            // 
-            // panel6
-            // 
-            panel6.Controls.Add(pictureBox5);
-            panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            panel6.Location = new System.Drawing.Point(788, 382);
-            panel6.Name = "panel6";
-            panel6.Size = new System.Drawing.Size(598, 373);
-            panel6.TabIndex = 5;
+            pictureBox6.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pictureBox6.Location = new System.Drawing.Point(0, 290);
+            pictureBox6.Name = "pictureBox6";
+            pictureBox6.Size = new System.Drawing.Size(598, 83);
+            pictureBox6.TabIndex = 1;
+            pictureBox6.TabStop = false;
             // 
             // pictureBox3
             // 
@@ -190,6 +216,25 @@
             pictureBox3.TabIndex = 0;
             pictureBox3.TabStop = false;
             // 
+            // panel5
+            // 
+            panel5.Controls.Add(pictureBox7);
+            panel5.Controls.Add(pictureBox4);
+            panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel5.Location = new System.Drawing.Point(207, 382);
+            panel5.Name = "panel5";
+            panel5.Size = new System.Drawing.Size(575, 373);
+            panel5.TabIndex = 4;
+            // 
+            // pictureBox7
+            // 
+            pictureBox7.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pictureBox7.Location = new System.Drawing.Point(0, 311);
+            pictureBox7.Name = "pictureBox7";
+            pictureBox7.Size = new System.Drawing.Size(575, 62);
+            pictureBox7.TabIndex = 1;
+            pictureBox7.TabStop = false;
+            // 
             // pictureBox4
             // 
             pictureBox4.Dock = System.Windows.Forms.DockStyle.Top;
@@ -199,6 +244,25 @@
             pictureBox4.TabIndex = 0;
             pictureBox4.TabStop = false;
             // 
+            // panel6
+            // 
+            panel6.Controls.Add(pictureBox8);
+            panel6.Controls.Add(pictureBox5);
+            panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel6.Location = new System.Drawing.Point(788, 382);
+            panel6.Name = "panel6";
+            panel6.Size = new System.Drawing.Size(598, 373);
+            panel6.TabIndex = 5;
+            // 
+            // pictureBox8
+            // 
+            pictureBox8.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pictureBox8.Location = new System.Drawing.Point(0, 311);
+            pictureBox8.Name = "pictureBox8";
+            pictureBox8.Size = new System.Drawing.Size(598, 62);
+            pictureBox8.TabIndex = 1;
+            pictureBox8.TabStop = false;
+            // 
             // pictureBox5
             // 
             pictureBox5.Dock = System.Windows.Forms.DockStyle.Top;
@@ -207,6 +271,15 @@
             pictureBox5.Size = new System.Drawing.Size(598, 308);
             pictureBox5.TabIndex = 0;
             pictureBox5.TabStop = false;
+            // 
+            // button4
+            // 
+            button4.Location = new System.Drawing.Point(9, 54);
+            button4.Name = "button4";
+            button4.Size = new System.Drawing.Size(175, 34);
+            button4.TabIndex = 5;
+            button4.Text = "Delete Selected";
+            button4.UseVisualStyleBackColor = true;
             // 
             // KnowledgeViewer
             // 
@@ -218,14 +291,18 @@
             Text = "KnowledgeViewer";
             tableLayoutPanel1.ResumeLayout(false);
             panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             panel4.ResumeLayout(false);
-            panel5.ResumeLayout(false);
-            panel6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            panel5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox7).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
+            panel6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox8).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             ResumeLayout(false);
         }
@@ -247,5 +324,11 @@
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.PictureBox pictureBox5;
+        private System.Windows.Forms.PictureBox pictureBox6;
+        private System.Windows.Forms.PictureBox pictureBox7;
+        private System.Windows.Forms.PictureBox pictureBox8;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button4;
     }
 }
