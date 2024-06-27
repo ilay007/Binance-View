@@ -38,7 +38,7 @@ namespace CoinCore
         public void DeleteLastPoint()
         {
         }
-        public void AddKnowledgeSince(CurveBundle bundle,int num, bool isBuy)
+        public void AddKnowledgeSince(CurveBundle bundle,int num, Recommendations isBuy)
         {
 
         }

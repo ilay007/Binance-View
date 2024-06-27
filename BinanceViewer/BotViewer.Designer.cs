@@ -74,6 +74,7 @@ namespace BinanceAcountViewer
             label5 = new System.Windows.Forms.Label();
             richTextBox3 = new System.Windows.Forms.RichTextBox();
             panel12 = new System.Windows.Forms.Panel();
+            checkBox4 = new System.Windows.Forms.CheckBox();
             label8 = new System.Windows.Forms.Label();
             button5 = new System.Windows.Forms.Button();
             button4 = new System.Windows.Forms.Button();
@@ -556,6 +557,7 @@ namespace BinanceAcountViewer
             // 
             // panel12
             // 
+            panel12.Controls.Add(checkBox4);
             panel12.Controls.Add(label8);
             panel12.Controls.Add(button5);
             panel12.Controls.Add(button4);
@@ -567,6 +569,18 @@ namespace BinanceAcountViewer
             panel12.Name = "panel12";
             panel12.Size = new System.Drawing.Size(264, 644);
             panel12.TabIndex = 1;
+            // 
+            // checkBox4
+            // 
+            checkBox4.AutoSize = true;
+            checkBox4.Location = new System.Drawing.Point(15, 256);
+            checkBox4.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            checkBox4.Name = "checkBox4";
+            checkBox4.Size = new System.Drawing.Size(116, 24);
+            checkBox4.TabIndex = 5;
+            checkBox4.Text = "neutralMarks";
+            checkBox4.UseVisualStyleBackColor = true;
+            checkBox4.CheckedChanged += checkBox4_CheckedChanged;
             // 
             // label8
             // 
@@ -627,7 +641,7 @@ namespace BinanceAcountViewer
             // checkBox3
             // 
             checkBox3.AutoSize = true;
-            checkBox3.Location = new System.Drawing.Point(15, 256);
+            checkBox3.Location = new System.Drawing.Point(15, 288);
             checkBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             checkBox3.Name = "checkBox3";
             checkBox3.Size = new System.Drawing.Size(133, 24);
@@ -908,5 +922,6 @@ namespace BinanceAcountViewer
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.CheckBox checkBox4;
     }
 }

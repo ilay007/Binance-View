@@ -902,20 +902,14 @@ namespace BinanceAcountViewer
             var stepOneMinLeft = (int)getStepForOneMin(new System.Drawing.Point(point.X + 1, point.Y));
             var stepsOneHour = getLeftStepForOneHour(point);
             var steps4Hour = getLeftStepForOneHour(point) / 4;
-            if (BuyMode)
-            {
-                CoinsStore.AddKnowledges(currentPair, stepOneMinLeft, Interval.ONE_MINUTE, true);
-                CoinsStore.AddKnowledges(currentPair, numberStepLeft, Interval.FIFTEEN_MINUTE, true);
-                CoinsStore.AddKnowledges(currentPair, stepsOneHour, Interval.ONE_HOUR, true);
-                CoinsStore.AddKnowledges(currentPair, steps4Hour, Interval.FOUR_HOUR, true);
-            }
-            if (SellMode)
-            {
-                CoinsStore.AddKnowledges(currentPair, stepOneMinLeft, Interval.ONE_MINUTE, false);
-                CoinsStore.AddKnowledges(currentPair, numberStepLeft, Interval.FIFTEEN_MINUTE, false);
-                CoinsStore.AddKnowledges(currentPair, stepsOneHour, Interval.ONE_HOUR, false);
-                CoinsStore.AddKnowledges(currentPair, steps4Hour, Interval.FOUR_HOUR, false);
-            }
+            var recomenddation = Recommendations.Neutral;
+
+            CoinsStore.AddKnowledges(currentPair, stepOneMinLeft, Interval.ONE_MINUTE, recomenddation);
+            CoinsStore.AddKnowledges(currentPair, numberStepLeft, Interval.FIFTEEN_MINUTE, recomenddation);
+            CoinsStore.AddKnowledges(currentPair, stepsOneHour, Interval.ONE_HOUR, recomenddation);
+            CoinsStore.AddKnowledges(currentPair, steps4Hour, Interval.FOUR_HOUR, recomenddation);
+
+
 
         }
 
@@ -933,21 +927,7 @@ namespace BinanceAcountViewer
             return builder.ToString();
         }
 
-        private bool SellMode;
-        private bool BuyMode;
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            SellMode = !SellMode;
-            BuyMode = false;
-            checkBox2.Enabled = !SellMode;
-        }
 
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
-        {
-            BuyMode = !BuyMode;
-            SellMode = false;
-            checkBox1.Enabled = !BuyMode;
-        }
 
         private void checkBox1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -1091,6 +1071,31 @@ namespace BinanceAcountViewer
         {
 
         }
+
+        Recommendations recomenddation = Recommendations.Neutral;
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            recomenddation = Recommendations.Neutral;
+            checkBox2.Enabled = !checkBox4.Checked;
+            checkBox1.Enabled = !checkBox4.Checked;
+        }
+
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            recomenddation = Recommendations.Sell;
+            checkBox2.Enabled = !checkBox1.Checked;
+            checkBox4.Enabled = !checkBox1.Checked;
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            recomenddation = Recommendations.Buy;
+            checkBox1.Enabled = !checkBox2.Checked;
+            checkBox4.Enabled = !checkBox2.Checked;
+        }
+
     }
 }
 

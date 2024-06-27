@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Binance.Spot.Models;
+using BinanceAcountViewer;
 using CoinCore;
 using Strateges;
 
@@ -131,7 +132,7 @@ namespace AcountViewer
             return true;
         }
 
-        public void AddKnowledges(string pair, int end, Interval interval, bool isBuy)
+        public void AddKnowledges(string pair, int end, Interval interval, Recommendations isBuy)
         {
             int steps = 50;//for 15 minutes
             if(interval==Interval.ONE_MINUTE)

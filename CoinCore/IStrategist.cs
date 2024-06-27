@@ -13,7 +13,7 @@ namespace CoinCore
 
         public double GetDifInPercent(int stepsAgo);
 
-        public void AddKnowledgeSince(CurveBundle bundle, int num, bool isBuy);
+        public void AddKnowledgeSince(CurveBundle bundle, int num, Recommendations isBuy);
 
         public void LoadKnowledge(string path);
 
